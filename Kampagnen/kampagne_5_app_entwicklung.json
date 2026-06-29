@@ -1,0 +1,48 @@
+{
+  "_meta": {
+    "version": "1.0.0",
+    "type": "campaign",
+    "exportedAt": "2026-06-27T09:45:00Z",
+    "appName": "Momentum Marketing OS"
+  },
+  "campaign": {
+    "name": "Maßgeschneiderte App-Entwicklung (50+ Portfolio)",
+    "status": "planned",
+    "startDate": "2026-08-01",
+    "endDate": "2027-01-31",
+    "budget": 11000,
+    "spent": 0,
+    "channels": [
+      "LinkedIn",
+      "Instagram",
+      "Unternehmenswebsite",
+      "Fachblogs",
+      "YouTube"
+    ],
+    "description": "Positionierung der WAMOCON als nachweislich produktiver App-Entwickler im DACH-Raum mit 50+ ausgelieferten Anwendungen in 7 Kategorien (Office, Marketing, KI, Immobilien, Mobilität, Entwickler-Tools, Lifestyle). Fokus auf B2B-Kunden, die maßgeschneiderte Softwarelösungen für interne Prozesse, KI-Integration oder Kundeninteraktion benötigen. Der Kern-USP: Nicht nur Beratung, sondern nachweisliche Delivery — 50 Apps als Proof of Execution. Highlight-Apps: ARIA (Arztpraxis-KI), Plan-it (Architekturplaner), KLAR (Content-Prüfung), LFA (EdTech), BackupPilot, Momentum Marketing.",
+    "masterPrompt": "Du agierst als Solution Architect und App-Stratege. Erstelle Content, der IT-Leiter und Geschäftsführer davon überzeugt, dass WAMOCON nicht nur über Software redet, sondern nachweislich liefert. Nutze das Portfolio von 50+ Apps als unwiderlegbaren Beweis. Fokussiere auf konkrete Use-Cases (Büro-Automatisierung, KI-gestützte Tools, Branchenlösungen). Betone: Schnelle Umsetzung, deutsche Entwicklung, Datensouveränität, individuelle Anpassung. FORMATE: (1) App-Spotlight (1 App/Woche mit Problem → Lösung → Ergebnis), (2) 'How We Built It'-Threads (Technologie-Stack, Herausforderungen, Learnings), (3) Vergleich 'Eigenentwicklung vs. WAMOCON' (Kosten, Zeit, Qualität). Tonalität: Confident, ergebnisorientiert, mit konkreten Zahlen. Leitsatz: '50 Apps. 7 Kategorien. 1 Team aus Eschborn.'",
+    "targetAudiences": [
+      "6740a735-d73c-4c0b-9780-5d78448544ca",
+      "de21c685-491b-4c6b-9eb8-733b0b5fb9f8"
+    ],
+    "campaignKeywords": [
+      "App-Entwicklung",
+      "Maßgeschneiderte Software",
+      "50 Apps",
+      "KI-Apps",
+      "Prozessdigitalisierung",
+      "SaaS",
+      "Branchenlösung",
+      "Proof of Execution",
+      "WAMOCON Portfolio",
+      "Softwareentwicklung Eschborn"
+    ],
+    "kpis": {
+      "impressions": 0,
+      "clicks": 0,
+      "conversions": 0,
+      "ctr": 0
+    },
+    "progress": 0
+  }
+}

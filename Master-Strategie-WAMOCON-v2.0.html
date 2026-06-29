@@ -1,0 +1,1406 @@
+<style>body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; line-height: 1.6; max-width: 800px; margin: 40px auto; padding: 20px; color: #333; } h1, h2, h3 { color: #111; border-bottom: 1px solid #eee; padding-bottom: 5px; } table { border-collapse: collapse; width: 100%; margin: 20px 0; } th, td { border: 1px solid #ddd; padding: 8px; text-align: left; } th { background-color: #f4f4f4; }</style>
+<h1>WAMOCON Marketing-Maschine — Master-Strategie v2.0</h1>
+<blockquote>
+<p><strong>Version:</strong> 2.0 | <strong>Stand:</strong> 27.06.2026<br><strong>Auftraggeber:</strong> WAMOCON GmbH, Eschborn<br><strong>Strategie-Framework:</strong> 80/20-Pareto × Top-5%-Performer × Daily-Posting<br><strong>Primärfokus:</strong> Organische Reichweite — <strong>LinkedIn + Instagram gleichberechtigt</strong></p>
+</blockquote>
+<hr>
+<h2>Änderungen gegenüber v1.0</h2>
+<blockquote>
+<p>[!IMPORTANT]
+<strong>Drei fundamentale Upgrades in v2.0:</strong></p>
+<ol>
+<li><strong>Instagram wird zum gleichberechtigten Hauptkanal</strong> neben LinkedIn (vorher: Sekundärkanal nur für K3/K4)</li>
+<li><strong>Tägliche Posting-Frequenz</strong>: Minimum 1 Post/Tag auf jeder aktiven Plattform (vorher: 5/Woche LinkedIn)</li>
+<li><strong>Alle 5 Kampagnen spielen auf Instagram</strong> (vorher: nur K3 + K4)</li>
+</ol>
+</blockquote>
+<hr>
+<h2>1. Aktualisiertes Kampagnen-Mapping (umgesetzt in JSONs)</h2>
+<h3>1.1 Kampagnen-Kanäle (SOLL = IST nach Update)</h3>
+<table>
+<thead>
+<tr>
+<th>Kampagne</th>
+<th align="center">LinkedIn</th>
+<th align="center">Instagram</th>
+<th align="center">TikTok</th>
+<th align="center">YouTube</th>
+<th align="center">Fach-Blogs</th>
+<th align="center">Sonstige</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>K1 — QA-Consulting</td>
+<td align="center">✅</td>
+<td align="center">✅ <strong>NEU</strong></td>
+<td align="center">◌</td>
+<td align="center">◌</td>
+<td align="center">✅</td>
+<td align="center">Webinare, Newsletter</td>
+</tr>
+<tr>
+<td>K2 — KI Sokrates</td>
+<td align="center">✅</td>
+<td align="center">✅ <strong>NEU</strong></td>
+<td align="center">◌</td>
+<td align="center">◌</td>
+<td align="center">◌</td>
+<td align="center">Wirtschaftsmagazine, Direct-Mailing</td>
+</tr>
+<tr>
+<td>K3 — LFA Azubis</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">◌</td>
+<td align="center">◌</td>
+<td align="center">Azubi-Messen</td>
+</tr>
+<tr>
+<td>K4 — Mitarbeiter</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">◌</td>
+<td align="center">✅</td>
+<td align="center">◌</td>
+<td align="center">Karriere-Website</td>
+</tr>
+<tr>
+<td>K5 — App-Entwicklung</td>
+<td align="center">✅</td>
+<td align="center">✅ <strong>NEU</strong></td>
+<td align="center">◌</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">Website</td>
+</tr>
+</tbody></table>
+<h3>1.2 Zielgruppen-Mapping (SOLL = IST nach Update)</h3>
+<table>
+<thead>
+<tr>
+<th>Zielgruppe</th>
+<th align="center">K1 QA</th>
+<th align="center">K2 Sokrates</th>
+<th align="center">K3 LFA</th>
+<th align="center">K4 Mitarbeiter</th>
+<th align="center">K5 Apps</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Z1 Thomas (IT-Leiter)</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+</tr>
+<tr>
+<td>Z2 Sarah (Recruiterin)</td>
+<td align="center">✅</td>
+<td align="center">◌</td>
+<td align="center">✅</td>
+<td align="center">✅</td>
+<td align="center">◌</td>
+</tr>
+<tr>
+<td>Z3 Lukas (QA-Engineer)</td>
+<td align="center">✅</td>
+<td align="center">✅ <strong>NEU</strong></td>
+<td align="center">◌</td>
+<td align="center">✅</td>
+<td align="center">◌</td>
+</tr>
+<tr>
+<td>Z4 Leon (Azubi)</td>
+<td align="center">◌</td>
+<td align="center">◌</td>
+<td align="center">✅</td>
+<td align="center">✅ <strong>NEU</strong></td>
+<td align="center">◌</td>
+</tr>
+<tr>
+<td>Z5 Markus (GF/CEO)</td>
+<td align="center">✅ <strong>NEU</strong></td>
+<td align="center">✅</td>
+<td align="center">◌</td>
+<td align="center">◌</td>
+<td align="center">✅</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>Alle Änderungen wurden in die JSON-Dateien geschrieben: <a href="file:///d:/Testprojekt/WAMOCON_Marketingmaschine/Kampagnen/kampagne_1_consulting_qa.json">K1</a>, <a href="file:///d:/Testprojekt/WAMOCON_Marketingmaschine/Kampagnen/kampagne_2_ki_sokrates.json">K2</a>, <a href="file:///d:/Testprojekt/WAMOCON_Marketingmaschine/Kampagnen/kampagne_4_mitarbeiter.json">K4</a>, <a href="file:///d:/Testprojekt/WAMOCON_Marketingmaschine/Kampagnen/kampagne_5_app_entwicklung.json">K5</a>.</p>
+</blockquote>
+<hr>
+<h2>2. Instagram-Strategie: Der gleichberechtigte Hauptkanal</h2>
+<h3>2.1 Warum Instagram jetzt Hauptkanal ist</h3>
+<table>
+<thead>
+<tr>
+<th>Argument</th>
+<th>Daten</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>B2B auf Instagram wächst explosiv</strong></td>
+<td>71% der B2B-Entscheider im DACH-Raum nutzen Instagram privat — und nehmen dort Markeneindrücke mit in ihre Kaufentscheidung (HubSpot 2025).</td>
+</tr>
+<tr>
+<td><strong>Employer Branding #1</strong></td>
+<td>Instagram ist der stärkste Kanal für Employer Branding bei 16-35-Jährigen. Für K3 (Azubis) und K4 (Mitarbeiter) unverzichtbar.</td>
+</tr>
+<tr>
+<td><strong>Reels-Algorithmus bevorzugt kleine Accounts</strong></td>
+<td>Instagram Reels haben eine überproportionale organische Reichweite für Accounts &lt;10k Follower — idealer Zeitpunkt zum Starten.</td>
+</tr>
+<tr>
+<td><strong>Visueller Proof of Execution</strong></td>
+<td>WAMOCONs 50 Apps sind perfekt für visuelles Storytelling (App-Screenshots, Demo-Clips, Before/After).</td>
+</tr>
+<tr>
+<td><strong>Cross-Posting-Effizienz</strong></td>
+<td>LinkedIn-Carousels → Instagram-Carousels mit minimalem Adaptionsaufwand.</td>
+</tr>
+</tbody></table>
+<h3>2.2 Instagram-Content-Säulen (5 Kampagnen × Instagram-native Formate)</h3>
+<table>
+<thead>
+<tr>
+<th>Content-Säule</th>
+<th>Kampagne</th>
+<th>Format</th>
+<th align="center">Frequenz</th>
+<th>Beispiel</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>QA-Wissen kompakt</strong></td>
+<td>K1</td>
+<td>Carousel (10 Slides)</td>
+<td align="center">2x/Woche</td>
+<td>&quot;5 Fehler, die jeder Junior-Tester macht&quot;</td>
+</tr>
+<tr>
+<td><strong>KI entmystifiziert</strong></td>
+<td>K2</td>
+<td>Reel (30-60s)</td>
+<td align="center">2x/Woche</td>
+<td>&quot;Was ist LLM-as-a-Judge? In 45 Sekunden erklärt.&quot;</td>
+</tr>
+<tr>
+<td><strong>Azubi-Leben real</strong></td>
+<td>K3</td>
+<td>Reel + Story</td>
+<td align="center">Täglich</td>
+<td>&quot;POV: Dein erster Code-Review bei WAMOCON&quot;</td>
+</tr>
+<tr>
+<td><strong>Team-Spotlight</strong></td>
+<td>K4</td>
+<td>Carousel + Story</td>
+<td align="center">2x/Woche</td>
+<td>&quot;3 Fragen an Sarah, unsere Senior Testerin&quot;</td>
+</tr>
+<tr>
+<td><strong>App der Woche</strong></td>
+<td>K5</td>
+<td>Reel (App-Demo)</td>
+<td align="center">1x/Woche</td>
+<td>&quot;Diese App spart Arztpraxen 3h/Tag — so funktioniert ARIA&quot;</td>
+</tr>
+<tr>
+<td><strong>Behind the Scenes</strong></td>
+<td>K3+K4</td>
+<td>Story (5-8 Slides)</td>
+<td align="center">Täglich</td>
+<td>Office-Tour, Coding-Session, Team-Lunch</td>
+</tr>
+<tr>
+<td><strong>Community-Engagement</strong></td>
+<td>Alle</td>
+<td>Polls, Q&amp;A, Quiz</td>
+<td align="center">3x/Woche</td>
+<td>&quot;Was nervt euch am meisten beim Testing? 🗳️&quot;</td>
+</tr>
+</tbody></table>
+<h3>2.3 Instagram-Algorithmus-Taktiken (Top 5%)</h3>
+<table>
+<thead>
+<tr>
+<th>Taktik</th>
+<th>Implementierung</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Reel-Hook in 1.5s</strong></td>
+<td>Erste 1.5 Sekunden entscheiden. Text-Overlay + starke visuelle Bewegung sofort.</td>
+</tr>
+<tr>
+<td><strong>Carousel-Engagement</strong></td>
+<td>Slide 1 = Hook (Swipe-Trigger), letzte Slide = &quot;Speichern für später 🔖&quot; → Save-Rate steigert Reichweite massiv.</td>
+</tr>
+<tr>
+<td><strong>Story-Sticker-Strategie</strong></td>
+<td>Jede Story enthält 1 interaktives Element: Poll, Quiz, Slider, Frage-Box → Algorithmus-Boost durch Interaktion.</td>
+</tr>
+<tr>
+<td><strong>Hashtag-Cluster (3 Ebenen)</strong></td>
+<td>5 Nischen-Tags (#SAPTesting, #ISTQB), 5 Mittel (#QualityAssurance, #ITKarriere), 3 Breit (#TechLife, #CodingLife, #KI)</td>
+</tr>
+<tr>
+<td><strong>Posting-Zeit Instagram DACH</strong></td>
+<td>Feed: 11:00-13:00 (Mittagspause-Scroll). Reels: 18:00-20:00 (Feierabend). Stories: 07:30-08:30 + 20:00-21:00.</td>
+</tr>
+<tr>
+<td><strong>Carousels &gt; Single Images</strong></td>
+<td>Carousels bekommen 1.4x mehr Reichweite als Single-Image-Posts (Instagram-Algorithmus belohnt Dwell Time).</td>
+</tr>
+</tbody></table>
+<h3>2.4 Instagram-Hashtag-Strategie</h3>
+<table>
+<thead>
+<tr>
+<th>Cluster</th>
+<th>Hashtags</th>
+<th>Kampagnen</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>QA/Testing</strong></td>
+<td>#Softwaretesting #Testautomatisierung #ISTQB #QualityAssurance #SAPTesting #Testmanagement #AgileTesting</td>
+<td>K1</td>
+</tr>
+<tr>
+<td><strong>KI/Digitalisierung</strong></td>
+<td>#KünstlicheIntelligenz #KIimMittelstand #Digitalisierung #Automatisierung #Datensouveränität #AIforBusiness</td>
+<td>K2</td>
+</tr>
+<tr>
+<td><strong>Ausbildung/Karriere</strong></td>
+<td>#Fachinformatiker #FIAE #ITAusbildung #Azubi2026 #CodingLife #Ausbildung #ITKarriere</td>
+<td>K3, K4</td>
+</tr>
+<tr>
+<td><strong>App-Entwicklung</strong></td>
+<td>#AppDevelopment #MadeInGermany #SaaS #Softwareentwicklung #TechStartup #AppDesign</td>
+<td>K5</td>
+</tr>
+<tr>
+<td><strong>Employer Branding</strong></td>
+<td>#TeamWAMOCON #LifeAtWAMOCON #ITJobs #BehindTheScenes #WorkCulture #TechTeam</td>
+<td>K4</td>
+</tr>
+<tr>
+<td><strong>Breit/Discovery</strong></td>
+<td>#TechLife #Coding #Developer #Innovation #Frankfurt #Eschborn</td>
+<td>Alle</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>3. Tägliche Posting-Frequenz: Der neue Standard</h2>
+<h3>3.1 Posting-Kadenz pro Plattform (v2.0)</h3>
+<table>
+<thead>
+<tr>
+<th>Plattform</th>
+<th>v1.0 (alt)</th>
+<th>v2.0 (neu)</th>
+<th>Steigerung</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>LinkedIn</strong></td>
+<td>5 Posts/Woche</td>
+<td><strong>7 Posts/Woche</strong> (1/Tag)</td>
+<td>+40%</td>
+</tr>
+<tr>
+<td><strong>Instagram Feed</strong></td>
+<td>Nicht systematisch</td>
+<td><strong>7 Posts/Woche</strong> (1/Tag)</td>
+<td>NEU</td>
+</tr>
+<tr>
+<td><strong>Instagram Stories</strong></td>
+<td>Nicht systematisch</td>
+<td><strong>Täglich</strong> (3-5 Slides)</td>
+<td>NEU</td>
+</tr>
+<tr>
+<td><strong>Instagram Reels</strong></td>
+<td>0</td>
+<td><strong>4-5 Reels/Woche</strong></td>
+<td>NEU</td>
+</tr>
+<tr>
+<td><strong>TikTok</strong></td>
+<td>3-5 Reels/Woche</td>
+<td><strong>5 Reels/Woche</strong></td>
+<td>Bestätigt</td>
+</tr>
+<tr>
+<td><strong>YouTube</strong></td>
+<td>1/Woche</td>
+<td><strong>1/Woche</strong></td>
+<td>Bestätigt</td>
+</tr>
+<tr>
+<td><strong>Gesamt-Output</strong></td>
+<td>~40 Pieces/Monat</td>
+<td><strong>60-70 Pieces/Monat</strong></td>
+<td>+65%</td>
+</tr>
+</tbody></table>
+<h3>3.2 Wöchentlicher Content-Verteilungsplan</h3>
+<table>
+<thead>
+<tr>
+<th>Tag</th>
+<th>LinkedIn (07:30 oder 12:00)</th>
+<th>Instagram Feed (12:00)</th>
+<th>Instagram Story (07:30 + 20:00)</th>
+<th>Instagram Reel (18:30)</th>
+<th>TikTok (19:00)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Montag</strong></td>
+<td>K1: QA-Carousel</td>
+<td>K5: App-Spotlight Carousel</td>
+<td>K3: Azubi Morning + Evening</td>
+<td>K3: Azubi-Reel</td>
+<td>K3: Azubi-Reel (Repost)</td>
+</tr>
+<tr>
+<td><strong>Dienstag</strong></td>
+<td>K2: KI Sokrates Post</td>
+<td>K1: QA-Wissen Carousel</td>
+<td>K4: Team Behind-the-Scenes</td>
+<td>K2: KI erklärt in 45s</td>
+<td>K2: KI-Reel (Repost)</td>
+</tr>
+<tr>
+<td><strong>Mittwoch</strong></td>
+<td>K5: App-Spotlight Thread</td>
+<td>K4: Team-Spotlight Carousel</td>
+<td>K3: Code &amp; Coffee Story</td>
+<td>K5: App-Demo Reel</td>
+<td>K3: Coding-Session Reel</td>
+</tr>
+<tr>
+<td><strong>Donnerstag</strong></td>
+<td>K4: Talking-Head Video</td>
+<td>K2: KI-Infografik Carousel</td>
+<td>K4: Interview-Snippet Story</td>
+<td>K3: Erwartung vs. Realität</td>
+<td>K3: Reel (Repost)</td>
+</tr>
+<tr>
+<td><strong>Freitag</strong></td>
+<td>K1: Kontroverse/POV-Post</td>
+<td>K3: Azubi-Carousel &quot;5 Dinge&quot;</td>
+<td>K1: QA-Quiz Story</td>
+<td>K4: Team-Moment Reel</td>
+<td>K4: Team-Reel (Repost)</td>
+</tr>
+<tr>
+<td><strong>Samstag</strong></td>
+<td>K2: KI-Thread (Story-Arc)</td>
+<td>K5: Portfolio-Post</td>
+<td>K5: App-Teaser Story</td>
+<td>—</td>
+<td>—</td>
+</tr>
+<tr>
+<td><strong>Sonntag</strong></td>
+<td>K4: Personal Story/Reflexion</td>
+<td>K4: Team-Moment Post</td>
+<td>Community Q&amp;A Story</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody></table>
+<h3>3.3 Content-Produktions-Mathematik</h3>
+<blockquote>
+<p>[!TIP]
+<strong>Wie 60-70 Pieces/Monat realistisch produzierbar sind — die Repurpose-Pyramide:</strong></p>
+</blockquote>
+<pre><code>1 Kern-Content-Piece (z.B. Fallstudie &quot;Wie wir ARIA bauten&quot;)
+ │
+ ├── LinkedIn-Post (Text) .......................... 1 Piece
+ ├── LinkedIn-Carousel (10 Slides) ................. 1 Piece
+ ├── Instagram-Carousel (Format angepasst) ......... 1 Piece  (Cross-Post)
+ ├── Instagram Reel (30s App-Demo) ................. 1 Piece
+ ├── TikTok Reel (15s gekürzte Version) ............ 1 Piece  (Cross-Post)
+ ├── Instagram Stories (5 Slides Teaser) ........... 1 Piece
+ ├── Blog-Entwurf (SEO, 800-1200 Wörter) ........... 1 Piece
+ └── Newsletter-Snippet (200 Wörter) ............... 1 Piece
+                                                     ═══════
+                                      8 Pieces aus 1 Kern-Content
+
+→ 8-9 Kern-Contents pro Monat = 60-70 distributable Pieces
+→ Das sind weniger als 3 Kern-Contents pro Woche zu erstellen!
+</code></pre>
+<hr>
+<h2>4. Top-5%-Performer-Strategie (aktualisiert für Instagram)</h2>
+<h3>4.1 Die 7 Formate, die 80% der Reichweite generieren (erweitert)</h3>
+<table>
+<thead>
+<tr>
+<th align="center">Rang</th>
+<th>Format</th>
+<th>Plattform</th>
+<th>Impact</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1</td>
+<td><strong>Talking-Head-Videos (30-90s)</strong></td>
+<td>LinkedIn, IG Reels</td>
+<td>Höchste organische Reichweite auf LinkedIn + Instagram Reels</td>
+</tr>
+<tr>
+<td align="center">2</td>
+<td><strong>PDF-/Bild-Carousels (8-12 Slides)</strong></td>
+<td>LinkedIn, Instagram</td>
+<td>Höchste Engagement-Rate (Swipes = Dwell Time)</td>
+</tr>
+<tr>
+<td align="center">3</td>
+<td><strong>Kontroverse Text-Posts (POV)</strong></td>
+<td>LinkedIn</td>
+<td>Kommentare = Algorithmus-Gold</td>
+</tr>
+<tr>
+<td align="center">4</td>
+<td><strong>Day-in-the-Life Reels</strong></td>
+<td>Instagram, TikTok</td>
+<td>#1 für Gen Z Employer Branding</td>
+</tr>
+<tr>
+<td align="center">5</td>
+<td><strong>Story-Sticker-Engagement</strong></td>
+<td>Instagram Stories</td>
+<td>Polls/Quizze treiben tägliche Interaktion</td>
+</tr>
+<tr>
+<td align="center">6</td>
+<td><strong>Thread-Posts (Story-Arc)</strong></td>
+<td>LinkedIn</td>
+<td>Storytelling für Case Studies</td>
+</tr>
+<tr>
+<td align="center">7</td>
+<td><strong>App-Demo-Reels (Screen-Recording)</strong></td>
+<td>Instagram, YouTube</td>
+<td>Proof of Execution in 30-60s — K5-Killer-Format</td>
+</tr>
+</tbody></table>
+<h3>4.2 Hook-Bibliothek (erweitert für Instagram)</h3>
+<table>
+<thead>
+<tr>
+<th>Hook-Typ</th>
+<th>LinkedIn-Version</th>
+<th>Instagram-Version (kürzer, visueller)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Kontra-Intuition</strong></td>
+<td>&quot;Die meisten IT-Leiter automatisieren ihre Tests falsch.&quot;</td>
+<td>&quot;Du testest falsch. ❌ Hier ist warum 👇&quot;</td>
+</tr>
+<tr>
+<td><strong>Zahlen-Schock</strong></td>
+<td>&quot;73% aller SAP-Migrationen überschreiten ihr Budget.&quot;</td>
+<td>&quot;73% scheitern daran. 📊 Swipe →&quot;</td>
+</tr>
+<tr>
+<td><strong>Verbotenes Wissen</strong></td>
+<td>&quot;Was Ihnen Ihr Testautomatisierungs-Anbieter nie sagt:&quot;</td>
+<td>&quot;Das sagt dir niemand über Testing 🤫&quot;</td>
+</tr>
+<tr>
+<td><strong>Persönliche Offenbarung</strong></td>
+<td>&quot;In 10 Jahren als Testmanager habe ich einen Fehler immer wieder gesehen.&quot;</td>
+<td>&quot;10 Jahre Testing. 1 Fehler überall. 🎯&quot;</td>
+</tr>
+<tr>
+<td><strong>Direkte Provokation</strong></td>
+<td>&quot;ISTQB-Zertifizierungen sind überbewertet.&quot;</td>
+<td>&quot;ISTQB = overrated? 🔥 Heiße Take:&quot;</td>
+</tr>
+<tr>
+<td><strong>Before/After</strong></td>
+<td>&quot;Vorher: 3 Wochen Regressionstest. Nachher: 4 Stunden.&quot;</td>
+<td>&quot;3 Wochen → 4 Stunden ⏱️ So haben wir&#39;s gemacht:&quot;</td>
+</tr>
+<tr>
+<td><strong>POV (Instagram-nativ)</strong></td>
+<td>—</td>
+<td>&quot;POV: Dein erster Tag als Azubi bei WAMOCON 💻&quot;</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>5. Bot-Architektur v2.0 (Instagram-erweitert)</h2>
+<h3>5.1 Neue/Aktualisierte Bots</h3>
+<pre><code class="language-mermaid">graph TB
+    subgraph ORCHESTRATOR[&quot;🎛️ ORCHESTRATOR (7-Tage-Kadenz)&quot;]
+        ORC[&quot;Steuert Daily Content&lt;br/&gt;LinkedIn + Instagram + TikTok&lt;br/&gt;Cross-Posting-Koordination&quot;]
+    end
+
+    subgraph RESEARCH[&quot;🔬 RESEARCH&quot;]
+        BOT1[&quot;🔍 Trend-Scout&quot;]
+        BOT2[&quot;📊 Audience-Analyst&quot;]
+    end
+
+    subgraph CREATION[&quot;✍️ CREATION (5 Copywriter)&quot;]
+        BOT3[&quot;✏️ CW QA (K1)&quot;]
+        BOT4[&quot;🤖 CW KI (K2)&quot;]
+        BOT5[&quot;🎓 CW Academy (K3)&quot;]
+        BOT6[&quot;👥 CW People (K4)&quot;]
+        BOT7[&quot;📱 CW Apps (K5)&quot;]
+    end
+
+    subgraph PRODUCTION[&quot;🎬 PRODUCTION&quot;]
+        BOT8[&quot;🖼️ Visual Designer&quot;]
+        BOT9[&quot;🎬 Video Scripter&quot;]
+        BOT13[&quot;📸 Instagram Specialist&lt;br/&gt;(NEU v2.0)&quot;]
+    end
+
+    subgraph OPTIMIZATION[&quot;⚡ OPTIMIZATION&quot;]
+        BOT10[&quot;📝 Quality Gate&quot;]
+        BOT11[&quot;📅 Daily Scheduler&quot;]
+        BOT12[&quot;📈 Performance Analyst&quot;]
+    end
+
+    ORC --&gt; BOT1 &amp; BOT2
+    BOT1 &amp; BOT2 --&gt; BOT3 &amp; BOT4 &amp; BOT5 &amp; BOT6 &amp; BOT7
+    BOT3 &amp; BOT4 &amp; BOT5 &amp; BOT6 &amp; BOT7 --&gt; BOT8 &amp; BOT9 &amp; BOT13
+    BOT8 &amp; BOT9 &amp; BOT13 --&gt; BOT10
+    BOT10 --&gt; BOT11
+    BOT11 --&gt; BOT12
+    BOT12 --&gt; ORC
+</code></pre>
+<h3>5.2 NEUER Bot 13: Instagram Specialist</h3>
+<table>
+<thead>
+<tr>
+<th>Eigenschaft</th>
+<th>Wert</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Aufgabe</strong></td>
+<td>Adaptation aller Content-Pieces für Instagram-native Formate. Cross-Posting-Optimierung. Story-Erstellung. Hashtag-Strategie. Reel-Schnittanweisungen.</td>
+</tr>
+<tr>
+<td><strong>Input</strong></td>
+<td>Fertige Texte von Bots 3-7, Visuals von Bot 8, Video-Skripte von Bot 9</td>
+</tr>
+<tr>
+<td><strong>Output</strong></td>
+<td>Instagram-ready Captions, Story-Storyboards, Reel-Skripte mit Text-Overlays, Hashtag-Sets</td>
+</tr>
+<tr>
+<td><strong>Kern-Prompt</strong></td>
+<td>&quot;Du bist ein Instagram-Content-Spezialist für B2B und Employer Branding im DACH-Raum. Deine Aufgabe: Adaptiere JEDEN Content-Piece für Instagram. REGELN: (1) Captions max. 2.200 Zeichen, Hook in Zeile 1, CTA vor dem Fold (Zeile 3). (2) Jeder Post hat 13 Hashtags (5 Nische + 5 Mittel + 3 Breit). (3) Carousels: 1080×1080px oder 1080×1350px, Slide 1 = Hook, letzte Slide = &#39;Speichern 🔖 + Folgen&#39;. (4) Reels: Text-Overlays für JEDE Kernaussage, Trending-Audio-Empfehlung, max. 60s. (5) Stories: Mindestens 1 interaktives Element pro Story-Set (Poll, Quiz, Slider, Frage). (6) Tonalität B2B: Professionell aber Instagram-nativ (kein LinkedIn-Copy-Paste). Tonalität B2C: Locker, authentisch, Gen Z.&quot;</td>
+</tr>
+</tbody></table>
+<h3>5.3 Aktualisierte Bot-Output-Vorgaben (v2.0)</h3>
+<table>
+<thead>
+<tr>
+<th>Bot</th>
+<th>v1.0 Output/Woche</th>
+<th>v2.0 Output/Woche</th>
+<th>Δ</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Bot 3 (CW QA)</td>
+<td>2 LinkedIn + 1 Carousel</td>
+<td>3 LinkedIn + 2 Carousels + 2 IG-Adaptionen</td>
+<td>+4</td>
+</tr>
+<tr>
+<td>Bot 4 (CW KI)</td>
+<td>2 LinkedIn + 1 Carousel</td>
+<td>3 LinkedIn + 1 Carousel + 2 IG-Posts + 1 Reel-Skript</td>
+<td>+4</td>
+</tr>
+<tr>
+<td>Bot 5 (CW Academy)</td>
+<td>3 Reels + 1 LinkedIn + 1 Story</td>
+<td>3 Reels + 1 LinkedIn + 7 Story-Strecken (täglich!) + 2 IG-Carousels</td>
+<td>+8</td>
+</tr>
+<tr>
+<td>Bot 6 (CW People)</td>
+<td>1 Interview + 1 BTS + 1 Moment</td>
+<td>2 Interviews + 2 BTS + 2 IG-Carousels + 3 Story-Snippets</td>
+<td>+4</td>
+</tr>
+<tr>
+<td>Bot 7 (CW Apps)</td>
+<td>1 Spotlight + 1 Thread</td>
+<td>2 Spotlights + 1 Thread + 1 Reel-Skript + 1 IG-Carousel</td>
+<td>+3</td>
+</tr>
+<tr>
+<td>Bot 9 (Video)</td>
+<td>3-4 Skripte/Woche</td>
+<td>6-8 Skripte/Woche (inkl. IG Reels)</td>
+<td>+4</td>
+</tr>
+<tr>
+<td><strong>Bot 13 (IG Specialist)</strong></td>
+<td>— (NEU)</td>
+<td>7 IG-Adaptionen + 7 Story-Sets + 7 Hashtag-Sets</td>
+<td>+21</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>6. Vollständiger 30-Tage-Redaktionskalender: Juli 2026</h2>
+<blockquote>
+<p>[!IMPORTANT]
+<strong>Regel: Kein Tag ohne Post.</strong> Jeder Tag hat mindestens 1 LinkedIn-Post + 1 Instagram-Post + 1 Story-Set. An Spitzentagen kommen Reels und TikTok hinzu.</p>
+</blockquote>
+<h3>Woche 1 (01.–06. Juli 2026) — Launch-Woche</h3>
+<table>
+<thead>
+<tr>
+<th>Tag</th>
+<th>LinkedIn (07:30)</th>
+<th>IG Feed (12:00)</th>
+<th>IG Reel (18:30)</th>
+<th>IG Stories</th>
+<th>TikTok (19:00)</th>
+<th>Kampagne</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Di 01.07.</strong></td>
+<td>K1: Carousel &quot;7 Zeichen, dass Ihre QA-Strategie veraltet ist&quot;</td>
+<td>K1: Carousel (IG-Adaption)</td>
+<td>K3: &quot;POV: Dein erster Tag als FIAE-Azubi&quot;</td>
+<td>K3: Azubi-Willkommen + Poll</td>
+<td>K3: Reel-Repost</td>
+<td>K1+K3</td>
+</tr>
+<tr>
+<td><strong>Mi 02.07.</strong></td>
+<td>K2: Post &quot;Sokrates: Warum Ihre Unternehmensdaten nicht in ChatGPT gehören&quot;</td>
+<td>K2: KI-Infografik Carousel</td>
+<td>K5: App-Demo &quot;ARIA in 45s&quot;</td>
+<td>K2: Quiz &quot;Was ist Datensouveränität?&quot;</td>
+<td>K5: App-Demo Repost</td>
+<td>K2+K5</td>
+</tr>
+<tr>
+<td><strong>Do 03.07.</strong></td>
+<td>K5: Thread &quot;50 Apps. 1 Team. Die Geschichte dahinter.&quot;</td>
+<td>K4: Team-Spotlight Carousel</td>
+<td>K4: &quot;Warum ich bei WAMOCON geblieben bin&quot; (30s)</td>
+<td>K4: AMA Story</td>
+<td>K4: Team-Reel Repost</td>
+<td>K5+K4</td>
+</tr>
+<tr>
+<td><strong>Fr 04.07.</strong></td>
+<td>K4: Talking-Head &quot;Der größte Fehler beim IT-Recruiting&quot;</td>
+<td>K3: Carousel &quot;5 Skills, die kein Azubi in der Schule lernt&quot;</td>
+<td>K3: &quot;Erwartung vs. Realität: IT-Ausbildung&quot;</td>
+<td>K1: QA-Tool-Tipp Story</td>
+<td>K3: Reel-Repost</td>
+<td>K4+K3</td>
+</tr>
+<tr>
+<td><strong>Sa 05.07.</strong></td>
+<td>K1: POV-Post &quot;Manuelles Testing ist nicht tot — aber...&quot;</td>
+<td>K5: App-Collage Post</td>
+<td>—</td>
+<td>K5: App-Teaser Story</td>
+<td>—</td>
+<td>K1+K5</td>
+</tr>
+<tr>
+<td><strong>So 06.07.</strong></td>
+<td>K2: Personal Story &quot;Was ich von unserem ersten KI-Projekt gelernt habe&quot;</td>
+<td>K4: Weekend-Team-Moment</td>
+<td>—</td>
+<td>Community Q&amp;A Story</td>
+<td>—</td>
+<td>K2+K4</td>
+</tr>
+</tbody></table>
+<h3>Woche 2 (07.–13. Juli 2026)</h3>
+<table>
+<thead>
+<tr>
+<th>Tag</th>
+<th>LinkedIn (07:30)</th>
+<th>IG Feed (12:00)</th>
+<th>IG Reel (18:30)</th>
+<th>IG Stories</th>
+<th>TikTok (19:00)</th>
+<th>Kampagne</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Mo 07.07.</strong></td>
+<td>K2: Carousel &quot;KI im Mittelstand: 5 Use-Cases, die sofort ROI liefern&quot;</td>
+<td>K2: Carousel (IG-Adaption)</td>
+<td>K3: &quot;Ein Tag als Azubi bei WAMOCON&quot;</td>
+<td>K3: Code &amp; Coffee Story</td>
+<td>K3: Reel-Repost</td>
+<td>K2+K3</td>
+</tr>
+<tr>
+<td><strong>Di 08.07.</strong></td>
+<td>K1: Post &quot;Warum Ihre S/4HANA-Migration scheitern wird (und wie nicht)&quot;</td>
+<td>K1: Carousel &quot;Testpyramide erklärt&quot;</td>
+<td>K2: &quot;Datensouveränität in 30s erklärt&quot;</td>
+<td>K1: ISTQB-Quiz Story</td>
+<td>K2: Reel-Repost</td>
+<td>K1+K2</td>
+</tr>
+<tr>
+<td><strong>Mi 09.07.</strong></td>
+<td>K5: App-Spotlight &quot;BackupPilot: Automatisierte Datensicherung&quot;</td>
+<td>K5: App-Spotlight Carousel</td>
+<td>K5: App-Demo &quot;BackupPilot&quot;</td>
+<td>K4: Team-Lunch Story</td>
+<td>K3: Coding-Reel</td>
+<td>K5+K4</td>
+</tr>
+<tr>
+<td><strong>Do 10.07.</strong></td>
+<td>K4: Interview &quot;3 Fragen an [Mitarbeiter], Senior Test-Consultant&quot;</td>
+<td>K4: Interview-Carousel (Zitate)</td>
+<td>K3: &quot;Was verdient ein Azubi WIRKLICH?&quot;</td>
+<td>K4: Behind-the-Scenes Story</td>
+<td>K3: Reel-Repost</td>
+<td>K4+K3</td>
+</tr>
+<tr>
+<td><strong>Fr 11.07.</strong></td>
+<td>K1: Kontroverse &quot;ISTQB ist überbewertet — ändere meinen Verstand&quot;</td>
+<td>K3: Carousel &quot;FIAE-Ausbildung bei WAMOCON vs. Berufsschule&quot;</td>
+<td>K4: Team-Moment Reel</td>
+<td>K2: KI-News Story</td>
+<td>K4: Reel-Repost</td>
+<td>K1+K3</td>
+</tr>
+<tr>
+<td><strong>Sa 12.07.</strong></td>
+<td>K2: Thread &quot;Wie Sokrates einem Mittelständler 120h/Monat gespart hat&quot;</td>
+<td>K5: Portfolio-Post &quot;50 Apps Highlight&quot;</td>
+<td>—</td>
+<td>K5: App-Teaser Story</td>
+<td>—</td>
+<td>K2+K5</td>
+</tr>
+<tr>
+<td><strong>So 13.07.</strong></td>
+<td>K4: Reflexion &quot;Was Unternehmenskultur wirklich bedeutet&quot;</td>
+<td>K4: Team-Wochenend-Moment</td>
+<td>—</td>
+<td>Community-Poll Story</td>
+<td>—</td>
+<td>K4</td>
+</tr>
+</tbody></table>
+<h3>Woche 3 (14.–20. Juli 2026)</h3>
+<table>
+<thead>
+<tr>
+<th>Tag</th>
+<th>LinkedIn (07:30)</th>
+<th>IG Feed (12:00)</th>
+<th>IG Reel (18:30)</th>
+<th>IG Stories</th>
+<th>TikTok (19:00)</th>
+<th>Kampagne</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Mo 14.07.</strong></td>
+<td>K5: Carousel &quot;Eigenentwicklung vs. WAMOCON: Kosten-Vergleich&quot;</td>
+<td>K5: Carousel (IG-Adaption)</td>
+<td>K3: &quot;Mein Coding-Setup als Azubi&quot;</td>
+<td>K3: Azubi-Morning Story</td>
+<td>K3: Reel-Repost</td>
+<td>K5+K3</td>
+</tr>
+<tr>
+<td><strong>Di 15.07.</strong></td>
+<td>K1: Post &quot;Die 3 teuersten Testing-Fehler bei ERP-Migrationen&quot;</td>
+<td>K1: Infografik &quot;Testing-Kosten-Pyramide&quot;</td>
+<td>K2: &quot;KI-Halluzinationen erkennen — So geht&#39;s&quot;</td>
+<td>K1: Testmanagement-Slider Story</td>
+<td>K2: Reel-Repost</td>
+<td>K1+K2</td>
+</tr>
+<tr>
+<td><strong>Mi 16.07.</strong></td>
+<td>K2: Post &quot;EU AI Act: Was das für Ihre KI-Strategie bedeutet&quot;</td>
+<td>K2: EU AI Act Carousel</td>
+<td>K5: App-Demo &quot;KLAR Content-Prüfung&quot;</td>
+<td>K2: AI-Act-Quiz Story</td>
+<td>K5: App-Demo Repost</td>
+<td>K2+K5</td>
+</tr>
+<tr>
+<td><strong>Do 17.07.</strong></td>
+<td>K4: Talking-Head &quot;Vom Azubi zum Senior Consultant — Tims Story&quot;</td>
+<td>K4: Karriere-Carousel (Stationen)</td>
+<td>K4: Talking-Head (IG-Version)</td>
+<td>K4: AMA Story</td>
+<td>K4: Reel-Repost</td>
+<td>K4</td>
+</tr>
+<tr>
+<td><strong>Fr 18.07.</strong></td>
+<td>K1: Carousel &quot;Testautomatisierung: Selenium vs. Playwright vs. KI&quot;</td>
+<td>K3: Carousel &quot;Was lernst du wirklich als FIAE?&quot;</td>
+<td>K3: &quot;POV: Dein Ausbilder erklärt dir git&quot;</td>
+<td>K1: Tool-Comparison Story</td>
+<td>K3: Reel-Repost</td>
+<td>K1+K3</td>
+</tr>
+<tr>
+<td><strong>Sa 19.07.</strong></td>
+<td>K5: Thread &quot;Wie wir Plan-it in 6 Wochen gebaut haben&quot;</td>
+<td>K5: Build-Story Carousel</td>
+<td>—</td>
+<td>K5: Tech-Stack Story</td>
+<td>—</td>
+<td>K5</td>
+</tr>
+<tr>
+<td><strong>So 20.07.</strong></td>
+<td>K2: Personal Story &quot;Mein ehrliches Fazit nach 1 Jahr Sokrates&quot;</td>
+<td>K4: Team-Brunch Foto</td>
+<td>—</td>
+<td>Community Frage-Box Story</td>
+<td>—</td>
+<td>K2+K4</td>
+</tr>
+</tbody></table>
+<h3>Woche 4 (21.–27. Juli 2026)</h3>
+<table>
+<thead>
+<tr>
+<th>Tag</th>
+<th>LinkedIn (07:30)</th>
+<th>IG Feed (12:00)</th>
+<th>IG Reel (18:30)</th>
+<th>IG Stories</th>
+<th>TikTok (19:00)</th>
+<th>Kampagne</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Mo 21.07.</strong></td>
+<td>K1: Carousel &quot;QA-Reifegrad-Modell: Wo steht Ihr Unternehmen?&quot;</td>
+<td>K1: Carousel (IG-Adaption)</td>
+<td>K3: &quot;Was ich im 1. Monat als Azubi gelernt habe&quot;</td>
+<td>K3: Azubi-Recap Story</td>
+<td>K3: Reel-Repost</td>
+<td>K1+K3</td>
+</tr>
+<tr>
+<td><strong>Di 22.07.</strong></td>
+<td>K2: Post &quot;5 Prozesse, die jedes Unternehmen sofort mit KI automatisieren kann&quot;</td>
+<td>K2: KI-Automatisierungs-Carousel</td>
+<td>K5: App-Demo &quot;Kompetenzkompass&quot;</td>
+<td>K2: ROI-Calculator Story</td>
+<td>K5: App-Demo Repost</td>
+<td>K2+K5</td>
+</tr>
+<tr>
+<td><strong>Mi 23.07.</strong></td>
+<td>K5: App-Spotlight &quot;Momentum Marketing: Unsere eigene Marketing-App&quot;</td>
+<td>K5: App-Spotlight Carousel</td>
+<td>K4: &quot;Ein ehrlicher Tag bei WAMOCON&quot;</td>
+<td>K5: Feature-Walkthrough Story</td>
+<td>K3: Coding-Reel</td>
+<td>K5+K4</td>
+</tr>
+<tr>
+<td><strong>Do 24.07.</strong></td>
+<td>K4: Interview &quot;Was sagen WAMOCON-Mitarbeiter wirklich? (Ungescriptet)&quot;</td>
+<td>K4: Zitate-Carousel</td>
+<td>K3: &quot;Azubi-Gehalt 2026: Die Wahrheit&quot;</td>
+<td>K4: Outtakes Story</td>
+<td>K3: Reel-Repost</td>
+<td>K4+K3</td>
+</tr>
+<tr>
+<td><strong>Fr 25.07.</strong></td>
+<td>K1: POV &quot;Agile Testing ohne Tester — der gefährliche Trend&quot;</td>
+<td>K3: Carousel &quot;Ausbildung 2026: WAMOCON vs. Großkonzern&quot;</td>
+<td>K2: &quot;Was ist eigentlich Prompt Engineering?&quot;</td>
+<td>K1: Friday-QA-Challenge Story</td>
+<td>K2: Reel-Repost</td>
+<td>K1+K2</td>
+</tr>
+<tr>
+<td><strong>Sa 26.07.</strong></td>
+<td>K2: Carousel &quot;Datensouveränität: Deutschland vs. USA&quot;</td>
+<td>K5: Monats-Portfolio-Recap</td>
+<td>—</td>
+<td>K5: &quot;Welche App sollen wir als nächstes zeigen?&quot; Poll</td>
+<td>—</td>
+<td>K2+K5</td>
+</tr>
+<tr>
+<td><strong>So 27.07.</strong></td>
+<td>K4: Reflexion &quot;1 Monat Marketing-Maschine — Was wir gelernt haben&quot;</td>
+<td>K4: Team-Moment</td>
+<td>—</td>
+<td>Monats-Review Community Story</td>
+<td>—</td>
+<td>K4</td>
+</tr>
+</tbody></table>
+<h3>Woche 5 (28.–31. Juli 2026)</h3>
+<table>
+<thead>
+<tr>
+<th>Tag</th>
+<th>LinkedIn (07:30)</th>
+<th>IG Feed (12:00)</th>
+<th>IG Reel (18:30)</th>
+<th>IG Stories</th>
+<th>TikTok (19:00)</th>
+<th>Kampagne</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Mo 28.07.</strong></td>
+<td>K5: Carousel &quot;7 Apps, die wir 2026 gelauncht haben&quot;</td>
+<td>K5: Carousel (IG-Adaption)</td>
+<td>K3: &quot;Azubi-Projekt: Meine erste eigene App&quot;</td>
+<td>K3: Projekt-Showcase Story</td>
+<td>K3: Reel-Repost</td>
+<td>K5+K3</td>
+</tr>
+<tr>
+<td><strong>Di 29.07.</strong></td>
+<td>K1: Post &quot;Der ROI von Testmanagement: Zahlen, die überzeugen&quot;</td>
+<td>K1: ROI-Infografik</td>
+<td>K2: &quot;KI-Buzzword-Bingo — Was ist real?&quot;</td>
+<td>K1: ROI-Calculator Story</td>
+<td>K2: Reel-Repost</td>
+<td>K1+K2</td>
+</tr>
+<tr>
+<td><strong>Mi 30.07.</strong></td>
+<td>K2: Thread &quot;Unsere Top 3 KI-Learnings aus Q3&quot;</td>
+<td>K2: Learnings-Carousel</td>
+<td>K5: App-Demo &quot;LFA Lernplattform&quot;</td>
+<td>K2: Learnings Story</td>
+<td>K5: App-Demo Repost</td>
+<td>K2+K5</td>
+</tr>
+<tr>
+<td><strong>Do 31.07.</strong></td>
+<td>K4: Monats-Recap &quot;Juli-Highlights bei WAMOCON&quot;</td>
+<td>K4: Monats-Highlight-Carousel</td>
+<td>K4: &quot;Best Moments Juli&quot; Compilation</td>
+<td>K4: Countdown August Story</td>
+<td>K4: Compilation Repost</td>
+<td>K4</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>7. Content-Output-Summary Juli 2026</h2>
+<table>
+<thead>
+<tr>
+<th>Kanal</th>
+<th align="center">Pieces im Juli</th>
+<th align="center">Durchschnitt/Woche</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>LinkedIn Posts</td>
+<td align="center">31</td>
+<td align="center">7/Woche</td>
+</tr>
+<tr>
+<td>Instagram Feed Posts</td>
+<td align="center">31</td>
+<td align="center">7/Woche</td>
+</tr>
+<tr>
+<td>Instagram Reels</td>
+<td align="center">20</td>
+<td align="center">~5/Woche</td>
+</tr>
+<tr>
+<td>Instagram Stories</td>
+<td align="center">31 Sets (à 3-5 Slides)</td>
+<td align="center">Täglich</td>
+</tr>
+<tr>
+<td>TikTok Reels</td>
+<td align="center">20</td>
+<td align="center">~5/Woche</td>
+</tr>
+<tr>
+<td>YouTube Videos</td>
+<td align="center">4</td>
+<td align="center">1/Woche</td>
+</tr>
+<tr>
+<td><strong>Gesamt</strong></td>
+<td align="center"><strong>~137 Pieces</strong></td>
+<td align="center"><strong>~34/Woche</strong></td>
+</tr>
+</tbody></table>
+<h3>Kampagnen-Verteilung im Juli</h3>
+<table>
+<thead>
+<tr>
+<th>Kampagne</th>
+<th align="center">LinkedIn</th>
+<th align="center">IG Feed</th>
+<th align="center">IG Reels</th>
+<th align="center">Stories</th>
+<th>Anteil</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>K1 — QA-Consulting</td>
+<td align="center">8</td>
+<td align="center">5</td>
+<td align="center">0</td>
+<td align="center">5</td>
+<td>23%</td>
+</tr>
+<tr>
+<td>K2 — KI Sokrates</td>
+<td align="center">8</td>
+<td align="center">5</td>
+<td align="center">4</td>
+<td align="center">5</td>
+<td>28%</td>
+</tr>
+<tr>
+<td>K3 — LFA Azubis</td>
+<td align="center">0</td>
+<td align="center">5</td>
+<td align="center">8</td>
+<td align="center">8</td>
+<td>27%</td>
+</tr>
+<tr>
+<td>K4 — Mitarbeiter</td>
+<td align="center">8</td>
+<td align="center">8</td>
+<td align="center">4</td>
+<td align="center">6</td>
+<td>33%</td>
+</tr>
+<tr>
+<td>K5 — App-Entwicklung</td>
+<td align="center">7</td>
+<td align="center">8</td>
+<td align="center">4</td>
+<td align="center">7</td>
+<td>33%</td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>[!NOTE]
+Einige Posts bedienen 2 Kampagnen gleichzeitig (Cross-Kampagnen-Synergien), daher summieren sich die Anteile auf &gt;100%.</p>
+</blockquote>
+<hr>
+<h2>8. KPI-Framework v2.0 (erhöhte Ziele)</h2>
+<table>
+<thead>
+<tr>
+<th>KPI</th>
+<th>v1.0 Ziel Q3</th>
+<th>v2.0 Ziel Q3</th>
+<th>v1.0 Ziel Q4</th>
+<th>v2.0 Ziel Q4</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>LinkedIn Follower</td>
+<td>+500</td>
+<td><strong>+800</strong></td>
+<td>+1.500</td>
+<td><strong>+2.500</strong></td>
+</tr>
+<tr>
+<td>LinkedIn Engagement-Rate</td>
+<td>&gt;3%</td>
+<td><strong>&gt;4%</strong></td>
+<td>&gt;4.5%</td>
+<td><strong>&gt;6%</strong></td>
+</tr>
+<tr>
+<td><strong>Instagram Follower</strong></td>
+<td>—</td>
+<td><strong>+1.000</strong></td>
+<td>—</td>
+<td><strong>+3.000</strong></td>
+</tr>
+<tr>
+<td><strong>Instagram Engagement-Rate</strong></td>
+<td>—</td>
+<td><strong>&gt;5%</strong></td>
+<td>—</td>
+<td><strong>&gt;7%</strong></td>
+</tr>
+<tr>
+<td><strong>Instagram Reel Views (Ø)</strong></td>
+<td>—</td>
+<td><strong>2.000</strong></td>
+<td>—</td>
+<td><strong>8.000</strong></td>
+</tr>
+<tr>
+<td>TikTok Views/Reel</td>
+<td>1.000</td>
+<td><strong>2.000</strong></td>
+<td>5.000</td>
+<td><strong>8.000</strong></td>
+</tr>
+<tr>
+<td>Website-Traffic (organisch)</td>
+<td>+30%</td>
+<td><strong>+50%</strong></td>
+<td>+60%</td>
+<td><strong>+100%</strong></td>
+</tr>
+<tr>
+<td>Inbound-Leads</td>
+<td>5/Monat</td>
+<td><strong>8/Monat</strong></td>
+<td>15/Monat</td>
+<td><strong>25/Monat</strong></td>
+</tr>
+<tr>
+<td>Content-Output</td>
+<td>40/Monat</td>
+<td><strong>70/Monat</strong></td>
+<td>50/Monat</td>
+<td><strong>80/Monat</strong></td>
+</tr>
+<tr>
+<td>Carousel-Save-Rate</td>
+<td>&gt;2%</td>
+<td><strong>&gt;3%</strong></td>
+<td>&gt;4%</td>
+<td><strong>&gt;6%</strong></td>
+</tr>
+<tr>
+<td>Video-Completion-Rate</td>
+<td>&gt;40%</td>
+<td><strong>&gt;50%</strong></td>
+<td>&gt;55%</td>
+<td><strong>&gt;65%</strong></td>
+</tr>
+</tbody></table>
+<hr>
+<h2>9. Cross-Kampagnen-Synergien (erweitert für tägliches Posting)</h2>
+<blockquote>
+<p>[!TIP]
+<strong>Bei täglichem Posting ist Cross-Kampagnen-Content der Schlüssel zur Nachhaltigkeit.</strong> Ohne Synergien würde die Content-Produktion unbezahlbar.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Synergie</th>
+<th>LinkedIn-Format</th>
+<th>Instagram-Format</th>
+<th>Frequenz</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>K1+K2: QA trifft KI</strong></td>
+<td>Carousel &quot;Wie KI das SAP-Testing revolutioniert&quot;</td>
+<td>Reel &quot;KI-Testing in 45s erklärt&quot;</td>
+<td>2x/Monat</td>
+</tr>
+<tr>
+<td><strong>K5+K2: Apps beweisen KI</strong></td>
+<td>Thread &quot;KLAR prüft Content auf Halluzinationen&quot;</td>
+<td>App-Demo Reel</td>
+<td>2x/Monat</td>
+</tr>
+<tr>
+<td><strong>K4+K3: Team + Azubis</strong></td>
+<td>Interview &quot;Tim: Vom Azubi zum Consultant&quot;</td>
+<td>&quot;Day in the Life&quot; Reel</td>
+<td>3x/Monat</td>
+</tr>
+<tr>
+<td><strong>K5+K1: Eigene QA</strong></td>
+<td>Post &quot;Wie wir 50 Apps testen (Dogfooding)&quot;</td>
+<td>Behind-the-Scenes Reel</td>
+<td>1x/Monat</td>
+</tr>
+<tr>
+<td><strong>K3+K5: Azubis bauen Apps</strong></td>
+<td>Story &quot;Diese 3 Apps haben unsere Azubis mitgebaut&quot;</td>
+<td>Carousel + Reel Combo</td>
+<td>1x/Monat</td>
+</tr>
+<tr>
+<td><strong>K2+K5: Sokrates in Apps</strong></td>
+<td>Thread &quot;KI-Features in unseren 50 Apps&quot;</td>
+<td>Portfolio-Carousel</td>
+<td>1x/Monat</td>
+</tr>
+<tr>
+<td><strong>Alle 5: Monats-Recap</strong></td>
+<td>Zusammenfassungs-Post</td>
+<td>Highlight-Reel Compilation</td>
+<td>1x/Monat</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>10. Governance &amp; Quality-Sicherung bei hoher Frequenz</h2>
+<blockquote>
+<p>[!WARNING]
+<strong>Höhere Frequenz = höheres Risiko für Qualitätsverlust.</strong> Diese Maßnahmen stellen sicher, dass Quantität nicht auf Kosten von Qualität geht.</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>Risiko</th>
+<th>Gegenmaßnahme</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Content wird repetitiv</strong></td>
+<td>Bot 1 (Trend-Scout) liefert wöchentlich frische Impulse. Orchestrator verhindert, dass dasselbe Thema 2x in 14 Tagen läuft.</td>
+</tr>
+<tr>
+<td><strong>Qualität sinkt</strong></td>
+<td>Bot 10 (Quality Gate) mit Brand-Score bleibt Pflicht. Kein Post unter Score 70.</td>
+</tr>
+<tr>
+<td><strong>Instagram-Copy = LinkedIn-Copy</strong></td>
+<td>Bot 13 (IG Specialist) adaptiert JEDEN Content für Instagram-native Formate. Kein 1:1-Copy-Paste.</td>
+</tr>
+<tr>
+<td><strong>Burnout des Content-Teams</strong></td>
+<td>Repurpose-Pyramide: 8 Pieces aus 1 Kern-Content. Max 3 Kern-Contents/Woche zu erstellen.</td>
+</tr>
+<tr>
+<td><strong>Audience Fatigue</strong></td>
+<td>Kampagnen-Rotation: Nie 2 Posts derselben Kampagne am selben Tag auf derselben Plattform.</td>
+</tr>
+<tr>
+<td><strong>Hashtag-Stagnation</strong></td>
+<td>Bot 13 rotiert Hashtag-Sets monatlich basierend auf Performance-Daten von Bot 12.</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>11. Technologie-Stack v2.0 (Instagram-erweitert)</h2>
+<table>
+<thead>
+<tr>
+<th>Komponente</th>
+<th>Tool</th>
+<th>Zweck</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Bot-Orchestrierung</td>
+<td>n8n (Self-hosted) / Make.com</td>
+<td>Workflow-Automatisierung, tägliche Bot-Ketten</td>
+</tr>
+<tr>
+<td>LLM-Backbone</td>
+<td>Claude / GPT-4o (API)</td>
+<td>Content-Generierung (Bots 3-7, 13)</td>
+</tr>
+<tr>
+<td>Prompt-Management</td>
+<td><strong>ProCon (WAMOCON-eigen!)</strong></td>
+<td>Versionierung aller 14 Bot-Prompts</td>
+</tr>
+<tr>
+<td>Social Scheduling</td>
+<td><strong>Metricool</strong> (LinkedIn + Instagram + TikTok)</td>
+<td>Plattformübergreifendes Daily-Posting</td>
+</tr>
+<tr>
+<td>Design</td>
+<td>Canva Pro + Figma</td>
+<td>Carousel-Templates, Story-Templates</td>
+</tr>
+<tr>
+<td>Video</td>
+<td>CapCut (Reels) + Descript (Talking Heads)</td>
+<td>Video-Editing, Auto-Subtitles</td>
+</tr>
+<tr>
+<td>Analytics LinkedIn</td>
+<td>Shield App</td>
+<td>LinkedIn-spezifische Metriken</td>
+</tr>
+<tr>
+<td><strong>Analytics Instagram</strong></td>
+<td><strong>Metricool + Instagram Insights</strong></td>
+<td>IG-spezifische Metriken, Reel-Performance</td>
+</tr>
+<tr>
+<td>CRM / Leads</td>
+<td>HubSpot Free / Momentum Marketing</td>
+<td>Lead-Erfassung, Nurturing</td>
+</tr>
+<tr>
+<td>Monitoring</td>
+<td>Brand24</td>
+<td>Konkurrenz- und Marken-Monitoring</td>
+</tr>
+<tr>
+<td><strong>Instagram Link-in-Bio</strong></td>
+<td><strong>Linktree / Beacons</strong></td>
+<td>Kampagnen-spezifische Landing-Links</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>12. Priorisierung: Die ersten 30 Tage (v2.0)</h2>
+<table>
+<thead>
+<tr>
+<th>Woche</th>
+<th>Fokus</th>
+<th>Deliverables</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Woche 1 (KW 27)</strong></td>
+<td>Setup &amp; erste Posts</td>
+<td>Bot-Prompts finalisieren. Instagram-Business-Account einrichten. Brand Templates (LinkedIn + IG). Erste 7 Posts produzieren und schedulen.</td>
+</tr>
+<tr>
+<td><strong>Woche 2 (KW 28)</strong></td>
+<td>Daily Rhythm etablieren</td>
+<td>LinkedIn + Instagram täglich. Erste 3 Reels. Erste Story-Serie. Hashtag-Strategie live.</td>
+</tr>
+<tr>
+<td><strong>Woche 3 (KW 29)</strong></td>
+<td>Kampagne 5 Launch</td>
+<td>App-Spotlights starten. Portfolio-Carousel. &quot;50 Apps&quot;-Narrative. YouTube-Demo #1.</td>
+</tr>
+<tr>
+<td><strong>Woche 4 (KW 30)</strong></td>
+<td>Optimierung &amp; Review</td>
+<td>Erster vollständiger KPI-Report. Top-/Underperformer-Analyse. Strategie-Justierung für August. Content-Batch für August vorproduzieren.</td>
+</tr>
+</tbody></table>
+<hr>
+<p><em>Dieses Dokument ist die aktualisierte strategische Grundlage der WAMOCON Marketing-Maschine v2.0. Alle Kampagnen-JSONs wurden entsprechend aktualisiert. Die Bot-Architektur enthält einen neuen Bot 13 (Instagram Specialist). Der Redaktionskalender Juli 2026 ist Tag für Tag ausgearbeitet.</em></p>
+

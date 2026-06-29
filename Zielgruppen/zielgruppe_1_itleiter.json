@@ -1,0 +1,60 @@
+{
+  "_meta": {
+    "version": "1.0.0",
+    "type": "audience",
+    "exportedAt": "2026-06-13T12:00:00Z",
+    "appName": "Momentum Marketing OS"
+  },
+  "audience": {
+    "name": "IT-Leiter Thomas",
+    "type": "buyer",
+    "segment": "B2B",
+    "age": "45-55",
+    "gender": "Männlich",
+    "location": "DACH-Region (Fokus Deutschland)",
+    "income": "100k - 150k",
+    "education": "Abgeschlossenes Studium der Informatik oder Wirtschaftsinformatik (Diplom/Master)",
+    "jobTitle": "IT-Leiter / Leiter Qualitätssicherung / QA-Manager",
+    "interests": [
+      "Digitale Transformation im deutschen Mittelstand",
+      "Prozessautomatisierung im Testing",
+      "Einführung von KI zur Effizienzsteigerung",
+      "SAP-S/4HANA-Migrationen",
+      "IT-Sicherheit und DSGVO-Compliance",
+      "KI",
+      "Automatisierung",
+      "Prozessoptimierung",
+      "SAP-Migrationen"
+    ],
+    "painPoints": [
+      "Chronischer Fachkräftemangel im Bereich Software-Testing in Deutschland",
+      "Hoher Zeitdruck und Budgetkürzungen bei anstehenden Release-Zyklen",
+      "Bedenken bei der Einführung von KI-Tools hinsichtlich Datenschutz und Verlässlichkeit (Halluzinationen)",
+      "Fehlen von standardisierten Testkonzepten bei komplexen ERP-Einführungen (z.B. SAP)",
+      "Hoher Zeitdruck bei Releases",
+      "Fachkräftemangel im Testing",
+      "Mangelnde Qualitätssicherung bei KI-Tools",
+      "Komplexe SAP-Einführungen ohne ausreichendes Testkonzept"
+    ],
+    "goals": [
+      "Reibungslose und fehlerfreie Software-Releases zur Sicherstellung des operativen Geschäftsbetriebs",
+      "Signifikante Reduktion der Testaufwände durch intelligente Testautomatisierung",
+      "Nachweisbare Compliance und hohe IT-Sicherheit, insbesondere bei sensiblen Daten",
+      "Skalierbarkeit des Test-Teams durch externe, verlässliche Partner",
+      "Fehlerfreie Software-Releases sicherstellen",
+      "Testaufwände durch Automatisierung reduzieren",
+      "Compliance und Sicherheit gewährleisten"
+    ],
+    "preferredChannels": [
+      "Xing",
+      "LinkedIn",
+      "Fachmessen (z.B. IT-Tage, Fachkongresse)",
+      "Branchenmagazine (z.B. CIO Magazin, IT-Administrator)",
+      "Webinare"
+    ],
+    "buyingBehavior": "Stark qualitäts- und sicherheitsorientiert. Benötigt fundierte ROI-Berechnungen zur Vorlage bei der Geschäftsführung. Legt großen Wert auf deutsche Ansprechpartner, Datenschutzkonformität (DSGVO) und langfristige, verlässliche Dienstleister-Beziehungen mit nachweisbaren Zertifizierungen (z.B. ISO, ISTQB).",
+    "decisionProcess": "Mehrstufiger Entscheidungsprozess. Involviert Geschäftsführung, Einkauf und oft den Betriebsrat. Erfordert transparente Angebote, Proof of Concepts (PoC) und aussagekräftige Referenzprojekte.",
+    "journeyPhase": "Consideration",
+    "description": "Thomas ist ein erfahrener IT-Manager im gehobenen Mittelstand oder Konzernumfeld. Er trägt die Verantwortung für die IT-Infrastruktur und Anwendungsentwicklung. Aktuell steht er unter Druck, da große Transformationsprojekte anstehen, ihm aber intern die Ressourcen und das tiefe Know-how im modernen, automatisierten Testing fehlen. Er sucht nach einem verlässlichen, zertifizierten Partner wie WAMOCON."
+  }
+}

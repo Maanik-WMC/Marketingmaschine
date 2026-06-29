@@ -1,0 +1,50 @@
+{
+  "_meta": {
+    "version": "1.0.0",
+    "type": "audience",
+    "exportedAt": "2026-06-13T12:00:00Z",
+    "appName": "Momentum Marketing OS"
+  },
+  "audience": {
+    "name": "Test-Ingenieur Lukas",
+    "type": "user",
+    "segment": "B2C",
+    "age": "25-35",
+    "gender": "Männlich",
+    "location": "DACH-Region",
+    "income": "50k - 70k",
+    "education": "Abgeschlossene Ausbildung zum Fachinformatiker oder IT-Quereinsteiger mit Berufserfahrung",
+    "jobTitle": "Software-Tester / Test-Analyst / Test-Ingenieur",
+    "interests": [
+      "Softwarequalität",
+      "Erlernen neuer Tools zur Testautomatisierung",
+      "Künstliche Intelligenz im Software-Testing",
+      "Berufliche und methodische Weiterbildung",
+      "Testautomatisierung",
+      "Künstliche Intelligenz",
+      "Lebenslanges Lernen",
+      "Karriereentwicklung im IT-Sektor"
+    ],
+    "painPoints": [
+      "Es fehlen offizielle und anerkannte Zertifizierungen (wie ISTQB) für bessere Argumente in Gehaltsverhandlungen",
+      "Das Praxis-Wissen beschränkt sich oft auf manuelles Testing; es mangelt an Erfahrung in der Testautomatisierung",
+      "Fehlende Aufstiegschancen beim aktuellen Arbeitgeber aufgrund fehlender methodischer Grundlagen"
+    ],
+    "goals": [
+      "Erfolgreicher Abschluss der ISTQB-Zertifizierung zum Certified Tester",
+      "Den Sprung vom manuellen Tester zum Automatisierungs-Experten schaffen",
+      "Den eigenen Marktwert steigern, um langfristig ein höheres Gehalt und mehr Projektverantwortung zu erhalten"
+    ],
+    "preferredChannels": [
+      "Fachforen (z.B. heise online, Golem)",
+      "Xing",
+      "LinkedIn-Lernformate",
+      "YouTube-Tutorials",
+      "IT-Blogs und Weiterbildungsportale"
+    ],
+    "buyingBehavior": "Sehr preis-leistungs-bewusst. Achtet stark auf echte Praxisnähe, erfahrene Dozenten und die offizielle Akkreditierung des Schulungsanbieters (wichtig: offizieller ISTQB-Partner). Vergleicht Online-Bewertungen intensiv.",
+    "decisionProcess": "Informiert sich ausgiebig im Vorfeld. Wenn der Arbeitgeber die Kosten trägt (Bildungsbudget), wird ein gut aufbereitetes Angebot zur Vorlage beim Vorgesetzten benötigt.",
+    "journeyPhase": "Decision",
+    "description": "Lukas ist ein ambitionierter Software-Tester, der seine Karriere aktiv vorantreiben möchte. Er hat erkannt, dass manuelles Testen langfristig nicht ausreicht und möchte sich daher über die WAMOCON Akademie im Bereich Testmanagement und Testautomatisierung fundiert und praxisnah weiterbilden."
+  }
+}

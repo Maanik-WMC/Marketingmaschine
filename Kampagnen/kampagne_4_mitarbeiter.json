@@ -1,0 +1,46 @@
+{
+  "_meta": {
+    "version": "1.0.0",
+    "type": "campaign",
+    "exportedAt": "2026-06-13T12:00:00Z",
+    "appName": "Momentum Marketing OS"
+  },
+  "campaign": {
+    "name": "Mitarbeiter",
+    "status": "planned",
+    "startDate": "2026-07-01",
+    "endDate": "2026-12-31",
+    "budget": 8000,
+    "spent": 0,
+    "channels": [
+      "LinkedIn",
+      "Instagram",
+      "Unternehmenswebsite (Karrierebereich)",
+      "YouTube"
+    ],
+    "description": "Mitarbeiter der WAMOCON stehen im Rampenlicht. Authentische Interviews und Einblicke in den Arbeitsalltag schaffen Nähe und Vertrauen. Ziel ist es, neue Talente für das Unternehmen zu gewinnen (Employer Branding) und das Vertrauen potenzieller Consulting-Kunden durch das 'Kennenlernen' des Teams zu stärken.",
+    "masterPrompt": "Du agierst als Employer Branding und Corporate Communications Experte. Erstelle sehr persönliche, menschliche Beiträge, die das WAMOCON-Team vorstellen. Entwickle Fragen für Mitarbeiter-Interviews, erzähle Erfolgs- und Wachstumsgeschichten einzelner Teammitglieder und zeige Einblicke aus dem Büro-Alltag oder von Teamevents. Die Tonalität ist extrem authentisch, wertschätzend und sympathisch. Die versteckte Botschaft lautet: 'Das sind die brillanten, aber nahbaren Menschen, mit denen Sie künftig zusammenarbeiten' (Consulting-Vertrieb) sowie 'Das ist das tolle Team, zu dem du gehören solltest' (Recruiting).",
+    "targetAudiences": [
+      "de57114e-9695-4fd0-9377-beb47a0a8a5a",
+      "6740a735-d73c-4c0b-9780-5d78448544ca",
+      "5bcedca4-cf35-47a9-85f9-fbce9300bac8",
+      "9c29e5e3-4e14-43fe-b5b0-3356db002dd3"
+    ],
+    "campaignKeywords": [
+      "Employer Branding",
+      "Behind the Scenes",
+      "Mitarbeiterinterviews",
+      "Unternehmenskultur",
+      "Team WAMOCON",
+      "IT-Karriere",
+      "Unternehmenswerte"
+    ],
+    "kpis": {
+      "impressions": 0,
+      "clicks": 0,
+      "conversions": 0,
+      "ctr": 0
+    },
+    "progress": 0
+  }
+}

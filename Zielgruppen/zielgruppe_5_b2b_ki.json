@@ -1,0 +1,46 @@
+{
+  "_meta": {
+    "version": "1.0.0",
+    "type": "audience",
+    "exportedAt": "2026-06-13T12:00:00Z",
+    "appName": "Momentum Marketing OS"
+  },
+  "audience": {
+    "name": "Geschäftsführer Markus",
+    "type": "buyer",
+    "segment": "B2B",
+    "age": "45-60",
+    "gender": "Männlich",
+    "location": "DACH-Region",
+    "income": "120k - 200k",
+    "education": "Abgeschlossenes Studium (Betriebswirtschaftslehre oder Ingenieurwesen)",
+    "jobTitle": "Geschäftsführer / CEO / COO (Mittelstand)",
+    "interests": [
+      "Nachhaltiges Unternehmenswachstum",
+      "Signifikante Kostensenkung und Effizienzsteigerung",
+      "Digitalisierung und Automatisierung von Kernprozessen",
+      "Wettbewerbsvorteile durch den Einsatz von KI-Technologien"
+    ],
+    "painPoints": [
+      "Hohe operative Kosten durch manuelle, zeitintensive und fehleranfällige Geschäftsprozesse",
+      "Steigender Margendruck und wachsende Konkurrenz, die bereits erfolgreich KI-Tools einsetzt",
+      "Fehlendes Inhouse-Know-how, um KI-Lösungen überhaupt evaluieren, geschweige denn rechtssicher und datenschutzkonform (DSGVO) implementieren zu können",
+      "Große Skepsis gegenüber dem reinen 'KI-Hype' ohne nachweisbaren Return on Investment (ROI)"
+    ],
+    "goals": [
+      "Identifikation und sofortige Automatisierung von zeitfressenden Standardprozessen (z.B. durch LLMs)",
+      "Messbare Kostenersparnis und Produktivitätssteigerung innerhalb der nächsten 6 bis 12 Monate",
+      "Wettbewerbsfähigkeit des Unternehmens langfristig sichern und gleichzeitig die eigene Belegschaft entlasten"
+    ],
+    "preferredChannels": [
+      "LinkedIn",
+      "Wirtschaftsmagazine (Manager Magazin, Handelsblatt)",
+      "Exklusive C-Level-Netzwerkveranstaltungen und Kamingespräche",
+      "Fachspezifische Webinare zum Thema 'KI im deutschen Mittelstand'"
+    ],
+    "buyingBehavior": "Sehr pragmatisch und ROI-gesteuert. Investiert ausschließlich in Lösungen, die einen glasklaren, greifbaren Business Case vorweisen können. Legt allergrößten Wert auf verlässliche, deutschsprachige Partner (Beratung auf Augenhöhe) und volle Transparenz.",
+    "decisionProcess": "Entscheidet maßgeblich selbst oder im engen Schulterschluss mit dem CFO. Erfordert praxisnahe Use-Cases, begrenzbare Proof of Concepts (PoCs) zur Risikominimierung sowie vertragliche Garantien für Datensicherheit und deutsche Server-Standorte.",
+    "journeyPhase": "Consideration",
+    "description": "Markus leitet ein etabliertes, traditionell erfolgreiches mittelständisches Unternehmen. Er hat erkannt, dass künstliche Intelligenz kein vorübergehender Trend ist, fürchtet jedoch Fehlinvestitionen und Reputationsverluste durch Datenlecks. Er sucht einen strategischen IT-Partner wie WAMOCON, der sein Unternehmen ganzheitlich analysiert, ungenutzte Automatisierungspotenziale aufdeckt und maßgeschneiderte, sichere KI-Lösungen schlüsselfertig implementiert."
+  }
+}

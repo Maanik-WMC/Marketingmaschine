@@ -1,0 +1,47 @@
+{
+  "_meta": {
+    "version": "1.0.0",
+    "type": "campaign",
+    "exportedAt": "2026-06-13T12:00:00Z",
+    "appName": "Momentum Marketing OS"
+  },
+  "campaign": {
+    "name": "Consulting Test- und Qualitätsmanagement",
+    "status": "planned",
+    "startDate": "2026-07-01",
+    "endDate": "2026-12-31",
+    "budget": 15000,
+    "spent": 0,
+    "channels": [
+      "LinkedIn",
+      "Instagram",
+      "Fach-Blogs",
+      "Webinare",
+      "Newsletter"
+    ],
+    "description": "Schaffung von Transparenz im Kerngeschäft der WAMOCON. Teilen von Erfahrungswerten, Pain Points, Tipps & Tricks und Projekteinblicken rund um Rollen wie Softwaretester, Agile Tester, KI Tester und Testmanager. Ziel ist der Community-Aufbau, Know-how-Beweis (Proof of Concept) und der Vertrieb von Beratungsleistungen.",
+    "masterPrompt": "Du agierst als Senior QA-Experte. Erstelle fachliche, tiefgründige Beiträge für LinkedIn und Blog-Artikel für QA-Experten und IT-Leiter. Adressiere konkrete Pain Points (Fachkräftemangel, Zeitdruck, komplexe SAP-Projekte). Teile bewährte Best Practices, ISTQB-Methoden und reale Projekteinblicke aus dem WAMOCON-Consulting-Alltag. Biete der Community echten Mehrwert und Goodies (z.B. Checklisten). Der Tonfall ist professionell, lösungsorientiert und interaktiv. Nutze gezielte Fragen am Ende, um den Austausch in der Community zu fördern und im Nachgang Beratungsgespräche anzubahnen.",
+    "targetAudiences": [
+      "6740a735-d73c-4c0b-9780-5d78448544ca",
+      "5bcedca4-cf35-47a9-85f9-fbce9300bac8",
+      "de57114e-9695-4fd0-9377-beb47a0a8a5a",
+      "de21c685-491b-4c6b-9eb8-733b0b5fb9f8"
+    ],
+    "campaignKeywords": [
+      "Testmanagement",
+      "Qualitätssicherung",
+      "Testautomatisierung",
+      "QA-Community",
+      "Agile Testing",
+      "Softwaretester",
+      "Testkoordinator"
+    ],
+    "kpis": {
+      "impressions": 0,
+      "clicks": 0,
+      "conversions": 0,
+      "ctr": 0
+    },
+    "progress": 0
+  }
+}

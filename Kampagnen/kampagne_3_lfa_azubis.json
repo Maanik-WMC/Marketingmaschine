@@ -1,0 +1,45 @@
+{
+  "_meta": {
+    "version": "1.0.0",
+    "type": "campaign",
+    "exportedAt": "2026-06-13T12:00:00Z",
+    "appName": "Momentum Marketing OS"
+  },
+  "campaign": {
+    "name": "LFA - Lernzentrum Für Azubis",
+    "status": "planned",
+    "startDate": "2026-08-01",
+    "endDate": "2027-01-31",
+    "budget": 10000,
+    "spent": 0,
+    "channels": [
+      "Instagram",
+      "TikTok",
+      "LinkedIn",
+      "Azubi-Messen"
+    ],
+    "description": "Transparenz zur Fachinformatiker-Ausbildung bei WAMOCON. Einblicke in den Azubi-Alltag und Promotion des digitalen Lernsystems 'LFA'. Ziel ist es, WAMOCON als Top-Ausbildungsbetrieb zu positionieren und das LFA-System als SaaS-Lösung zur Ausbildungs-Erleichterung an andere B2B-Unternehmen zu verkaufen.",
+    "masterPrompt": "Du erstellst Content in zwei parallelen Tonalitäten. 1) B2C (Schüler/Azubis) für TikTok/Instagram: Liefere authentische, lockere 'Day-in-the-Life'-Einblicke von Azubis bei WAMOCON, zeige coole Projekte und echte Wertschätzung in der Ausbildung. Präsentiere WAMOCON als Traumarbeitgeber. 2) B2B (HR, Ausbilder, IT-Leiter) für LinkedIn: Präsentiere das 'LFA' (Lernzentrum Für Azubis) als innovative Software-Lösung. Zeige auf, wie dieses System die Betreuung von FIAE-Azubis massiv erleichtert, Ausbildungsinhalte strukturiert und Ausbildern Zeit spart. Verkaufe das LFA als den digitalen Begleiter für die moderne IT-Ausbildung.",
+    "targetAudiences": [
+      "9c29e5e3-4e14-43fe-b5b0-3356db002dd3",
+      "6740a735-d73c-4c0b-9780-5d78448544ca",
+      "5bcedca4-cf35-47a9-85f9-fbce9300bac8"
+    ],
+    "campaignKeywords": [
+      "Ausbildung",
+      "FIAE",
+      "Fachinformatiker",
+      "Lernzentrum LFA",
+      "Azubi-Betreuung",
+      "EdTech",
+      "Ausbildungsbetrieb"
+    ],
+    "kpis": {
+      "impressions": 0,
+      "clicks": 0,
+      "conversions": 0,
+      "ctr": 0
+    },
+    "progress": 0
+  }
+}

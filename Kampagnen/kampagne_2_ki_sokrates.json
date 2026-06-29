@@ -1,0 +1,46 @@
+{
+  "_meta": {
+    "version": "1.0.0",
+    "type": "campaign",
+    "exportedAt": "2026-06-13T12:00:00Z",
+    "appName": "Momentum Marketing OS"
+  },
+  "campaign": {
+    "name": "KI (Sokrates)",
+    "status": "planned",
+    "startDate": "2026-07-01",
+    "endDate": "2026-12-31",
+    "budget": 25000,
+    "spent": 0,
+    "channels": [
+      "LinkedIn",
+      "Instagram",
+      "Wirtschaftsmagazine",
+      "Fachkonferenzen",
+      "B2B-Direct-Mailing"
+    ],
+    "description": "Vorstellung des innovativen WAMOCON-Projekts 'Sokrates'. Fokus liegt auf der Automatisierung von Prozessen und der Digitalisierung von Unternehmen durch eigene KI-Lösungen, die maximale Datensicherheit gewährleisten (Datenhoheit bleibt im Haus). Ziel: Kompetenzbeweis und Lead-Generierung im B2B-Umfeld.",
+    "masterPrompt": "Du agierst als KI-Stratege und Digitalisierungsexperte. Generiere Content für Geschäftsführer und IT-Leiter zum Thema 'Sichere Unternehmens-KI'. Stelle unser Projekt 'Sokrates' vor. Betone den Kern-USP: Unternehmen können durch maßgeschneiderte KI-Lösungen Prozesse massiv automatisieren und digitalisieren, BEHALTEN dabei aber die volle Souveränität über ihre sensiblen Daten (kein Abfluss an öffentliche LLMs). Verknüpfe KI mit greifbaren ROI-Versprechen. Der Ton ist visionär, vertrauensvoll, sicherheitsbewusst und stark nutzenorientiert.",
+    "targetAudiences": [
+      "de21c685-491b-4c6b-9eb8-733b0b5fb9f8",
+      "6740a735-d73c-4c0b-9780-5d78448544ca",
+      "de57114e-9695-4fd0-9377-beb47a0a8a5a"
+    ],
+    "campaignKeywords": [
+      "Künstliche Intelligenz",
+      "Sokrates",
+      "Prozessautomatisierung",
+      "Datensouveränität",
+      "Digitale Transformation",
+      "LLM-as-a-Judge",
+      "KI-Beratung"
+    ],
+    "kpis": {
+      "impressions": 0,
+      "clicks": 0,
+      "conversions": 0,
+      "ctr": 0
+    },
+    "progress": 0
+  }
+}

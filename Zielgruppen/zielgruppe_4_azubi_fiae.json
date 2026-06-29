@@ -1,0 +1,45 @@
+{
+  "_meta": {
+    "version": "1.0.0",
+    "type": "audience",
+    "exportedAt": "2026-06-13T12:00:00Z",
+    "appName": "Momentum Marketing OS"
+  },
+  "audience": {
+    "name": "Schüler Leon",
+    "type": "user",
+    "segment": "B2C",
+    "age": "16-22",
+    "gender": "Männlich",
+    "location": "DACH-Region (Rhein-Main-Gebiet / Frankfurt am Main)",
+    "income": "Unter 20k (Schüler/Nebenjob)",
+    "education": "Realschulabschluss oder (Fach-)Abitur",
+    "jobTitle": "Angehender Auszubildender (Fachinformatiker Anwendungsentwicklung)",
+    "interests": [
+      "Programmieren und erste Coding-Projekte",
+      "Künstliche Intelligenz und neue Tech-Trends",
+      "Gaming und PC-Hardware",
+      "Einblicke in echte Softwareentwicklung"
+    ],
+    "painPoints": [
+      "Schwierigkeit, einen Ausbildungsplatz zu finden, der zukunftssichere Themen wie KI oder Testautomatisierung wirklich vermittelt",
+      "Angst vor ausbeuterischen Ausbildungsbetrieben, in denen Azubis nur als billige Arbeitskräfte für triviale Aufgaben eingesetzt werden",
+      "Wenig praktische Vorerfahrung, was klassische Bewerbungsprozesse erschwert"
+    ],
+    "goals": [
+      "Einen spannenden Ausbildungsplatz als Fachinformatiker für Anwendungsentwicklung (FIAE) bei einem innovativen IT-Unternehmen ergattern",
+      "Echte Praxisprojekte von Anfang an begleiten und moderne Programmiersprachen sowie KI-Technologien lernen",
+      "Hohe Übernahmechancen nach der Ausbildung und langfristige Karriereperspektiven"
+    ],
+    "preferredChannels": [
+      "Instagram, TikTok und YouTube (Einblicke in den Unternehmensalltag)",
+      "Regionale Azubi-Messen (z.B. Einstieg, Stuzubi)",
+      "Ausbildungsportale (Azubi.de, Aubi-plus)",
+      "Reddit (Austausch mit anderen Azubis)"
+    ],
+    "buyingBehavior": "Stark von Unternehmensbewertungen (z.B. Kununu) und dem Social-Media-Auftritt abhängig. Achtet auf eine lockere, moderne Unternehmenskultur (z.B. Duz-Kultur, Teamevents) und Benefits wie Jobtickets oder aktuelle Hardware.",
+    "decisionProcess": "Bewirbt sich in der Regel bei mehreren Unternehmen gleichzeitig. Entscheidend für den Zuschlag sind ein unkomplizierter, schneller Bewerbungsprozess und wertschätzendes, zeitnahes Feedback nach dem Vorstellungsgespräch.",
+    "journeyPhase": "Consideration",
+    "description": "Leon steht kurz vor seinem Schulabschluss und brennt für die IT. Er hat bereits erste Erfahrungen mit kleinen Skripten gesammelt und sucht nun einen modernen Ausbildungsbetrieb, idealerweise im Raum Frankfurt. Er wünscht sich ein familiäres, aber technologisch führendes Team bei WAMOCON, das ihn fördert, fordert und ihm schon früh Verantwortung überträgt."
+  }
+}

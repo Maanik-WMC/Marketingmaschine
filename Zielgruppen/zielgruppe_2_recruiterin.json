@@ -1,0 +1,48 @@
+{
+  "_meta": {
+    "version": "1.0.0",
+    "type": "audience",
+    "exportedAt": "2026-06-13T12:00:00Z",
+    "appName": "Momentum Marketing OS"
+  },
+  "audience": {
+    "name": "Personalreferentin Sarah",
+    "type": "buyer",
+    "segment": "B2B",
+    "age": "30-45",
+    "gender": "Weiblich",
+    "location": "Deutschlandweit",
+    "income": "60k - 85k",
+    "education": "Studium der Betriebswirtschaftslehre (Schwerpunkt Personal) oder Psychologie",
+    "jobTitle": "Personalreferentin IT / Leiterin Personalbeschaffung / HR-Managerin",
+    "interests": [
+      "Employer Branding",
+      "Active Sourcing",
+      "Mitarbeiterbindung",
+      "Moderne Recruiting-Strategien",
+      "New Work"
+    ],
+    "painPoints": [
+      "Der Arbeitsmarkt für qualifizierte IT-Tester und Testmanager in Deutschland ist stark umkämpft ('War for Talents')",
+      "Extrem lange Vakanzzeiten bei spezialisierten IT-Rollen, was zu Projektverzögerungen in den Fachbereichen führt",
+      "Sehr hohe Kosten und oft enttäuschende Qualität bei klassischen Personalvermittlern",
+      "Schwierigkeit, die fachliche Eignung von IT-Bewerbern als HR-Mitarbeiterin objektiv zu bewerten"
+    ],
+    "goals": [
+      "Offene IT-Stellen schnell und nachhaltig mit qualifizierten, zertifizierten (z.B. ISTQB) Fachkräften besetzen",
+      "Ressourcenengpässe in laufenden Projekten kurzfristig und rechtssicher (z.B. Arbeitnehmerüberlassung) überbrücken",
+      "Die Recruiting-Kosten (Cost-per-Hire) im Budgetrahmen halten und das Employer Branding stärken"
+    ],
+    "preferredChannels": [
+      "Xing",
+      "LinkedIn",
+      "HR-Fachmessen (z.B. Zukunft Personal)",
+      "Fachnetzwerke für Personaler",
+      "Direktansprache"
+    ],
+    "buyingBehavior": "Sucht nach Dienstleistern, die nicht nur Lebensläufe schicken, sondern Kandidaten vorab fachlich tiefgehend prüfen. Bevorzugt unkomplizierte Rahmenverträge und schnelle Reaktionszeiten.",
+    "decisionProcess": "Oft getrieben durch akuten Bedarf der IT-Fachabteilung. Abstimmung zwischen Personalabteilung, Einkauf und IT-Leitung. Bevorzugt etablierte Partner, um administrativen Aufwand gering zu halten.",
+    "journeyPhase": "Awareness",
+    "description": "Sarah ist verantwortlich für das IT-Recruiting in einem mittelständischen Unternehmen. Die Fachbereiche fordern dringend externe Tester für ein anstehendes Großprojekt an. Da sie über normale Stellenausschreibungen keine geeigneten Kandidaten findet, sucht sie nach spezialisierten Dienstleistern wie WAMOCON, die qualifiziertes Personal für Festanstellungen oder auf Projektbasis bereitstellen."
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "name": "WAMOCON 72h Analytics Review",
+  "active": true,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 24
+            }
+          ]
+        }
+      },
+      "id": "daily-schedule",
+      "name": "Daily analytics check",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://wmc-marketing-agent:8080/workflows/analytics-review",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "review_window",
+              "value": "72h"
+            }
+          ]
+        }
+      },
+      "id": "call-agent",
+      "name": "Evaluate 72h signals",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [520, 300]
+    }
+  ],
+  "connections": {
+    "Daily analytics check": {
+      "main": [
+        [
+          {
+            "node": "Evaluate 72h signals",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

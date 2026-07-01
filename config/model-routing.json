@@ -1,0 +1,72 @@
+{
+  "version": "2026-06",
+  "default_provider": "local_qwen",
+  "providers": {
+    "local_qwen": {
+      "model": "Qwen/Qwen3.6-35B-A3B",
+      "endpoint_env": "LOCAL_OPENAI_BASE_URL",
+      "api_key_env": "LOCAL_OPENAI_API_KEY",
+      "serving": ["vLLM", "SGLang"],
+      "use_for": ["private_strategy", "drafting", "structured_extraction", "visual_reasoning", "tool_agent_work"]
+    },
+    "cloud_frontier": {
+      "model": "configured-by-env",
+      "endpoint_env": "CLOUD_OPENAI_BASE_URL",
+      "api_key_env": "CLOUD_OPENAI_API_KEY",
+      "use_for": ["high_risk_review", "final_polish", "fallback"]
+    },
+    "kimi_backup": {
+      "model": "configured-by-env",
+      "endpoint_env": "KIMI_BASE_URL",
+      "api_key_env": "KIMI_API_KEY",
+      "model_env": "KIMI_MODEL_NAME",
+      "use_for": ["cloud_fallback", "final_polish", "external_review_only"]
+    }
+  },
+  "routes": {
+    "local_private_strategy": {
+      "provider": "local_qwen",
+      "temperature": 0.2,
+      "requires_network": false
+    },
+    "local_research": {
+      "provider": "local_qwen",
+      "temperature": 0.2,
+      "requires_network": false,
+      "requires_source_links": true
+    },
+    "local_content_draft": {
+      "provider": "local_qwen",
+      "temperature": 0.7,
+      "requires_network": false
+    },
+    "local_visual_reasoning": {
+      "provider": "local_qwen",
+      "temperature": 0.3,
+      "requires_network": false
+    },
+    "local_structured": {
+      "provider": "local_qwen",
+      "temperature": 0.0,
+      "requires_network": false
+    },
+    "strict_review": {
+      "provider": "local_qwen",
+      "temperature": 0.0,
+      "requires_human_final_approval": true
+    },
+    "cloud_review_optional": {
+      "provider": "cloud_frontier",
+      "temperature": 0.0,
+      "requires_human_final_approval": true,
+      "allowed_only_for": ["legal_sensitive_review", "final_polish"]
+    },
+    "cloud_kimi_backup": {
+      "provider": "kimi_backup",
+      "temperature": 0.0,
+      "requires_network": true,
+      "requires_human_final_approval": true,
+      "allowed_only_for": ["fallback", "final_polish", "external_review_only"]
+    }
+  }
+}

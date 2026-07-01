@@ -1,0 +1,61 @@
+{
+  "id": "WMCAnalytics30d1",
+  "name": "WAMOCON 30d Business Value Review",
+  "active": true,
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "months",
+              "triggerAtDayOfMonth": 1,
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "id": "monthly-30d-schedule",
+      "name": "Monthly 09:00",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1,
+      "position": [240, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://wmc-marketing-agent:8080/workflows/analytics-review",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "review_window",
+              "value": "30d"
+            }
+          ]
+        }
+      },
+      "id": "call-agent-30d",
+      "name": "Evaluate 30d business value",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [520, 300]
+    }
+  ],
+  "connections": {
+    "Monthly 09:00": {
+      "main": [
+        [
+          {
+            "node": "Evaluate 30d business value",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

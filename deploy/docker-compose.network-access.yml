@@ -1,0 +1,27 @@
+services:
+  wmc-marketing-access:
+    image: nginx:1.27-alpine
+    container_name: wmc-marketing-access
+    restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./network-access/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    ports:
+      - "0.0.0.0:18117:8117"
+      - "0.0.0.0:15678:5678"
+      - "0.0.0.0:14007:4007"
+      - "0.0.0.0:14019:4019"
+      - "0.0.0.0:14020:4020"
+      - "0.0.0.0:18188:8188"
+      - "0.0.0.0:13030:3030"
+    networks:
+      - core-net
+      - growth-net
+
+networks:
+  core-net:
+    external: true
+  growth-net:
+    external: true
+    name: wmc-marketing-growth

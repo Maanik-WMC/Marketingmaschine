@@ -1,0 +1,34 @@
+{
+  "version": "2026-06",
+  "gateway_mode": "deny_by_default",
+  "servers": [
+    {
+      "id": "evidence_vault",
+      "allowed_tools": ["search_evidence", "get_claim", "list_consent_records"],
+      "network": "internal_only"
+    },
+    {
+      "id": "crm",
+      "allowed_tools": ["create_lead", "update_lead_status", "create_follow_up_task"],
+      "network": "internal_or_vendor_api",
+      "requires_human_approval": ["send_email"]
+    },
+    {
+      "id": "scheduler",
+      "allowed_tools": ["create_draft_post", "update_draft_post", "read_post_metrics"],
+      "network": "vendor_api",
+      "blocked_tools": ["publish_now_without_approval"]
+    },
+    {
+      "id": "analytics",
+      "allowed_tools": ["read_utm_metrics", "read_campaign_metrics", "write_performance_record"],
+      "network": "internal_or_vendor_api"
+    },
+    {
+      "id": "comfyui",
+      "allowed_tools": ["submit_pinned_workflow", "read_job_status", "download_output"],
+      "network": "internal_only",
+      "requires_human_approval": ["submit_pinned_workflow"]
+    }
+  ]
+}

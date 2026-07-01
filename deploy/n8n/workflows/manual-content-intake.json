@@ -1,0 +1,53 @@
+{
+  "name": "WAMOCON Marketing - Manual Content Intake",
+  "active": true,
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "wamocon-marketing/content-intake",
+        "responseMode": "responseNode"
+      },
+      "id": "manual-intake-webhook",
+      "name": "Manual Intake Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [240, 300],
+      "webhookId": "wamocon-marketing-content-intake"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://wmc-marketing-agent:8080/workflows/create-content",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $json.body }}"
+      },
+      "id": "create-content",
+      "name": "Create Content State",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4,
+      "position": [520, 300]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}"
+      },
+      "id": "respond",
+      "name": "Return Content State",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [800, 300]
+    }
+  ],
+  "connections": {
+    "Manual Intake Webhook": {
+      "main": [[{"node": "Create Content State", "type": "main", "index": 0}]]
+    },
+    "Create Content State": {
+      "main": [[{"node": "Return Content State", "type": "main", "index": 0}]]
+    }
+  },
+  "settings": {"executionOrder": "v1"}
+}

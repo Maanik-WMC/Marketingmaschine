@@ -1,0 +1,42 @@
+{
+  "version": "2026-06",
+  "calendar_mode": "rolling_30_day",
+  "cadence": [
+    {
+      "name": "daily_monitoring",
+      "interval": "every_day",
+      "checks": ["comments", "new_leads", "failed_workflows", "trend_alerts"]
+    },
+    {
+      "name": "early_signal_review",
+      "interval": "72_hours_after_publish",
+      "checks": ["saves", "comments", "profile_visits", "ctr", "landing_page_clicks"]
+    },
+    {
+      "name": "weekly_optimization",
+      "interval": "7_days",
+      "checks": ["winner_formats", "weak_hooks", "cta_fit", "thumbnail_fit", "first_line_fit"]
+    },
+    {
+      "name": "message_offer_review",
+      "interval": "14_days",
+      "checks": ["message_market_fit", "offer_fit", "landing_page_fit", "audience_fit"]
+    },
+    {
+      "name": "business_value_review",
+      "interval": "30_days",
+      "checks": ["qualified_leads", "booked_calls", "pipeline_value", "scale_stop_pivot"]
+    },
+    {
+      "name": "quarterly_strategy_reset",
+      "interval": "quarterly",
+      "checks": ["personas", "proof_assets", "agent_prompts", "compliance_rules", "model_choices"]
+    }
+  ],
+  "stop_rules": [
+    "No useful target-audience signal after 14 days",
+    "High clicks but low leads means landing page is weak",
+    "High engagement but no B2B leads means audience or offer mismatch",
+    "Poor lead quality means qualification and copy are too broad"
+  ]
+}

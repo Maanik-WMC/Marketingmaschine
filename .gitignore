@@ -1,0 +1,8 @@
+# Runtime and private environment files
+runtime-data/
+deploy/*.generated.env
+*.pyc
+__pycache__/
+
+# Local QA artifacts
+qa_output/

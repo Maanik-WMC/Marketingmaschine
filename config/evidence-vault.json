@@ -1,0 +1,32 @@
+{
+  "version": "2026-07-01",
+  "items": [
+    {
+      "id": "Kampagnen/kampagne_1_consulting_qa.json",
+      "claim": "WAMOCON kann QA-Risiken, Testabdeckung und Freigabeprozesse strukturiert prüfen und priorisieren.",
+      "source_type": "internal_campaign_brief",
+      "source_ref": "Kampagnen/kampagne_1_consulting_qa.json",
+      "approved_for_public_use": true,
+      "consent_ref": "internal-proof-ok",
+      "owner": "WAMOCON Marketing"
+    },
+    {
+      "id": "Kampagnen/kampagne_2_ki_sokrates.json",
+      "claim": "Sokrates Private AI positioniert KI-Nutzung für den Mittelstand mit Fokus auf Datenschutz und internes Wissen.",
+      "source_type": "internal_campaign_brief",
+      "source_ref": "Kampagnen/kampagne_2_ki_sokrates.json",
+      "approved_for_public_use": true,
+      "consent_ref": "internal-proof-ok",
+      "owner": "WAMOCON Marketing"
+    },
+    {
+      "id": "Kampagnen/kampagne_5_app_entwicklung.json",
+      "claim": "WAMOCON kann interne Apps und Modernisierungspotenziale anhand vorhandener App-Portfolio-Nachweise strukturieren.",
+      "source_type": "internal_campaign_brief",
+      "source_ref": "Kampagnen/kampagne_5_app_entwicklung.json",
+      "approved_for_public_use": true,
+      "consent_ref": "internal-proof-ok",
+      "owner": "WAMOCON Marketing"
+    }
+  ]
+}

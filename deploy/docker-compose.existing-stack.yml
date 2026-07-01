@@ -1,0 +1,50 @@
+services:
+  wmc-marketing-agent:
+    build:
+      context: ..
+      dockerfile: Dockerfile
+    container_name: wmc-marketing-agent
+    restart: unless-stopped
+    environment:
+      MARKETING_MACHINE_DATA_DIR: /data
+      N8N_BASE_URL: http://core-n8n:5678
+      COMFYUI_BASE_URL: ${COMFYUI_BASE_URL:-http://host.docker.internal:8188}
+      OLLAMA_BASE_URL: ${OLLAMA_BASE_URL:-http://host.docker.internal:11434}
+      LOCAL_OPENAI_BASE_URL: ${LOCAL_OPENAI_BASE_URL:-http://host.docker.internal:11434/v1}
+      LOCAL_OPENAI_API_KEY: ${LOCAL_OPENAI_API_KEY:-ollama}
+      LOCAL_OPENAI_MODEL_NAME: ${LOCAL_OPENAI_MODEL_NAME:-}
+      LOCAL_MODEL_NAME: ${LOCAL_MODEL_NAME:-qwen3.6:35b}
+      CLOUD_OPENAI_BASE_URL: ${CLOUD_OPENAI_BASE_URL:-}
+      CLOUD_OPENAI_API_KEY: ${CLOUD_OPENAI_API_KEY:-}
+      CLOUD_MODEL_NAME: ${CLOUD_MODEL_NAME:-}
+      KIMI_BASE_URL: ${KIMI_BASE_URL:-https://api.moonshot.ai/v1}
+      KIMI_API_KEY: ${KIMI_API_KEY:-}
+      KIMI_MODEL_NAME: ${KIMI_MODEL_NAME:-}
+      MARKETING_MACHINE_ENABLE_EXTERNAL_WRITES: ${MARKETING_MACHINE_ENABLE_EXTERNAL_WRITES:-false}
+      POSTIZ_CREATE_DRAFT_PATH: ${POSTIZ_CREATE_DRAFT_PATH:-}
+      POSTIZ_API_KEY: ${POSTIZ_API_KEY:-}
+      TWENTY_CREATE_CONTACT_PATH: ${TWENTY_CREATE_CONTACT_PATH:-}
+      TWENTY_API_KEY: ${TWENTY_API_KEY:-}
+      MAUTIC_CREATE_CONTACT_PATH: ${MAUTIC_CREATE_CONTACT_PATH:-}
+      MAUTIC_API_KEY: ${MAUTIC_API_KEY:-}
+      LITELLM_BASE_URL: http://host.docker.internal:4000
+      OPA_BASE_URL: http://host.docker.internal:8181
+      SEARXNG_BASE_URL: http://host.docker.internal:8090
+      QDRANT_BASE_URL: http://host.docker.internal:6333
+      PROMETHEUS_BASE_URL: http://host.docker.internal:9091
+      GRAFANA_BASE_URL: http://host.docker.internal:3030
+      POSTIZ_BASE_URL: http://wmc-postiz:5000
+      TWENTY_BASE_URL: http://wmc-twenty-server:3000
+      MAUTIC_BASE_URL: http://wmc-mautic-web:80
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ../runtime-data:/data
+    ports:
+      - "127.0.0.1:8117:8080"
+    networks:
+      - core-net
+
+networks:
+  core-net:
+    external: true

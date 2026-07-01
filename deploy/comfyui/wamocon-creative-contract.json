@@ -1,0 +1,28 @@
+{
+  "version": "2026-06",
+  "purpose": "Reusable ComfyUI creative contract for WAMOCON branded assets.",
+  "inputs": {
+    "campaign": "K1|K2|K3|K4|K5",
+    "channel": "LinkedIn|Instagram|YouTube",
+    "format": "carousel_cover|reel_background|app_demo_thumbnail|story_slide",
+    "headline": "Short approved headline. Max 8 words for covers.",
+    "proof_asset_refs": ["approved screenshot id or brand asset id"],
+    "brand_palette": ["#0a0a0f", "#111118", "#1a1a2e"],
+    "accent_color": "configured from WAMOCON CI",
+    "font": "Poppins",
+    "output_size": "1080x1350 or 1080x1080"
+  },
+  "rules": [
+    "Use approved proof assets only.",
+    "Do not invent customer screenshots, logos, people, or claims.",
+    "No public output without human visual review.",
+    "Track whether any generated media contains synthetic people, voice, or customer-like artifacts.",
+    "Pin all ComfyUI custom nodes and model versions before production use."
+  ],
+  "outputs": {
+    "asset_path": "internal object storage path",
+    "ai_generated_media": true,
+    "review_required": true,
+    "source_workflow_hash": "sha256 of pinned ComfyUI workflow"
+  }
+}

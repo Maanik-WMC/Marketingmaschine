@@ -1,0 +1,97 @@
+{
+  "version": "2026-06",
+  "default_language": "de-DE",
+  "agents": [
+    {
+      "id": "orchestrator",
+      "role": "Owns weekly plan, rolling 30-day calendar, priorities, and escalation.",
+      "model_route": "local_private_strategy",
+      "allowed_tools": ["read_campaigns", "read_audiences", "read_evidence_vault", "write_content_brief"],
+      "requires_human_approval_for": ["calendar_publish", "campaign_pivot"]
+    },
+    {
+      "id": "research",
+      "role": "Tracks public competitor topics, platform trends, audience questions, and keyword gaps.",
+      "model_route": "local_research",
+      "allowed_tools": ["search_public_sources", "write_experiment_record"],
+      "requires_human_approval_for": ["using_competitor_quote"]
+    },
+    {
+      "id": "evidence-vault",
+      "role": "Stores approved claims, app proof, screenshots, case facts, and consent state.",
+      "model_route": "local_private_strategy",
+      "allowed_tools": ["read_evidence_vault", "write_content_brief"],
+      "requires_human_approval_for": ["new_roi_claim", "customer_story", "employee_story"]
+    },
+    {
+      "id": "campaign-qa",
+      "role": "Creates K1 QA consulting briefs and drafts for IT leaders and QA buyers.",
+      "model_route": "local_content_draft",
+      "allowed_tools": ["read_campaigns", "read_audiences", "read_evidence_vault", "write_draft"]
+    },
+    {
+      "id": "campaign-sokrates",
+      "role": "Creates K2 private AI/Sokrates briefs and drafts for Mittelstand buyers.",
+      "model_route": "local_content_draft",
+      "allowed_tools": ["read_campaigns", "read_audiences", "read_evidence_vault", "write_draft"]
+    },
+    {
+      "id": "campaign-apps",
+      "role": "Creates K5 app development proof-led briefs and drafts.",
+      "model_route": "local_content_draft",
+      "allowed_tools": ["read_campaigns", "read_audiences", "read_evidence_vault", "write_draft"]
+    },
+    {
+      "id": "platform-adapter",
+      "role": "Adapts one approved idea into LinkedIn, Instagram, short video, email, and landing page formats.",
+      "model_route": "local_content_draft",
+      "allowed_tools": ["write_draft", "create_scheduler_payload"]
+    },
+    {
+      "id": "creative-director",
+      "role": "Creates ComfyUI workflow briefs and checks brand consistency.",
+      "model_route": "local_visual_reasoning",
+      "allowed_tools": ["create_comfyui_brief"],
+      "requires_human_approval_for": ["submit_comfyui_job"]
+    },
+    {
+      "id": "experiment",
+      "role": "Manages hypotheses, variants, stop rules, and optimization decisions.",
+      "model_route": "local_private_strategy",
+      "allowed_tools": ["write_experiment_record", "write_performance_record"]
+    },
+    {
+      "id": "compliance",
+      "role": "Checks GDPR, AI Act, copyright, hallucination risk, and consent.",
+      "model_route": "strict_review",
+      "allowed_tools": ["read_evidence_vault", "write_approval_record"],
+      "requires_human_approval_for": ["approve_publication"]
+    },
+    {
+      "id": "scheduler",
+      "role": "Sends only approved content to Postiz or Metricool.",
+      "model_route": "local_structured",
+      "allowed_tools": ["create_scheduler_payload"],
+      "requires_human_approval_for": ["publish_to_postiz", "publish_to_metricool"]
+    },
+    {
+      "id": "analytics",
+      "role": "Reports at 72 hours, 7 days, 14 days, and 30 days.",
+      "model_route": "local_structured",
+      "allowed_tools": ["write_performance_record", "write_experiment_record"]
+    },
+    {
+      "id": "lead-router",
+      "role": "Routes leads to CRM with UTM, campaign, offer, and next action.",
+      "model_route": "local_structured",
+      "allowed_tools": ["route_lead", "create_crm_payload"]
+    },
+    {
+      "id": "community",
+      "role": "Drafts replies and flags sensitive comments. It never auto-responds.",
+      "model_route": "local_content_draft",
+      "allowed_tools": ["draft_community_reply"],
+      "requires_human_approval_for": ["reply_to_public_comment"]
+    }
+  ]
+}

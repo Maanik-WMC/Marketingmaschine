@@ -1,0 +1,357 @@
+services:
+  wmc-postiz:
+    image: ghcr.io/gitroomhq/postiz-app:latest
+    container_name: wmc-postiz
+    restart: unless-stopped
+    profiles: ["postiz"]
+    environment:
+      MAIN_URL: ${POSTIZ_MAIN_URL:?set POSTIZ_MAIN_URL}
+      FRONTEND_URL: ${POSTIZ_FRONTEND_URL:?set POSTIZ_FRONTEND_URL}
+      NEXT_PUBLIC_BACKEND_URL: ${POSTIZ_BACKEND_URL:?set POSTIZ_BACKEND_URL}
+      JWT_SECRET: ${POSTIZ_JWT_SECRET:?set POSTIZ_JWT_SECRET}
+      DATABASE_URL: postgresql://${POSTIZ_POSTGRES_USER:?set POSTIZ_POSTGRES_USER}:${POSTIZ_POSTGRES_PASSWORD:?set POSTIZ_POSTGRES_PASSWORD}@wmc-postiz-postgres:5432/${POSTIZ_POSTGRES_DB:?set POSTIZ_POSTGRES_DB}
+      REDIS_URL: redis://wmc-postiz-redis:6379
+      BACKEND_INTERNAL_URL: http://localhost:3000
+      TEMPORAL_ADDRESS: wmc-postiz-temporal:7233
+      IS_GENERAL: "true"
+      DISABLE_REGISTRATION: ${POSTIZ_DISABLE_REGISTRATION:-false}
+      STORAGE_PROVIDER: local
+      UPLOAD_DIRECTORY: /uploads
+      NEXT_PUBLIC_UPLOAD_DIRECTORY: /uploads
+      OPENAI_API_KEY: ${POSTIZ_OPENAI_API_KEY:-}
+      API_LIMIT: ${POSTIZ_API_LIMIT:-30}
+      NX_ADD_PLUGINS: "false"
+      X_URL: ${POSTIZ_X_URL:-}
+      X_API_KEY: ${POSTIZ_X_API_KEY:-}
+      X_API_SECRET: ${POSTIZ_X_API_SECRET:-}
+      LINKEDIN_CLIENT_ID: ${POSTIZ_LINKEDIN_CLIENT_ID:-}
+      LINKEDIN_CLIENT_SECRET: ${POSTIZ_LINKEDIN_CLIENT_SECRET:-}
+      FACEBOOK_APP_ID: ${POSTIZ_FACEBOOK_APP_ID:-}
+      FACEBOOK_APP_SECRET: ${POSTIZ_FACEBOOK_APP_SECRET:-}
+      INSTAGRAM_APP_ID: ${POSTIZ_INSTAGRAM_APP_ID:-}
+      INSTAGRAM_APP_SECRET: ${POSTIZ_INSTAGRAM_APP_SECRET:-}
+      YOUTUBE_CLIENT_ID: ${POSTIZ_YOUTUBE_CLIENT_ID:-}
+      YOUTUBE_CLIENT_SECRET: ${POSTIZ_YOUTUBE_CLIENT_SECRET:-}
+    volumes:
+      - wmc_postiz_config:/config
+      - wmc_postiz_uploads:/uploads
+    ports:
+      - "127.0.0.1:4007:5000"
+    depends_on:
+      wmc-postiz-postgres:
+        condition: service_healthy
+      wmc-postiz-redis:
+        condition: service_healthy
+      wmc-postiz-temporal:
+        condition: service_started
+    networks:
+      - growth-net
+      - core-net
+
+  wmc-postiz-postgres:
+    image: postgres:17-alpine
+    container_name: wmc-postiz-postgres
+    restart: unless-stopped
+    profiles: ["postiz"]
+    environment:
+      POSTGRES_PASSWORD: ${POSTIZ_POSTGRES_PASSWORD:?set POSTIZ_POSTGRES_PASSWORD}
+      POSTGRES_USER: ${POSTIZ_POSTGRES_USER:?set POSTIZ_POSTGRES_USER}
+      POSTGRES_DB: ${POSTIZ_POSTGRES_DB:?set POSTIZ_POSTGRES_DB}
+    volumes:
+      - wmc_postiz_postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - growth-net
+
+  wmc-postiz-redis:
+    image: redis:7.2
+    container_name: wmc-postiz-redis
+    restart: unless-stopped
+    profiles: ["postiz"]
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - wmc_postiz_redis:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - growth-net
+
+  wmc-postiz-temporal-elasticsearch:
+    image: elasticsearch:7.17.27
+    container_name: wmc-postiz-temporal-elasticsearch
+    restart: unless-stopped
+    profiles: ["postiz"]
+    environment:
+      cluster.routing.allocation.disk.threshold_enabled: "true"
+      cluster.routing.allocation.disk.watermark.low: 512mb
+      cluster.routing.allocation.disk.watermark.high: 256mb
+      cluster.routing.allocation.disk.watermark.flood_stage: 128mb
+      discovery.type: single-node
+      ES_JAVA_OPTS: -Xms256m -Xmx256m
+      xpack.security.enabled: "false"
+    volumes:
+      - wmc_postiz_temporal_elasticsearch:/usr/share/elasticsearch/data
+    networks:
+      - postiz-temporal-net
+
+  wmc-postiz-temporal-postgres:
+    image: postgres:16
+    container_name: wmc-postiz-temporal-postgres
+    restart: unless-stopped
+    profiles: ["postiz"]
+    environment:
+      POSTGRES_PASSWORD: ${POSTIZ_TEMPORAL_POSTGRES_PASSWORD:?set POSTIZ_TEMPORAL_POSTGRES_PASSWORD}
+      POSTGRES_USER: temporal
+    volumes:
+      - wmc_postiz_temporal_postgres:/var/lib/postgresql/data
+    networks:
+      - postiz-temporal-net
+
+  wmc-postiz-temporal:
+    image: temporalio/auto-setup:1.28.1
+    container_name: wmc-postiz-temporal
+    restart: unless-stopped
+    profiles: ["postiz"]
+    environment:
+      DB: postgres12
+      DB_PORT: 5432
+      POSTGRES_USER: temporal
+      POSTGRES_PWD: ${POSTIZ_TEMPORAL_POSTGRES_PASSWORD:?set POSTIZ_TEMPORAL_POSTGRES_PASSWORD}
+      POSTGRES_SEEDS: wmc-postiz-temporal-postgres
+      DYNAMIC_CONFIG_FILE_PATH: config/dynamicconfig/development-sql.yaml
+      ENABLE_ES: "true"
+      ES_SEEDS: wmc-postiz-temporal-elasticsearch
+      ES_VERSION: v7
+      TEMPORAL_NAMESPACE: default
+    volumes:
+      - ./growth-tools/postiz/dynamicconfig:/etc/temporal/config/dynamicconfig:ro
+    depends_on:
+      - wmc-postiz-temporal-postgres
+      - wmc-postiz-temporal-elasticsearch
+    networks:
+      - growth-net
+      - postiz-temporal-net
+
+  wmc-twenty-server:
+    image: twentycrm/twenty:${TWENTY_TAG:-latest}
+    container_name: wmc-twenty-server
+    restart: unless-stopped
+    profiles: ["twenty"]
+    environment:
+      NODE_PORT: 3000
+      SERVER_URL: ${TWENTY_SERVER_URL:?set TWENTY_SERVER_URL}
+      PG_DATABASE_URL: postgres://${TWENTY_POSTGRES_USER:?set TWENTY_POSTGRES_USER}:${TWENTY_POSTGRES_PASSWORD:?set TWENTY_POSTGRES_PASSWORD}@wmc-twenty-db:5432/${TWENTY_POSTGRES_DB:?set TWENTY_POSTGRES_DB}
+      REDIS_URL: redis://wmc-twenty-redis:6379
+      STORAGE_TYPE: local
+      ENCRYPTION_KEY: ${TWENTY_ENCRYPTION_KEY:?set TWENTY_ENCRYPTION_KEY}
+      FALLBACK_ENCRYPTION_KEY: ${TWENTY_FALLBACK_ENCRYPTION_KEY:?set TWENTY_FALLBACK_ENCRYPTION_KEY}
+      APP_SECRET: ${TWENTY_APP_SECRET:?set TWENTY_APP_SECRET}
+      DISABLE_DB_MIGRATIONS: "false"
+      DISABLE_CRON_JOBS_REGISTRATION: "false"
+    volumes:
+      - wmc_twenty_storage:/app/packages/twenty-server/.local-storage
+    ports:
+      - "127.0.0.1:4019:3000"
+    depends_on:
+      wmc-twenty-db:
+        condition: service_healthy
+      wmc-twenty-redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail http://localhost:3000/healthz"]
+      interval: 10s
+      timeout: 5s
+      retries: 30
+    networks:
+      - growth-net
+      - core-net
+
+  wmc-twenty-worker:
+    image: twentycrm/twenty:${TWENTY_TAG:-latest}
+    container_name: wmc-twenty-worker
+    restart: unless-stopped
+    profiles: ["twenty"]
+    command: ["yarn", "worker:prod"]
+    environment:
+      SERVER_URL: ${TWENTY_SERVER_URL:?set TWENTY_SERVER_URL}
+      PG_DATABASE_URL: postgres://${TWENTY_POSTGRES_USER:?set TWENTY_POSTGRES_USER}:${TWENTY_POSTGRES_PASSWORD:?set TWENTY_POSTGRES_PASSWORD}@wmc-twenty-db:5432/${TWENTY_POSTGRES_DB:?set TWENTY_POSTGRES_DB}
+      REDIS_URL: redis://wmc-twenty-redis:6379
+      STORAGE_TYPE: local
+      ENCRYPTION_KEY: ${TWENTY_ENCRYPTION_KEY:?set TWENTY_ENCRYPTION_KEY}
+      FALLBACK_ENCRYPTION_KEY: ${TWENTY_FALLBACK_ENCRYPTION_KEY:?set TWENTY_FALLBACK_ENCRYPTION_KEY}
+      APP_SECRET: ${TWENTY_APP_SECRET:?set TWENTY_APP_SECRET}
+      DISABLE_DB_MIGRATIONS: "true"
+      DISABLE_CRON_JOBS_REGISTRATION: "true"
+    volumes:
+      - wmc_twenty_storage:/app/packages/twenty-server/.local-storage
+    depends_on:
+      wmc-twenty-db:
+        condition: service_healthy
+      wmc-twenty-server:
+        condition: service_healthy
+    networks:
+      - growth-net
+
+  wmc-twenty-db:
+    image: postgres:16
+    container_name: wmc-twenty-db
+    restart: unless-stopped
+    profiles: ["twenty"]
+    environment:
+      POSTGRES_DB: ${TWENTY_POSTGRES_DB:?set TWENTY_POSTGRES_DB}
+      POSTGRES_PASSWORD: ${TWENTY_POSTGRES_PASSWORD:?set TWENTY_POSTGRES_PASSWORD}
+      POSTGRES_USER: ${TWENTY_POSTGRES_USER:?set TWENTY_POSTGRES_USER}
+    volumes:
+      - wmc_twenty_postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - growth-net
+
+  wmc-twenty-redis:
+    image: redis:7-alpine
+    container_name: wmc-twenty-redis
+    restart: unless-stopped
+    profiles: ["twenty"]
+    command: ["redis-server", "--maxmemory-policy", "noeviction"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - growth-net
+
+  wmc-mautic-db:
+    image: mysql:lts
+    container_name: wmc-mautic-db
+    restart: unless-stopped
+    profiles: ["mautic"]
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MAUTIC_MYSQL_ROOT_PASSWORD:?set MAUTIC_MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MAUTIC_MYSQL_DATABASE:?set MAUTIC_MYSQL_DATABASE}
+      MYSQL_USER: ${MAUTIC_MYSQL_USER:?set MAUTIC_MYSQL_USER}
+      MYSQL_PASSWORD: ${MAUTIC_MYSQL_PASSWORD:?set MAUTIC_MYSQL_PASSWORD}
+    volumes:
+      - wmc_mautic_mysql:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin --user=$${MYSQL_USER} --password=$${MYSQL_PASSWORD} ping"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 20
+    networks:
+      - growth-net
+
+  wmc-mautic-web:
+    image: mautic/mautic:latest
+    container_name: wmc-mautic-web
+    restart: unless-stopped
+    profiles: ["mautic"]
+    environment:
+      DOCKER_MAUTIC_LOAD_TEST_DATA: ${MAUTIC_LOAD_TEST_DATA:-false}
+      MAUTIC_DB_HOST: wmc-mautic-db
+      MAUTIC_DB_PORT: 3306
+      MAUTIC_DB_DATABASE: ${MAUTIC_MYSQL_DATABASE:?set MAUTIC_MYSQL_DATABASE}
+      MAUTIC_DB_USER: ${MAUTIC_MYSQL_USER:?set MAUTIC_MYSQL_USER}
+      MAUTIC_DB_PASSWORD: ${MAUTIC_MYSQL_PASSWORD:?set MAUTIC_MYSQL_PASSWORD}
+      MAUTIC_MESSENGER_DSN_EMAIL: doctrine://default
+      MAUTIC_MESSENGER_DSN_HIT: doctrine://default
+    volumes:
+      - ./growth-tools/mautic/config:/var/www/html/config
+      - ./growth-tools/mautic/logs:/var/www/html/var/logs
+      - ./growth-tools/mautic/media/files:/var/www/html/docroot/media/files
+      - ./growth-tools/mautic/media/images:/var/www/html/docroot/media/images
+    ports:
+      - "127.0.0.1:4020:80"
+    depends_on:
+      wmc-mautic-db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl --fail http://localhost"]
+      start_period: 20s
+      interval: 10s
+      timeout: 5s
+      retries: 60
+    networks:
+      - growth-net
+      - core-net
+
+  wmc-mautic-cron:
+    image: mautic/mautic:latest
+    container_name: wmc-mautic-cron
+    restart: unless-stopped
+    profiles: ["mautic"]
+    environment:
+      DOCKER_MAUTIC_ROLE: mautic_cron
+      MAUTIC_DB_HOST: wmc-mautic-db
+      MAUTIC_DB_PORT: 3306
+      MAUTIC_DB_DATABASE: ${MAUTIC_MYSQL_DATABASE:?set MAUTIC_MYSQL_DATABASE}
+      MAUTIC_DB_USER: ${MAUTIC_MYSQL_USER:?set MAUTIC_MYSQL_USER}
+      MAUTIC_DB_PASSWORD: ${MAUTIC_MYSQL_PASSWORD:?set MAUTIC_MYSQL_PASSWORD}
+      MAUTIC_MESSENGER_DSN_EMAIL: doctrine://default
+      MAUTIC_MESSENGER_DSN_HIT: doctrine://default
+    volumes:
+      - ./growth-tools/mautic/config:/var/www/html/config
+      - ./growth-tools/mautic/logs:/var/www/html/var/logs
+      - ./growth-tools/mautic/media/files:/var/www/html/docroot/media/files
+      - ./growth-tools/mautic/media/images:/var/www/html/docroot/media/images
+    depends_on:
+      wmc-mautic-web:
+        condition: service_healthy
+    networks:
+      - growth-net
+
+  wmc-mautic-worker:
+    image: mautic/mautic:latest
+    container_name: wmc-mautic-worker
+    restart: unless-stopped
+    profiles: ["mautic"]
+    environment:
+      DOCKER_MAUTIC_ROLE: mautic_worker
+      MAUTIC_DB_HOST: wmc-mautic-db
+      MAUTIC_DB_PORT: 3306
+      MAUTIC_DB_DATABASE: ${MAUTIC_MYSQL_DATABASE:?set MAUTIC_MYSQL_DATABASE}
+      MAUTIC_DB_USER: ${MAUTIC_MYSQL_USER:?set MAUTIC_MYSQL_USER}
+      MAUTIC_DB_PASSWORD: ${MAUTIC_MYSQL_PASSWORD:?set MAUTIC_MYSQL_PASSWORD}
+      MAUTIC_MESSENGER_DSN_EMAIL: doctrine://default
+      MAUTIC_MESSENGER_DSN_HIT: doctrine://default
+    volumes:
+      - ./growth-tools/mautic/config:/var/www/html/config
+      - ./growth-tools/mautic/logs:/var/www/html/var/logs
+      - ./growth-tools/mautic/media/files:/var/www/html/docroot/media/files
+      - ./growth-tools/mautic/media/images:/var/www/html/docroot/media/images
+    depends_on:
+      wmc-mautic-web:
+        condition: service_healthy
+    networks:
+      - growth-net
+
+volumes:
+  wmc_postiz_config:
+  wmc_postiz_uploads:
+  wmc_postiz_postgres:
+  wmc_postiz_redis:
+  wmc_postiz_temporal_elasticsearch:
+  wmc_postiz_temporal_postgres:
+  wmc_twenty_postgres:
+  wmc_twenty_storage:
+  wmc_mautic_mysql:
+
+networks:
+  growth-net:
+    name: wmc-marketing-growth
+  postiz-temporal-net:
+    name: wmc-postiz-temporal
+  core-net:
+    external: true

@@ -1,0 +1,60 @@
+{
+  "name": "wamocon-production-strict",
+  "governance_level": "strict",
+  "max_calls_per_request": 25,
+  "allowed_tools": [
+    "read_campaigns",
+    "read_audiences",
+    "search_public_sources",
+    "read_evidence_vault",
+    "write_content_brief",
+    "write_draft",
+    "write_approval_record",
+    "write_performance_record",
+    "write_experiment_record",
+    "create_comfyui_brief",
+    "create_scheduler_payload",
+    "create_postiz_draft",
+    "create_crm_payload",
+    "route_lead",
+    "route_twenty_lead",
+    "route_mautic_lead",
+    "draft_community_reply"
+  ],
+  "blocked_tools": [
+    "auto_publish",
+    "delete_record",
+    "shell_exec",
+    "private_scrape",
+    "bypass_platform_terms",
+    "send_unapproved_email",
+    "publish_without_approval"
+  ],
+  "require_human_approval": [
+    "publish_to_postiz",
+    "publish_to_metricool",
+    "send_email_sequence",
+    "submit_comfyui_job",
+    "call_cloud_model",
+    "write_crm_note",
+    "reply_to_public_comment"
+  ],
+  "blocked_patterns": [
+    "(?i)(api[_-]?key|secret|password|token)\\s*[:=]",
+    "(?i)(guaranteed|garantiert)\\s+(roi|results|umsatz|conversion)",
+    "(?i)(100%|one hundred percent)\\s+(safe|secure|compliant|guaranteed)",
+    "(?i)(scrape|crawl).*linkedin.*(login|private|session)",
+    "(?i)(customer|kunde|employee|mitarbeiter|applicant|bewerber).*without consent",
+    "(?i)(drop|truncate|delete from)\\s+\\w+"
+  ],
+  "content_rules": {
+    "human_approval_required_before_publish": true,
+    "proof_required_for_statistics": true,
+    "proof_required_for_roi_claims": true,
+    "customer_employee_consent_required": true,
+    "instagram_hashtag_max": 5,
+    "instagram_hashtag_recommended_min": 3,
+    "auto_commenting_allowed": false,
+    "ai_generated_media_must_be_tracked": true
+  }
+}

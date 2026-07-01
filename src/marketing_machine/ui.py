@@ -3,11 +3,11 @@ from __future__ import annotations
 
 def render_marketing_console() -> str:
     return """<!doctype html>
-<html lang="en">
+<html lang="de">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>WAMOCON Marketing Console</title>
+  <title>WAMOCON Marketing-Konsole</title>
   <style>
     :root {
       color-scheme: light;
@@ -196,6 +196,16 @@ def render_marketing_console() -> str:
       flex-wrap: wrap;
       justify-content: flex-end;
       min-width: 0;
+    }
+
+    .language-select {
+      min-height: 38px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius-sm);
+      background: var(--surface);
+      color: var(--ink);
+      padding: 8px 10px;
+      font-weight: 700;
     }
 
     .btn {
@@ -965,6 +975,10 @@ def render_marketing_console() -> str:
         </div>
       </div>
       <div class="top-actions">
+        <select id="uiLanguage" class="language-select" aria-label="UI language" title="UI language">
+          <option value="de">Deutsch</option>
+          <option value="en">English</option>
+        </select>
         <button class="btn btn-secondary" type="button" id="themeToggle" title="Toggle theme">
           <svg class="icon" viewBox="0 0 24 24"><path d="M12 3v2M12 19v2M4.2 4.2l1.4 1.4M18.4 18.4l1.4 1.4M3 12h2M19 12h2M4.2 19.8l1.4-1.4M18.4 5.6l1.4-1.4"/><circle cx="12" cy="12" r="4"/></svg>
           Theme
@@ -1351,7 +1365,7 @@ def render_marketing_console() -> str:
                   <label><input id="disclosureCheck" type="checkbox" checked> AI disclosure checked</label>
                 </div>
                 <label for="approvalNotes">Notes</label>
-                <textarea id="approvalNotes">Human review completed. Final platform approval still required.</textarea>
+                <textarea id="approvalNotes">Menschliche Prüfung abgeschlossen. Finale Plattformfreigabe bleibt erforderlich.</textarea>
                 <div class="quick-actions">
                   <button class="btn btn-primary" type="submit">Apply Approval</button>
                   <span class="pill warn">Final Postiz approval still required</span>
@@ -1610,7 +1624,7 @@ def render_marketing_console() -> str:
                   </div>
                 </div>
                 <label for="headline">Headline</label>
-                <input id="headline" value="Proof beats promises">
+                <input id="headline" value="Belege statt Versprechen">
                 <label for="proofAssetRefs">Proof asset refs</label>
                 <textarea id="proofAssetRefs" placeholder="approved screenshot, consent ref, app proof"></textarea>
                 <div class="quick-actions"><button class="btn btn-primary" type="submit">Create Creative Brief</button></div>
@@ -1714,11 +1728,445 @@ def render_marketing_console() -> str:
     let recentOutbox = [];
     let phaseItems = [];
     let lastResult = {};
+    let currentUiLanguage = "de";
     const $ = (id) => document.getElementById(id);
     const splitList = (value) => value.split(/[\\n,]+/).map((item) => item.trim()).filter(Boolean);
     const stamp = () => new Date().toISOString().slice(0, 19).replace(/[-:T]/g, "");
     const intValue = (id) => Number.parseInt($(id).value || "0", 10) || 0;
     const floatValue = (id) => Number.parseFloat($(id).value || "0") || 0;
+
+    const i18nTextPairs = [
+      ["WAMOCON Marketing Console", "WAMOCON Marketing-Konsole"],
+      ["Always-on campaign workflow with human approval, evidence, and KPI feedback.", "Immer aktiver Kampagnenablauf mit menschlicher Freigabe, Belegen und KPI-Lernen."],
+      ["Theme", "Design"],
+      ["API Docs", "API-Doku"],
+      ["Weekly Plan", "Wochenplan"],
+      ["Workflow", "Ablauf"],
+      ["Intake", "Eingabe"],
+      ["Brief", "Briefing"],
+      ["Campaign, persona, proof, CTA, UTM.", "Kampagne, Persona, Beleg, CTA, UTM."],
+      ["Draft", "Entwurf"],
+      ["Agent creates a review draft.", "Der Agent erstellt einen Prüfentwurf."],
+      ["Approve", "Freigeben"],
+      ["Human checks brand, privacy, and claims.", "Ein Mensch prüft Marke, Datenschutz und Aussagen."],
+      ["Schedule", "Planen"],
+      ["Draft-only payload, final platform approval required.", "Nur Entwurfspayload, finale Plattformfreigabe erforderlich."],
+      ["Learn", "Lernen"],
+      ["72h, 7d, 14d, and 30d decisions.", "Entscheidungen nach 72h, 7d, 14d und 30d."],
+      ["Dashboard", "Übersicht"],
+      ["Overview", "Überblick"],
+      ["Phases", "Phasen"],
+      ["Readiness", "Bereitschaft"],
+      ["Create brief", "Briefing erstellen"],
+      ["Approval", "Freigabe"],
+      ["Review gate", "Prüfschritt"],
+      ["Leads", "Leads"],
+      ["Score lead", "Lead bewerten"],
+      ["Score Lead", "Lead bewerten"],
+      ["Routing", "Weiterleitung"],
+      ["Outbox", "Ausgang"],
+      ["Analytics", "Analyse"],
+      ["Optimize", "Optimieren"],
+      ["Creative", "Kreativ"],
+      ["ComfyUI brief", "ComfyUI-Briefing"],
+      ["Status", "Status"],
+      ["Services", "Dienste"],
+      ["Recent Content", "Aktuelle Inhalte"],
+      ["Clear", "Leeren"],
+      ["Tools", "Werkzeuge"],
+      ["open", "öffnen"],
+      ["Required services", "Pflichtdienste"],
+      ["n8n, ComfyUI, local model", "n8n, ComfyUI, lokales Modell"],
+      ["Recent items", "Aktuelle Einträge"],
+      ["stored content states", "gespeicherte Content-Stände"],
+      ["Review queue", "Prüfwarteschlange"],
+      ["human review needed", "menschliche Prüfung nötig"],
+      ["Guardrail", "Schutzregel"],
+      ["On", "An"],
+      ["no auto-publish", "kein Auto-Publishing"],
+      ["Today", "Heute"],
+      ["Start with intake, then approval, then analytics. The system stays draft-only until a human publishes in the platform.", "Beginne mit Eingabe, dann Freigabe, dann Analyse. Das System bleibt im Entwurfsmodus, bis ein Mensch auf der Plattform veröffentlicht."],
+      ["New Brief", "Neues Briefing"],
+      ["Approve Draft", "Entwurf freigeben"],
+      ["Add Lead", "Lead erfassen"],
+      ["Route", "Weiterleiten"],
+      ["Review KPIs", "KPIs prüfen"],
+      ["Campaign input", "Kampagnen-Eingabe"],
+      ["Use presets for QA, private AI, and app modernization. Custom briefs are supported.", "Nutze Vorlagen für QA, Private AI und App-Modernisierung. Eigene Briefings sind möglich."],
+      ["Approval quality", "Freigabequalität"],
+      ["Brand score must be at least 90 and all checks must pass before scheduler draft creation.", "Brand Score muss mindestens 90 sein und alle Checks müssen bestehen, bevor ein Scheduler-Entwurf entsteht."],
+      ["Learning loop", "Lernschleife"],
+      ["Use 72h, 7d, 14d, and 30d reviews to decide iterate, fix, stop, or scale.", "Nutze 72h-, 7d-, 14d- und 30d-Reviews für Iterieren, Fixen, Stoppen oder Skalieren."],
+      ["Recent States", "Aktuelle Stände"],
+      ["Copy Summary", "Zusammenfassung kopieren"],
+      ["Content", "Inhalt"],
+      ["Campaign", "Kampagne"],
+      ["Next", "Nächster Schritt"],
+      ["Loading...", "Lädt..."],
+      ["Loading", "Lädt"],
+      ["Phase Readiness", "Phasenbereitschaft"],
+      ["See which implementation phases are finished, partial, or blocked before running campaigns.", "Sieh, welche Umsetzungsphasen fertig, teilweise fertig oder blockiert sind, bevor Kampagnen laufen."],
+      ["This is the morning checklist for the marketing machine: core flow, model plane, n8n rhythm, publishing, CRM, creative, and production hardening.", "Das ist die Morgen-Checkliste der Marketingmaschine: Kernablauf, Modell-Ebene, n8n-Rhythmus, Publishing, CRM, Kreativ und Production Hardening."],
+      ["Refresh Phases", "Phasen aktualisieren"],
+      ["Implementation Phases", "Umsetzungsphasen"],
+      ["Phase", "Phase"],
+      ["Next action", "Nächste Aktion"],
+      ["Raw Phase Report", "Rohdaten Phasenreport"],
+      ["Copy", "Kopieren"],
+      ["Manual Content Intake", "Manuelle Content-Eingabe"],
+      ["Create a campaign brief with proof, CTA, UTM tracking, and a test hypothesis.", "Erstelle ein Kampagnenbriefing mit Beleg, CTA, UTM-Tracking und Testhypothese."],
+      ["Use this when someone has a campaign idea, proof asset, offer, customer-safe story, or post request.", "Nutze dies, wenn jemand eine Kampagnenidee, einen Beleg, ein Angebot, eine sichere Kundengeschichte oder einen Postwunsch hat."],
+      ["Copy Payload", "Payload kopieren"],
+      ["Reset", "Zurücksetzen"],
+      ["Campaign Brief", "Kampagnenbriefing"],
+      ["Preset", "Vorlage"],
+      ["Custom", "Eigene Eingabe"],
+      ["Regenerate", "Neu erzeugen"],
+      ["Persona", "Persona"],
+      ["AI draft language", "Sprache für AI-Entwurf"],
+      ["English (US)", "Englisch (USA)"],
+      ["Channel", "Kanal"],
+      ["Landing Page", "Landingpage"],
+      ["Landing page", "Landingpage"],
+      ["Format", "Format"],
+      ["Expert post", "Expertenpost"],
+      ["Video script", "Videoskript"],
+      ["App demo post", "App-Demo-Post"],
+      ["Test variable", "Testvariable"],
+      ["Offer", "Angebot"],
+      ["Proof And Offer", "Beleg und Angebot"],
+      ["Objective", "Ziel"],
+      ["Proof sources", "Belegquellen"],
+      ["Hypothesis", "Hypothese"],
+      ["Tracking", "Tracking"],
+      ["UTM source", "UTM-Quelle"],
+      ["UTM medium", "UTM-Medium"],
+      ["UTM campaign", "UTM-Kampagne"],
+      ["Create Draft", "Entwurf erstellen"],
+      ["No publishing from intake", "Kein Publishing aus der Eingabe"],
+      ["Readiness Score", "Bereitschaftsscore"],
+      ["Live Payload Preview", "Live-Payload-Vorschau"],
+      ["Intake Result", "Eingabe-Ergebnis"],
+      ["Waiting for draft", "Wartet auf Entwurf"],
+      ["Submit a campaign brief to see the draft state.", "Sende ein Kampagnenbriefing ab, um den Entwurfsstand zu sehen."],
+      ["Created Post Preview", "Vorschau erstellter Post"],
+      ["Copy Post", "Post kopieren"],
+      ["Create a draft to see the public post text here.", "Erstelle einen Entwurf, um hier den öffentlichen Posttext zu sehen."],
+      ["Human Approval", "Menschliche Freigabe"],
+      ["Approve only after checking the draft, proof source, privacy, consent, and AI disclosure.", "Nur freigeben, nachdem Entwurf, Belegquelle, Datenschutz, Einwilligung und AI-Kennzeichnung geprüft wurden."],
+      ["This gate keeps public publishing separate from AI drafting. Scheduler output remains draft-only.", "Dieser Schritt trennt öffentliches Publishing sauber vom AI-Entwurf. Scheduler-Ausgaben bleiben nur Entwürfe."],
+      ["Load State", "Stand laden"],
+      ["Request Revision", "Überarbeitung anfragen"],
+      ["Review Decision", "Prüfentscheidung"],
+      ["Reviewer", "Prüfer"],
+      ["Decision", "Entscheidung"],
+      ["Approved", "Freigegeben"],
+      ["Minor revision", "Kleine Überarbeitung"],
+      ["Major revision", "Große Überarbeitung"],
+      ["Rejected", "Abgelehnt"],
+      ["Brand score", "Brand Score"],
+      ["Publishability", "Veröffentlichbarkeit"],
+      ["Needs checks", "Checks nötig"],
+      ["Fact check passed", "Faktencheck bestanden"],
+      ["Privacy check passed", "Datenschutzcheck bestanden"],
+      ["AI disclosure checked", "AI-Kennzeichnung geprüft"],
+      ["Notes", "Notizen"],
+      ["Apply Approval", "Freigabe anwenden"],
+      ["Final Postiz approval still required", "Finale Postiz-Freigabe weiter erforderlich"],
+      ["Approval Result", "Freigabe-Ergebnis"],
+      ["Waiting for approval", "Wartet auf Freigabe"],
+      ["Scheduler Draft Preview", "Scheduler-Entwurfsvorschau"],
+      ["Copy Draft", "Entwurf kopieren"],
+      ["Approved content will show the draft-only scheduler copy here.", "Freigegebener Content zeigt hier den reinen Entwurf für den Scheduler."],
+      ["Approve only after checking proof, consent, brand fit, and claims.", "Nur freigeben, nachdem Beleg, Einwilligung, Markenfit und Aussagen geprüft wurden."],
+      ["Lead Intake", "Lead-Eingabe"],
+      ["Capture a real response, check consent, score the lead, and prepare CRM/marketing automation payloads.", "Erfasse eine echte Reaktion, prüfe Einwilligung, bewerte den Lead und bereite CRM-/Marketing-Automation-Payloads vor."],
+      ["Use this when a post, landing page, email, or direct message creates a business enquiry.", "Nutze dies, wenn ein Post, eine Landingpage, eine E-Mail oder Direktnachricht eine Geschäftsanfrage erzeugt."],
+      ["Load Example", "Beispiel laden"],
+      ["Refresh Leads", "Leads aktualisieren"],
+      ["Lead Details", "Lead-Details"],
+      ["Source content ID", "Quell-Content-ID"],
+      ["Contact name", "Kontaktname"],
+      ["Company", "Firma"],
+      ["Email", "E-Mail"],
+      ["Phone", "Telefon"],
+      ["Message / intent", "Nachricht / Absicht"],
+      ["Consent for follow-up is documented", "Einwilligung für Follow-up ist dokumentiert"],
+      ["Attribution", "Zuordnung"],
+      ["No auto CRM write without credentials", "Kein Auto-CRM-Schreiben ohne Zugangsdaten"],
+      ["Lead Result", "Lead-Ergebnis"],
+      ["Waiting for lead", "Wartet auf Lead"],
+      ["Submit a lead to see score, next action, and CRM/Mautic payloads.", "Sende einen Lead ab, um Score, nächsten Schritt und CRM-/Mautic-Payloads zu sehen."],
+      ["Recent Leads", "Aktuelle Leads"],
+      ["Lead", "Lead"],
+      ["No leads loaded", "Keine Leads geladen"],
+      ["Routing Outbox", "Weiterleitungs-Ausgang"],
+      ["Prepare approved drafts and qualified leads for external tools with dry-run and audit trail first.", "Bereite freigegebene Entwürfe und qualifizierte Leads zuerst mit Dry-run und Audit-Trail für externe Tools vor."],
+      ["Use this after approval or lead scoring. Dry-run is the default; real external writes need explicit server credentials and write enablement.", "Nutze dies nach Freigabe oder Lead-Scoring. Dry-run ist Standard; echte externe Writes brauchen Server-Zugangsdaten und explizite Freischaltung."],
+      ["Refresh Outbox", "Ausgang aktualisieren"],
+      ["Postiz Draft Route", "Postiz-Entwurfsroute"],
+      ["Target", "Ziel"],
+      ["Postiz draft", "Postiz-Entwurf"],
+      ["Dry-run only", "Nur Dry-run"],
+      ["Prepare Postiz Draft", "Postiz-Entwurf vorbereiten"],
+      ["Lead Route", "Lead-Route"],
+      ["Mautic nurture", "Mautic-Nurturing"],
+      ["Prepare Lead Route", "Lead-Route vorbereiten"],
+      ["Route Result", "Routen-Ergebnis"],
+      ["Waiting for route", "Wartet auf Route"],
+      ["Prepare a Postiz draft or lead route to see the outbox record.", "Bereite einen Postiz-Entwurf oder eine Lead-Route vor, um den Ausgangseintrag zu sehen."],
+      ["Recent Outbox", "Aktueller Ausgang"],
+      ["Source", "Quelle"],
+      ["No outbox records loaded", "Keine Ausgangseinträge geladen"],
+      ["Optimization Review", "Optimierungsreview"],
+      ["Enter performance signals and get a clear decision: scale, iterate, fix landing page, fix audience/offer, or stop.", "Gib Performance-Signale ein und erhalte eine klare Entscheidung: skalieren, iterieren, Landingpage fixen, Zielgruppe/Angebot fixen oder stoppen."],
+      ["Do not wait 30 days. Start reading useful signal after 72 hours, then review at 7, 14, and 30 days.", "Warte nicht 30 Tage. Erste nützliche Signale nach 72 Stunden lesen, dann nach 7, 14 und 30 Tagen prüfen."],
+      ["Load Weak Signal", "Schwaches Signal laden"],
+      ["Load Scale Signal", "Skalierungssignal laden"],
+      ["KPI Input", "KPI-Eingabe"],
+      ["Review window", "Review-Fenster"],
+      ["Impressions", "Impressionen"],
+      ["Saves", "Saves"],
+      ["Shares", "Shares"],
+      ["Buyer comments", "Buyer-Kommentare"],
+      ["Profile visits", "Profilbesuche"],
+      ["Clicks", "Klicks"],
+      ["Qualified leads", "Qualifizierte Leads"],
+      ["Booked calls", "Gebuchte Calls"],
+      ["Landing visits", "Landingpage-Besuche"],
+      ["Landing conversions", "Landingpage-Conversions"],
+      ["Pipeline EUR", "Pipeline EUR"],
+      ["Evaluate", "Bewerten"],
+      ["Waiting for KPI input", "Wartet auf KPI-Eingabe"],
+      ["Enter metrics after 72h, 7d, 14d, or 30d.", "Gib Metriken nach 72h, 7d, 14d oder 30d ein."],
+      ["Creative Brief", "Kreativbriefing"],
+      ["Create a ComfyUI-ready visual brief without auto-submitting generation jobs.", "Erstelle ein ComfyUI-fertiges visuelles Briefing ohne automatische Generierungsjobs."],
+      ["Use approved proof assets only. Human visual approval is required before public use.", "Nur freigegebene Beleg-Assets nutzen. Menschliche visuelle Freigabe ist vor öffentlicher Nutzung erforderlich."],
+      ["Visual Request", "Visuelle Anfrage"],
+      ["Output size", "Ausgabegröße"],
+      ["Headline", "Headline"],
+      ["Proof asset refs", "Beleg-Asset-Referenzen"],
+      ["Create Creative Brief", "Kreativbriefing erstellen"],
+      ["Creative Result", "Kreativ-Ergebnis"],
+      ["No automatic ComfyUI job submission", "Keine automatische ComfyUI-Jobausführung"],
+      ["Creative briefs require human visual approval before use.", "Kreativbriefings benötigen vor Nutzung eine menschliche visuelle Freigabe."],
+      ["System Status", "Systemstatus"],
+      ["Required services must be green. Kimi is optional backup only.", "Pflichtdienste müssen grün sein. Kimi ist nur optionales Backup."],
+      ["Check n8n, ComfyUI, Ollama/Qwen, growth tools, and optional Kimi provider.", "Prüfe n8n, ComfyUI, Ollama/Qwen, Growth Tools und den optionalen Kimi-Provider."],
+      ["Refresh Status", "Status aktualisieren"],
+      ["Service Summary", "Dienstübersicht"],
+      ["Raw Status", "Rohdaten Status"],
+      ["Ready", "Bereit"]
+    ];
+
+    const i18nAttrPairs = [
+      ["title", "Toggle theme", "Design umschalten"],
+      ["title", "Refresh recent content", "Aktuelle Inhalte aktualisieren"],
+      ["title", "UI language", "UI-Sprache"],
+      ["aria-label", "UI language", "UI-Sprache"],
+      ["aria-label", "Marketing console sections", "Bereiche der Marketing-Konsole"],
+      ["aria-label", "Brief readiness", "Briefing-Bereitschaft"],
+      ["placeholder", "Search content ID or campaign", "Content-ID oder Kampagne suchen"],
+      ["placeholder", "3 to 5 for Instagram", "3 bis 5 für Instagram"],
+      ["placeholder", "approved content ID", "freigegebene Content-ID"],
+      ["placeholder", "qualified lead ID", "qualifizierte Lead-ID"],
+      ["placeholder", "approved screenshot, consent ref, app proof", "freigegebener Screenshot, Consent-Ref, App-Beleg"],
+      ["data-title", "Dashboard", "Übersicht"],
+      ["data-title", "Phase Readiness", "Phasenbereitschaft"],
+      ["data-title", "Manual Content Intake", "Manuelle Content-Eingabe"],
+      ["data-title", "Human Approval", "Menschliche Freigabe"],
+      ["data-title", "Lead Intake", "Lead-Eingabe"],
+      ["data-title", "Routing Outbox", "Weiterleitungs-Ausgang"],
+      ["data-title", "Optimization Review", "Optimierungsreview"],
+      ["data-title", "Creative Brief", "Kreativbriefing"],
+      ["data-title", "System Status", "Systemstatus"],
+      ["data-description", "A practical command center for creating, approving, and improving WAMOCON marketing campaigns.", "Eine praktische Steuerzentrale zum Erstellen, Freigeben und Verbessern von WAMOCON-Marketingkampagnen."],
+      ["data-description", "See which implementation phases are finished, partial, or blocked before running campaigns.", "Sieh, welche Umsetzungsphasen fertig, teilweise fertig oder blockiert sind, bevor Kampagnen laufen."],
+      ["data-description", "Create a campaign brief with proof, CTA, UTM tracking, and a test hypothesis.", "Erstelle ein Kampagnenbriefing mit Beleg, CTA, UTM-Tracking und Testhypothese."],
+      ["data-description", "Approve only after checking the draft, proof source, privacy, consent, and AI disclosure.", "Nur freigeben, nachdem Entwurf, Belegquelle, Datenschutz, Einwilligung und AI-Kennzeichnung geprüft wurden."],
+      ["data-description", "Capture a real response, check consent, score the lead, and prepare CRM/marketing automation payloads.", "Erfasse eine echte Reaktion, prüfe Einwilligung, bewerte den Lead und bereite CRM-/Marketing-Automation-Payloads vor."],
+      ["data-description", "Prepare approved drafts and qualified leads for external tools with dry-run and audit trail first.", "Bereite freigegebene Entwürfe und qualifizierte Leads zuerst mit Dry-run und Audit-Trail für externe Tools vor."],
+      ["data-description", "Enter performance signals and get a clear decision: scale, iterate, fix landing page, fix audience/offer, or stop.", "Gib Performance-Signale ein und erhalte eine klare Entscheidung: skalieren, iterieren, Landingpage fixen, Zielgruppe/Angebot fixen oder stoppen."],
+      ["data-description", "Create a ComfyUI-ready visual brief without auto-submitting generation jobs.", "Erstelle ein ComfyUI-fertiges visuelles Briefing ohne automatische Generierungsjobs."],
+      ["data-description", "Required services must be green. Kimi is optional backup only.", "Pflichtdienste müssen grün sein. Kimi ist nur optionales Backup."]
+    ];
+
+    const i18nMessages = {
+      copied: {de: "In die Zwischenablage kopiert", en: "Copied to clipboard"},
+      copyFailed: {de: "Kopieren fehlgeschlagen. Text bitte manuell markieren.", en: "Copy failed. Select the text manually."},
+      noMatchingContent: {de: "Kein passender Inhalt", en: "No matching content"},
+      noContentYet: {de: "Noch kein Inhalt", en: "No content yet"},
+      selected: {de: "Ausgewählt", en: "Selected"},
+      noPublicCopy: {de: "Noch kein öffentlicher Posttext verfügbar.", en: "No public post copy available yet."},
+      noSchedulerDraft: {de: "Noch kein Scheduler-Entwurf verfügbar.", en: "No scheduler draft available yet."},
+      reviewNotes: {de: "Prüfnotizen:", en: "Review notes:"},
+      leadExampleLoaded: {de: "Lead-Beispiel geladen", en: "Lead example loaded"},
+      noLeadsYet: {de: "Noch keine Leads", en: "No leads yet"},
+      noOutboxYet: {de: "Noch keine Ausgangseinträge", en: "No outbox records yet"},
+      dryRun: {de: "Dry-run", en: "dry-run"},
+      liveWrite: {de: "Live-Write", en: "live write"},
+      requiredOk: {de: "Pflichtdienste OK", en: "Required OK"},
+      requiredDegraded: {de: "Pflichtdienste gestört", en: "Required degraded"},
+      kimiOk: {de: "Kimi OK", en: "Kimi OK"},
+      kimiOptional: {de: "Kimi optional", en: "Kimi optional"},
+      humanApprovalOn: {de: "Menschliche Freigabe aktiv", en: "Human approval on"},
+      requiredIssue: {de: "Pflichtproblem", en: "Required issue"},
+      optionalIssue: {de: "Optionales Problem", en: "Optional issue"},
+      service: {de: "Dienst", en: "Service"},
+      state: {de: "Status", en: "State"},
+      complete: {de: "abgeschlossen", en: "complete"},
+      partial: {de: "teilweise", en: "partial"},
+      blocked: {de: "blockiert", en: "blocked"},
+      noPhaseData: {de: "Keine Phasendaten", en: "No phase data"},
+      publishableDraft: {de: "Veröffentlichbarer Entwurf", en: "Publishable draft"},
+      revisionGate: {de: "Überarbeitungsschritt", en: "Revision gate"},
+      weakExampleLoaded: {de: "Schwaches Beispiel geladen", en: "Weak example loaded"},
+      scaleExampleLoaded: {de: "Skalierungsbeispiel geladen", en: "Scale example loaded"},
+      recentContentRefreshed: {de: "Aktuelle Inhalte aktualisiert", en: "Recent content refreshed"},
+      statusRefreshed: {de: "Status aktualisiert", en: "Status refreshed"},
+      phasesRefreshed: {de: "Phasenreport aktualisiert", en: "Phase report refreshed"},
+      weeklyPlanCreated: {de: "Wochenplan erstellt", en: "Weekly plan created"},
+      weeklyPlanPreview: {de: "Wochenplan erstellt. Wähle einen aktuellen Eintrag, um den Posttext zu sehen.", en: "Weekly plan created. Select a recent item to preview its post copy."},
+      created: {de: "erstellt", en: "created"},
+      issue: {de: "Problem", en: "issue"},
+      readyForReview: {de: "Bereit zur Prüfung", en: "Ready for review"},
+      draftBlocked: {de: "Entwurf durch Schutzregeln blockiert", en: "Draft blocked by guardrails"},
+      draftCreated: {de: "Entwurf erstellt", en: "Draft created"},
+      draftBlockedFix: {de: "Entwurf wurde blockiert. Briefing korrigieren und erneut versuchen.", en: "Draft was blocked. Fix the brief and try again."},
+      approvalApplied: {de: "Freigabe angewendet", en: "Approval applied"},
+      revisionRequired: {de: "Überarbeitung erforderlich", en: "Revision required"},
+      approvalFailed: {de: "Freigabe fehlgeschlagen", en: "Approval failed"},
+      enterContentId: {de: "Bitte zuerst eine Content-ID eingeben", en: "Enter a content ID first"},
+      revisionValuesLoaded: {de: "Überarbeitungswerte geladen", en: "Revision values loaded"},
+      decisionPrefix: {de: "Entscheidung", en: "Decision"},
+      reviewFailed: {de: "Review fehlgeschlagen", en: "Review failed"},
+      leadsRefreshed: {de: "Leads aktualisiert", en: "Leads refreshed"},
+      outboxRefreshed: {de: "Ausgang aktualisiert", en: "Outbox refreshed"},
+      routeBlocked: {de: "Route blockiert", en: "Route blocked"},
+      schedulerRoutePrepared: {de: "Scheduler-Route vorbereitet", en: "Scheduler route prepared"},
+      routeFailed: {de: "Route fehlgeschlagen", en: "Route failed"},
+      leadRouteBlocked: {de: "Lead-Route blockiert", en: "Lead route blocked"},
+      leadRoutePrepared: {de: "Lead-Route vorbereitet", en: "Lead route prepared"},
+      crmPayloadReady: {de: "CRM-Payload bereit", en: "CRM payload ready"},
+      doNotRoute: {de: "Nicht weiterleiten", en: "Do not route"},
+      leadReady: {de: "Lead bereit für Follow-up", en: "Lead ready for follow-up"},
+      leadStored: {de: "Lead mit Schutzregel gespeichert", en: "Lead stored with guardrail"},
+      leadRejected: {de: "Lead abgelehnt", en: "Lead rejected"},
+      creativeBriefCreated: {de: "Kreativbriefing erstellt", en: "Creative brief created"},
+      scoreUnit: {de: "Punkte", en: "score"}
+    };
+
+    const statusLabels = {
+      accepted: {de: "angenommen", en: "accepted"},
+      blocked: {de: "blockiert", en: "blocked"},
+      check: {de: "Prüfen", en: "Check"},
+      complete: {de: "abgeschlossen", en: "complete"},
+      compliance_gate: {de: "Compliance-Prüfung", en: "compliance_gate"},
+      consent_required: {de: "Einwilligung nötig", en: "consent_required"},
+      contact_missing: {de: "Kontakt fehlt", en: "contact_missing"},
+      decision: {de: "Entscheidung", en: "decision"},
+      degraded: {de: "eingeschränkt", en: "degraded"},
+      draft_content: {de: "Entwurf wird erstellt", en: "draft_content"},
+      drafting: {de: "in Entwurf", en: "drafting"},
+      draft_only_requires_final_platform_approval: {de: "Entwurf, finale Plattformfreigabe nötig", en: "draft_only_requires_final_platform_approval"},
+      evidence_gate: {de: "Belegprüfung", en: "evidence_gate"},
+      failed: {de: "fehlgeschlagen", en: "failed"},
+      human_review: {de: "menschliche Prüfung", en: "human_review"},
+      manual_qualification: {de: "manuelle Qualifizierung", en: "manual_qualification"},
+      manual_source_review: {de: "Quelle manuell prüfen", en: "manual_source_review"},
+      needs_evidence: {de: "Beleg fehlt", en: "needs_evidence"},
+      needs_human_review: {de: "menschliche Prüfung nötig", en: "needs_human_review"},
+      next: {de: "nächster Schritt", en: "next"},
+      "next action": {de: "nächste Aktion", en: "next action"},
+      "no scheduler payload": {de: "kein Scheduler-Payload", en: "no scheduler payload"},
+      "not ready for scheduler": {de: "noch nicht bereit für Scheduler", en: "not ready for scheduler"},
+      nurture_or_disqualify: {de: "nurturen oder disqualifizieren", en: "nurture_or_disqualify"},
+      ok: {de: "OK", en: "ok"},
+      operational: {de: "betriebsbereit", en: "operational"},
+      operational_with_blockers: {de: "betriebsbereit mit Blockern", en: "operational_with_blockers"},
+      orchestrator: {de: "Orchestrator", en: "orchestrator"},
+      partial: {de: "teilweise", en: "partial"},
+      prepared: {de: "vorbereitet", en: "prepared"},
+      ready: {de: "bereit", en: "ready"},
+      ready_to_schedule: {de: "bereit zur Planung", en: "ready_to_schedule"},
+      revision: {de: "Überarbeitung", en: "revision"},
+      revision_requested: {de: "Überarbeitung angefragt", en: "revision_requested"},
+      route: {de: "Route", en: "route"},
+      fix_audience_or_offer: {de: "Zielgruppe oder Angebot fixen", en: "fix_audience_or_offer"},
+      fix_landing_page: {de: "Landingpage fixen", en: "fix_landing_page"},
+      iterate: {de: "iterieren", en: "iterate"},
+      sales_follow_up: {de: "Sales-Follow-up", en: "sales_follow_up"},
+      scheduler: {de: "Scheduler", en: "scheduler"},
+      sent: {de: "gesendet", en: "sent"},
+      scale: {de: "skalieren", en: "scale"},
+      status: {de: "Status", en: "status"},
+      stop: {de: "stoppen", en: "stop"},
+      unknown: {de: "unbekannt", en: "unknown"},
+      wait_for_more_data: {de: "mehr Daten abwarten", en: "wait_for_more_data"}
+    };
+
+    const i18nLookup = new Map();
+    i18nTextPairs.forEach(([en, de]) => {
+      i18nLookup.set(en, {en, de});
+      i18nLookup.set(de, {en, de});
+    });
+
+    const i18nAttrLookup = new Map();
+    i18nAttrPairs.forEach(([attr, en, de]) => {
+      i18nAttrLookup.set(`${attr}::${en}`, {en, de});
+      i18nAttrLookup.set(`${attr}::${de}`, {en, de});
+    });
+
+    function t(key) {
+      return (i18nMessages[key] && i18nMessages[key][currentUiLanguage]) || key;
+    }
+
+    function statusLabel(value) {
+      const key = String(value || "").trim();
+      return (statusLabels[key] && statusLabels[key][currentUiLanguage]) || key;
+    }
+
+    function translateTextNodes(root) {
+      const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+        acceptNode(node) {
+          const parent = node.parentElement;
+          if (!parent || ["SCRIPT", "STYLE", "TEXTAREA"].includes(parent.tagName)) return NodeFilter.FILTER_REJECT;
+          return node.nodeValue.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+        }
+      });
+      const nodes = [];
+      while (walker.nextNode()) nodes.push(walker.currentNode);
+      nodes.forEach((node) => {
+        const raw = node.nodeValue;
+        const trimmed = raw.trim();
+        const entry = i18nLookup.get(trimmed);
+        if (entry) node.nodeValue = raw.replace(trimmed, entry[currentUiLanguage]);
+      });
+    }
+
+    function translateAttributes() {
+      ["title", "aria-label", "placeholder", "data-title", "data-description"].forEach((attr) => {
+        document.querySelectorAll(`[${attr}]`).forEach((node) => {
+          const value = node.getAttribute(attr);
+          const entry = i18nAttrLookup.get(`${attr}::${value}`);
+          if (entry) node.setAttribute(attr, entry[currentUiLanguage]);
+        });
+      });
+    }
+
+    function applyUiLanguage(language) {
+      currentUiLanguage = language === "en" ? "en" : "de";
+      document.documentElement.lang = currentUiLanguage;
+      document.title = currentUiLanguage === "de" ? "WAMOCON Marketing-Konsole" : "WAMOCON Marketing Console";
+      $("uiLanguage").value = currentUiLanguage;
+      localStorage.setItem("wamocon-ui-language", currentUiLanguage);
+      translateTextNodes(document.body);
+      translateAttributes();
+      const active = document.querySelector(".screen.active");
+      if (active) setScreen(active.id.replace("screen-", ""));
+      updatePayloadPreview();
+      updatePublishability();
+    }
 
     function showToast(message) {
       const node = $("toast");
@@ -1752,9 +2200,9 @@ def render_marketing_console() -> str:
       if (!text) return;
       try {
         await navigator.clipboard.writeText(text);
-        showToast("Copied to clipboard");
+        showToast(t("copied"));
       } catch {
-        showToast("Copy failed. Select the text manually.");
+        showToast(t("copyFailed"));
       }
     }
 
@@ -1831,15 +2279,15 @@ def render_marketing_console() -> str:
 
     function validateBrief(payload) {
       const checks = [
-        {label: "Content ID exists", ok: Boolean(payload.id)},
-        {label: "Campaign and persona selected", ok: Boolean(payload.campaign && payload.persona)},
-        {label: "AI draft language selected", ok: Boolean(payload.language)},
-        {label: "German brief uses German market wording", ok: germanCopyLooksReady(payload)},
-        {label: "Objective and CTA are clear", ok: Boolean(payload.objective && payload.cta)},
-        {label: "At least one proof source", ok: payload.proof_sources.length > 0},
-        {label: "UTM source, medium, campaign complete", ok: Boolean(payload.utm.utm_source && payload.utm.utm_medium && payload.utm.utm_campaign)},
-        {label: "Hypothesis and test variable present", ok: Boolean(payload.hypothesis && payload.test_variable)},
-        {label: "Instagram hashtags <= 5", ok: payload.channel.toLowerCase() !== "instagram" || payload.hashtags.length <= 5}
+        {label: currentUiLanguage === "de" ? "Content-ID vorhanden" : "Content ID exists", ok: Boolean(payload.id)},
+        {label: currentUiLanguage === "de" ? "Kampagne und Persona ausgewählt" : "Campaign and persona selected", ok: Boolean(payload.campaign && payload.persona)},
+        {label: currentUiLanguage === "de" ? "Sprache für AI-Entwurf ausgewählt" : "AI draft language selected", ok: Boolean(payload.language)},
+        {label: currentUiLanguage === "de" ? "Deutsches Briefing nutzt deutsche Marktsprache" : "German brief uses German market wording", ok: germanCopyLooksReady(payload)},
+        {label: currentUiLanguage === "de" ? "Ziel und CTA sind klar" : "Objective and CTA are clear", ok: Boolean(payload.objective && payload.cta)},
+        {label: currentUiLanguage === "de" ? "Mindestens eine Belegquelle" : "At least one proof source", ok: payload.proof_sources.length > 0},
+        {label: currentUiLanguage === "de" ? "UTM-Quelle, Medium und Kampagne vollständig" : "UTM source, medium, campaign complete", ok: Boolean(payload.utm.utm_source && payload.utm.utm_medium && payload.utm.utm_campaign)},
+        {label: currentUiLanguage === "de" ? "Hypothese und Testvariable vorhanden" : "Hypothesis and test variable present", ok: Boolean(payload.hypothesis && payload.test_variable)},
+        {label: currentUiLanguage === "de" ? "Instagram-Hashtags <= 5" : "Instagram hashtags <= 5", ok: payload.channel.toLowerCase() !== "instagram" || payload.hashtags.length <= 5}
       ];
       const passed = checks.filter((item) => item.ok).length;
       return {checks, score: Math.round((passed / checks.length) * 100)};
@@ -1850,10 +2298,10 @@ def render_marketing_console() -> str:
       const quality = validateBrief(payload);
       $("payloadPreview").textContent = JSON.stringify(payload, null, 2);
       $("qualityBar").style.width = `${quality.score}%`;
-      $("qualityScore").textContent = `${quality.score}% ready`;
+      $("qualityScore").textContent = currentUiLanguage === "de" ? `${quality.score}% bereit` : `${quality.score}% ready`;
       $("qualityScore").className = `pill ${quality.score >= 90 ? "ok" : quality.score >= 70 ? "warn" : "bad"}`;
       $("qualityChecks").innerHTML = quality.checks.map((item) =>
-        `<div class="check ${item.ok ? "ok" : "bad"}"><span>${escapeHtml(item.label)}</span><strong>${item.ok ? "OK" : "Fix"}</strong></div>`
+        `<div class="check ${item.ok ? "ok" : "bad"}"><span>${escapeHtml(item.label)}</span><strong>${item.ok ? "OK" : currentUiLanguage === "de" ? "Fixen" : "Fix"}</strong></div>`
       ).join("");
     }
 
@@ -1877,18 +2325,18 @@ def render_marketing_console() -> str:
       $("recentList").innerHTML = filtered.length ? filtered.map((item) => `
         <button type="button" class="recent-item" data-content-id="${escapeHtml(item.content_id)}">
           <strong>${escapeHtml(item.content_id)}</strong>
-          <span>${escapeHtml(item.campaign || "Campaign")} | ${escapeHtml(item.status || "status")} | ${escapeHtml(item.next_step || "next")}</span>
+          <span>${escapeHtml(item.campaign || "Campaign")} | ${escapeHtml(statusLabel(item.status || "status"))} | ${escapeHtml(statusLabel(item.next_step || "next"))}</span>
         </button>
-      `).join("") : `<span class="pill warn">No matching content</span>`;
+      `).join("") : `<span class="pill warn">${t("noMatchingContent")}</span>`;
 
       $("recentTableBody").innerHTML = filtered.slice(0, 10).map((item) => `
         <tr>
           <td>${escapeHtml(item.content_id)}</td>
           <td>${escapeHtml(item.campaign || "")}</td>
-          <td>${escapeHtml(item.status || "")}</td>
-          <td>${escapeHtml(item.next_step || "")}</td>
+          <td>${escapeHtml(statusLabel(item.status || ""))}</td>
+          <td>${escapeHtml(statusLabel(item.next_step || ""))}</td>
         </tr>
-      `).join("") || `<tr><td colspan="4">No content yet</td></tr>`;
+      `).join("") || `<tr><td colspan="4">${t("noContentYet")}</td></tr>`;
 
       document.querySelectorAll(".recent-item").forEach((button) => {
         button.addEventListener("click", () => selectContent(button.dataset.contentId));
@@ -1911,7 +2359,7 @@ def render_marketing_console() -> str:
       $("leadSourceContentId").value = contentId;
       $("routeContentId").value = contentId;
       setScreen("approval");
-      showToast(`Selected ${contentId}`);
+      showToast(`${t("selected")} ${contentId}`);
       try {
         const state = await getJson(`/workflows/states/${encodeURIComponent(contentId)}`);
         setJson("approvalResult", state);
@@ -1929,9 +2377,9 @@ def render_marketing_console() -> str:
       const status = state.brief?.status || "unknown";
       const scheduler = state.scheduler_payload?.status || "no scheduler payload";
       $("approvalSummary").innerHTML = [
-        iconPill(status, status.includes("ready") ? "ok" : status.includes("blocked") ? "bad" : "warn"),
-        iconPill(nextStep, nextStep === "scheduler" ? "ok" : "neutral"),
-        iconPill(scheduler, scheduler.includes("draft") ? "warn" : "neutral")
+        iconPill(statusLabel(status), status.includes("ready") ? "ok" : status.includes("blocked") ? "bad" : "warn"),
+        iconPill(statusLabel(nextStep), nextStep === "scheduler" ? "ok" : "neutral"),
+        iconPill(statusLabel(scheduler), scheduler.includes("draft") ? "warn" : "neutral")
       ].join("");
     }
 
@@ -1942,7 +2390,7 @@ def render_marketing_console() -> str:
 
     function renderPostPreview(data) {
       const copy = postCopyFrom(data);
-      $("postPreview").textContent = copy || "No public post copy available yet.";
+      $("postPreview").textContent = copy || t("noPublicCopy");
     }
 
     function renderSchedulerPreview(data) {
@@ -1951,11 +2399,11 @@ def render_marketing_console() -> str:
       const notes = state.scheduler_payload?.review_notes || state.brief?.review_notes || [];
       const status = state.scheduler_payload?.status || "not ready for scheduler";
       $("schedulerPreview").textContent = [
-        `Status: ${status}`,
+        `Status: ${statusLabel(status)}`,
         "",
-        copy || "No scheduler draft available yet.",
+        copy || t("noSchedulerDraft"),
         "",
-        notes.length ? "Review notes:" : "",
+        notes.length ? t("reviewNotes") : "",
         ...notes.map((note) => `- ${note}`)
       ].filter(Boolean).join("\\n");
     }
@@ -1997,7 +2445,7 @@ def render_marketing_console() -> str:
       $("leadUtmSource").value = $("utmSource").value.trim() || "linkedin";
       $("leadUtmMedium").value = $("utmMedium").value.trim() || "organic";
       $("leadUtmCampaign").value = $("utmCampaign").value.trim() || "k1_qa_risk_audit";
-      showToast("Lead example loaded");
+      showToast(t("leadExampleLoaded"));
     }
 
     function updateLeadTable() {
@@ -2006,9 +2454,9 @@ def render_marketing_console() -> str:
           <td>${escapeHtml(item.id || "")}</td>
           <td>${escapeHtml(item.campaign || "")}</td>
           <td>${escapeHtml(item.company || "")}</td>
-          <td>${escapeHtml(item.next_action || "")}</td>
+          <td>${escapeHtml(statusLabel(item.next_action || ""))}</td>
         </tr>
-      `).join("") : `<tr><td colspan="4">No leads yet</td></tr>`;
+      `).join("") : `<tr><td colspan="4">${t("noLeadsYet")}</td></tr>`;
     }
 
     async function refreshLeadList() {
@@ -2023,10 +2471,10 @@ def render_marketing_console() -> str:
         <tr>
           <td>${escapeHtml(item.id || "")}</td>
           <td>${escapeHtml(item.target || "")}</td>
-          <td>${escapeHtml(item.status || "")}</td>
+          <td>${escapeHtml(statusLabel(item.status || ""))}</td>
           <td>${escapeHtml(item.source_id || "")}</td>
         </tr>
-      `).join("") : `<tr><td colspan="4">No outbox records yet</td></tr>`;
+      `).join("") : `<tr><td colspan="4">${t("noOutboxYet")}</td></tr>`;
     }
 
     async function refreshOutboxList() {
@@ -2040,9 +2488,9 @@ def render_marketing_console() -> str:
       const route = data.route || {};
       const mode = route.status === "sent" || route.status === "prepared" ? "ok" : route.status === "blocked" ? "bad" : "warn";
       $("routeSummary").innerHTML = [
-        iconPill(route.status || "route", mode),
+        iconPill(statusLabel(route.status || "route"), mode),
         iconPill(route.target || "target", "neutral"),
-        iconPill(route.dry_run ? "dry-run" : "live write", route.dry_run ? "warn" : "ok")
+        iconPill(route.dry_run ? t("dryRun") : t("liveWrite"), route.dry_run ? "warn" : "ok")
       ].join("");
       setJson("routeResult", data);
     }
@@ -2053,15 +2501,15 @@ def render_marketing_console() -> str:
       const requiredOk = (data.required || []).every((item) => item.ok);
       const kimi = (data.checks || []).find((item) => item.name === "kimi");
       $("healthPills").innerHTML = [
-        iconPill(requiredOk ? "Required OK" : "Required degraded", requiredOk ? "ok" : "bad"),
-        iconPill(kimi && kimi.ok ? "Kimi OK" : "Kimi optional", kimi && kimi.ok ? "ok" : "warn"),
-        iconPill("Human approval on", "ok")
+        iconPill(requiredOk ? t("requiredOk") : t("requiredDegraded"), requiredOk ? "ok" : "bad"),
+        iconPill(kimi && kimi.ok ? t("kimiOk") : t("kimiOptional"), kimi && kimi.ok ? "ok" : "warn"),
+        iconPill(t("humanApprovalOn"), "ok")
       ].join("");
-      $("metricRequired").textContent = requiredOk ? "OK" : "Check";
+      $("metricRequired").textContent = requiredOk ? "OK" : statusLabel("check");
       $("metricRequired").style.color = requiredOk ? "var(--green)" : "var(--red)";
       $("metricGuard").style.color = "var(--green)";
-      $("serviceSummary").innerHTML = `<table class="mini-table"><thead><tr><th>Service</th><th>State</th><th>URL</th></tr></thead><tbody>${
-        (data.checks || []).map((item) => `<tr><td>${escapeHtml(item.name)}</td><td>${item.ok ? iconPill("OK", "ok") : iconPill(item.required ? "Required issue" : "Optional issue", item.required ? "bad" : "warn")}</td><td>${escapeHtml(item.url || "")}</td></tr>`).join("")
+      $("serviceSummary").innerHTML = `<table class="mini-table"><thead><tr><th>${t("service")}</th><th>${t("state")}</th><th>URL</th></tr></thead><tbody>${
+        (data.checks || []).map((item) => `<tr><td>${escapeHtml(item.name)}</td><td>${item.ok ? iconPill("OK", "ok") : iconPill(item.required ? t("requiredIssue") : t("optionalIssue"), item.required ? "bad" : "warn")}</td><td>${escapeHtml(item.url || "")}</td></tr>`).join("")
       }</tbody></table>`;
     }
 
@@ -2070,16 +2518,16 @@ def render_marketing_console() -> str:
       phaseItems = data.phases || [];
       setJson("phaseResult", data);
       $("phaseSummary").innerHTML = [
-        iconPill(data.status || "status", data.status === "operational" ? "ok" : data.status === "blocked" ? "bad" : "warn"),
-        iconPill(`${data.summary?.complete || 0} complete`, "ok"),
-        iconPill(`${data.summary?.partial || 0} partial`, "warn"),
-        iconPill(`${data.summary?.blocked || 0} blocked`, (data.summary?.blocked || 0) ? "bad" : "neutral")
+        iconPill(statusLabel(data.status || "status"), data.status === "operational" ? "ok" : data.status === "blocked" ? "bad" : "warn"),
+        iconPill(`${data.summary?.complete || 0} ${t("complete")}`, "ok"),
+        iconPill(`${data.summary?.partial || 0} ${t("partial")}`, "warn"),
+        iconPill(`${data.summary?.blocked || 0} ${t("blocked")}`, (data.summary?.blocked || 0) ? "bad" : "neutral")
       ].join("");
       $("phaseTableBody").innerHTML = phaseItems.map((phase) => {
         const mode = phase.status === "complete" ? "ok" : phase.status === "blocked" ? "bad" : "warn";
-        const next = (phase.next_actions || []).join(" | ") || "Ready";
-        return `<tr><td><strong>${escapeHtml(phase.name)}</strong><br><span class="subtle">${escapeHtml(phase.id)}</span></td><td>${iconPill(phase.status, mode)}</td><td>${escapeHtml(next)}</td></tr>`;
-      }).join("") || `<tr><td colspan="3">No phase data</td></tr>`;
+        const next = (phase.next_actions || []).join(" | ") || t("ready");
+        return `<tr><td><strong>${escapeHtml(phase.name)}</strong><br><span class="subtle">${escapeHtml(phase.id)}</span></td><td>${iconPill(statusLabel(phase.status), mode)}</td><td>${escapeHtml(next)}</td></tr>`;
+      }).join("") || `<tr><td colspan="3">${t("noPhaseData")}</td></tr>`;
       return data;
     }
 
@@ -2099,7 +2547,7 @@ def render_marketing_console() -> str:
     function updatePublishability() {
       const payload = approvalPayload();
       const ok = payload.decision === "approved" && payload.brand_score >= 90 && payload.fact_check_passed && payload.privacy_check_passed && payload.ai_disclosure_check_passed;
-      $("publishabilityPill").textContent = ok ? "Publishable draft" : "Revision gate";
+      $("publishabilityPill").textContent = ok ? t("publishableDraft") : t("revisionGate");
       $("publishabilityPill").className = `pill ${ok ? "ok" : "warn"}`;
     }
 
@@ -2152,7 +2600,7 @@ def render_marketing_console() -> str:
         $("landingConversions").value = "0";
         $("pipelineValue").value = "0";
       }
-      showToast(`${kind === "scale" ? "Scale" : "Weak"} example loaded`);
+      showToast(kind === "scale" ? t("scaleExampleLoaded") : t("weakExampleLoaded"));
     }
 
     document.querySelectorAll(".nav-tab").forEach((button) => button.addEventListener("click", () => setScreen(button.dataset.screen)));
@@ -2163,6 +2611,7 @@ def render_marketing_console() -> str:
       document.body.classList.toggle("theme-dark");
       localStorage.setItem("wamocon-theme", document.body.classList.contains("theme-dark") ? "dark" : "light");
     });
+    $("uiLanguage").addEventListener("change", (event) => applyUiLanguage(event.target.value));
 
     $("preset").addEventListener("change", (event) => {
       if (event.target.value !== "custom") applyPreset(event.target.value);
@@ -2178,16 +2627,16 @@ def render_marketing_console() -> str:
       updateRecentViews();
     });
     $("recentSearch").addEventListener("input", updateRecentViews);
-    $("refreshRecent").addEventListener("click", () => refreshRecent().then(() => showToast("Recent content refreshed")));
-    $("refreshStatus").addEventListener("click", () => refreshStatus().then(() => showToast("Status refreshed")));
-    $("refreshPhases").addEventListener("click", () => refreshPhaseStatus().then(() => showToast("Phase report refreshed")));
+    $("refreshRecent").addEventListener("click", () => refreshRecent().then(() => showToast(t("recentContentRefreshed"))));
+    $("refreshStatus").addEventListener("click", () => refreshStatus().then(() => showToast(t("statusRefreshed"))));
+    $("refreshPhases").addEventListener("click", () => refreshPhaseStatus().then(() => showToast(t("phasesRefreshed"))));
       $("weeklyPlanTop").addEventListener("click", async () => {
       const data = await postJson("/workflows/weekly-planning", {calendar_mode: "rolling_30_day"});
       setJson("intakeResult", data);
-      $("intakeSummary").innerHTML = iconPill("Weekly plan created", "ok");
-      $("postPreview").textContent = "Weekly plan created. Select a recent item to preview its post copy.";
+      $("intakeSummary").innerHTML = iconPill(t("weeklyPlanCreated"), "ok");
+      $("postPreview").textContent = t("weeklyPlanPreview");
       await refreshRecent();
-      showToast("Weekly plan created");
+      showToast(t("weeklyPlanCreated"));
     });
     $("copyRecentSummary").addEventListener("click", () => copyText(JSON.stringify(recentItems.slice(0, 10), null, 2)));
 
@@ -2207,19 +2656,19 @@ def render_marketing_console() -> str:
         $("routeContentId").value = payload.id;
         const errors = data.state?.errors || [];
         $("intakeSummary").innerHTML = [
-          iconPill(data.state?.brief?.status || "created", errors.length ? "bad" : "ok"),
-          iconPill(data.state?.next_step || "next", "neutral"),
-          errors.length ? iconPill(`${errors.length} issue`, "bad") : iconPill("Ready for review", "ok")
+          iconPill(statusLabel(data.state?.brief?.status || t("created")), errors.length ? "bad" : "ok"),
+          iconPill(statusLabel(data.state?.next_step || "next"), "neutral"),
+          errors.length ? iconPill(`${errors.length} ${t("issue")}`, "bad") : iconPill(t("readyForReview"), "ok")
         ].join("");
         setJson("intakeResult", data);
         renderPostPreview(data);
         renderSchedulerPreview(data);
         await refreshRecent();
-        showToast(errors.length ? "Draft blocked by guardrails" : "Draft created");
+        showToast(errors.length ? t("draftBlocked") : t("draftCreated"));
       } catch (error) {
         $("intakeSummary").innerHTML = iconPill("Blocked", "bad");
         setJson("intakeResult", String(error.message || error));
-        $("postPreview").textContent = "Draft was blocked. Fix the brief and try again.";
+        $("postPreview").textContent = t("draftBlockedFix");
       }
     });
 
@@ -2231,16 +2680,16 @@ def render_marketing_console() -> str:
         renderSchedulerPreview(data);
         setJson("approvalResult", data);
         await refreshRecent();
-        showToast(data.state?.next_step === "scheduler" ? "Approval applied" : "Revision required");
+        showToast(data.state?.next_step === "scheduler" ? t("approvalApplied") : t("revisionRequired"));
       } catch (error) {
-        $("approvalSummary").innerHTML = iconPill("Approval failed", "bad");
+        $("approvalSummary").innerHTML = iconPill(t("approvalFailed"), "bad");
         setJson("approvalResult", String(error.message || error));
       }
     });
 
     $("loadApprovalState").addEventListener("click", async () => {
       const contentId = $("approvalContentId").value.trim();
-      if (!contentId) return showToast("Enter a content ID first");
+      if (!contentId) return showToast(t("enterContentId"));
       try {
         const state = await getJson(`/workflows/states/${encodeURIComponent(contentId)}`);
         renderApprovalSummary(state);
@@ -2256,9 +2705,9 @@ def render_marketing_console() -> str:
       $("decision").value = "minor_revision";
       $("brandScore").value = "70";
       $("factCheck").checked = false;
-      $("approvalNotes").value = "Revision requested before scheduling.";
+      $("approvalNotes").value = currentUiLanguage === "de" ? "Überarbeitung vor Planung angefragt." : "Revision requested before scheduling.";
       updatePublishability();
-      showToast("Revision values loaded");
+      showToast(t("revisionValuesLoaded"));
     });
 
     $("analyticsForm").addEventListener("submit", async (event) => {
@@ -2266,11 +2715,11 @@ def render_marketing_console() -> str:
       try {
         const data = await postJson("/workflows/analytics-review", analyticsPayload());
         const mode = data.action === "scale" ? "ok" : data.action === "stop" ? "bad" : "warn";
-        $("analyticsSummary").innerHTML = [iconPill(data.action || "decision", mode), iconPill(data.review_window || $("reviewWindow").value, "neutral")].join("");
+        $("analyticsSummary").innerHTML = [iconPill(statusLabel(data.action || "decision"), mode), iconPill(data.review_window || $("reviewWindow").value, "neutral")].join("");
         setJson("analyticsResult", data);
-        showToast(`Decision: ${data.action}`);
+        showToast(`${t("decisionPrefix")}: ${statusLabel(data.action)}`);
       } catch (error) {
-        $("analyticsSummary").innerHTML = iconPill("Review failed", "bad");
+        $("analyticsSummary").innerHTML = iconPill(t("reviewFailed"), "bad");
         setJson("analyticsResult", String(error.message || error));
       }
     });
@@ -2278,8 +2727,8 @@ def render_marketing_console() -> str:
     $("loadWeakSignal").addEventListener("click", () => setAnalyticsExample("weak"));
     $("loadScaleSignal").addEventListener("click", () => setAnalyticsExample("scale"));
     $("loadLeadExample").addEventListener("click", setLeadExample);
-    $("refreshLeads").addEventListener("click", () => refreshLeadList().then(() => showToast("Leads refreshed")));
-    $("refreshOutbox").addEventListener("click", () => refreshOutboxList().then(() => showToast("Outbox refreshed")));
+    $("refreshLeads").addEventListener("click", () => refreshLeadList().then(() => showToast(t("leadsRefreshed"))));
+    $("refreshOutbox").addEventListener("click", () => refreshOutboxList().then(() => showToast(t("outboxRefreshed"))));
 
     $("routeSchedulerDraft").addEventListener("click", async () => {
       try {
@@ -2290,9 +2739,9 @@ def render_marketing_console() -> str:
         });
         renderRouteResult(data);
         await refreshOutboxList();
-        showToast(data.route?.status === "blocked" ? "Route blocked" : "Scheduler route prepared");
+        showToast(data.route?.status === "blocked" ? t("routeBlocked") : t("schedulerRoutePrepared"));
       } catch (error) {
-        $("routeSummary").innerHTML = iconPill("Route failed", "bad");
+        $("routeSummary").innerHTML = iconPill(t("routeFailed"), "bad");
         setJson("routeResult", String(error.message || error));
       }
     });
@@ -2306,9 +2755,9 @@ def render_marketing_console() -> str:
         });
         renderRouteResult(data);
         await refreshOutboxList();
-        showToast(data.route?.status === "blocked" ? "Lead route blocked" : "Lead route prepared");
+        showToast(data.route?.status === "blocked" ? t("leadRouteBlocked") : t("leadRoutePrepared"));
       } catch (error) {
-        $("routeSummary").innerHTML = iconPill("Route failed", "bad");
+        $("routeSummary").innerHTML = iconPill(t("routeFailed"), "bad");
         setJson("routeResult", String(error.message || error));
       }
     });
@@ -2321,15 +2770,15 @@ def render_marketing_console() -> str:
         $("routeLeadId").value = lead.id || $("leadId").value.trim();
         const mode = data.routing_allowed ? "ok" : lead.next_action === "consent_required" ? "bad" : "warn";
         $("leadSummary").innerHTML = [
-          iconPill(lead.next_action || "next action", mode),
-          iconPill(`${lead.qualification_score || 0} score`, mode),
-          iconPill(data.routing_allowed ? "CRM payload ready" : "Do not route", data.routing_allowed ? "ok" : "warn")
+          iconPill(statusLabel(lead.next_action || "next action"), mode),
+          iconPill(`${lead.qualification_score || 0} ${t("scoreUnit")}`, mode),
+          iconPill(data.routing_allowed ? t("crmPayloadReady") : t("doNotRoute"), data.routing_allowed ? "ok" : "warn")
         ].join("");
         setJson("leadResult", data);
         await refreshLeadList();
-        showToast(data.routing_allowed ? "Lead ready for follow-up" : "Lead stored with guardrail");
+        showToast(data.routing_allowed ? t("leadReady") : t("leadStored"));
       } catch (error) {
-        $("leadSummary").innerHTML = iconPill("Lead rejected", "bad");
+        $("leadSummary").innerHTML = iconPill(t("leadRejected"), "bad");
         setJson("leadResult", String(error.message || error));
       }
     });
@@ -2346,7 +2795,7 @@ def render_marketing_console() -> str:
           output_size: $("outputSize").value
         });
         setJson("creativeResult", data);
-        showToast("Creative brief created");
+        showToast(t("creativeBriefCreated"));
       } catch (error) {
         setJson("creativeResult", String(error.message || error));
       }
@@ -2356,6 +2805,7 @@ def render_marketing_console() -> str:
       document.body.classList.add("theme-dark");
     }
     applyPreset("k1");
+    applyUiLanguage(localStorage.getItem("wamocon-ui-language") || "de");
     setScreen((location.hash || "#dashboard").replace("#", "") || "dashboard");
     updatePublishability();
     refreshStatus().catch((error) => setJson("statusResult", String(error.message || error)));

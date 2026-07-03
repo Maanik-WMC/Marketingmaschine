@@ -17,12 +17,17 @@ class UiAndStorageTests(unittest.TestCase):
         html = render_marketing_console()
 
         self.assertIn("WAMOCON Marketing Console", html)
+        self.assertIn("WAMOCON Marketing-Konsole", html)
+        self.assertIn('id="uiLanguage"', html)
         self.assertIn("Manual Content Intake", html)
+        self.assertIn("Manuelle Content-Eingabe", html)
         self.assertIn("Human Approval", html)
+        self.assertIn("Menschliche Freigabe", html)
         self.assertIn("Lead Intake", html)
         self.assertIn("Routing Outbox", html)
         self.assertIn("Optimization Review", html)
         self.assertIn("Phase Readiness", html)
+        self.assertIn("Phasenbereitschaft", html)
         self.assertIn("/workflows/create-content", html)
         self.assertIn("/workflows/approve-content", html)
         self.assertIn("/workflows/phase-status", html)
@@ -37,6 +42,9 @@ class UiAndStorageTests(unittest.TestCase):
         self.assertIn("CRM/Mautic payloads", html)
         self.assertIn("Deutsch (Deutschland)", html)
         self.assertIn("AI draft language", html)
+        self.assertIn("Sprache für AI-Entwurf", html)
+        self.assertIn("needs_human_review", html)
+        self.assertIn("menschliche Prüfung nötig", html)
         self.assertIn("content_id", html)
 
     def test_marketing_console_script_is_parseable_when_node_is_available(self):

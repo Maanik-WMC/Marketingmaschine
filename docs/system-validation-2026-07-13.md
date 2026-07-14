@@ -1,5 +1,10 @@
 # System Validation — 13 July 2026
 
+> **Historical evidence record.** The current operational decision is recorded
+> in [System Validation — 14 July 2026](system-validation-2026-07-14.md). Preserve
+> the observations below as the 13 July snapshot; restored connectivity on
+> 14 July does not make the system production-ready.
+
 > **Overall result: RED / NO-GO.** Do not cut over the hardened release, do
 > not enable external writes, and do not merge or push `main` as
 > release-ready. Nvidia-1 was reachable during the earlier audit but could no
@@ -323,7 +328,7 @@ unauthenticated access, exactly K1–K5, and no demo records. The arm64 image ra
 through QEMU and reported `aarch64`; this proves local architecture execution,
 not operation on real Nvidia hardware.
 
-The exact current local image identities are
+The exact local image identities for the 13 July source tree are
 `sha256:0ae6c4c57d2564f83929aec844bb54be5e6bca297c1b6efc00b38074478929f8`
 for amd64 and
 `sha256:7527599ee25d47a9475f60df763e479ce62de205cd8dd7d89737f712c5068d70`
@@ -416,7 +421,9 @@ candidate testing and cutover acceptance.
 
 ## Claims that are not permitted
 
-Until a later GREEN record supersedes this document, do not claim that:
+Later current-state claims must cite a newer dated validation record, even when
+that newer record remains RED. For its evidence window, this record did not
+support any claim that:
 
 - production runs the hardened dashboard or current local code;
 - Nvidia-1 or its dependencies are currently reachable;

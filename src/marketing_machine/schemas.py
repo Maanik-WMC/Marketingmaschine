@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 from enum import Enum
 from typing import Any
 
-from .quality import german_market_language_errors
+from .quality import evergreen_recency_claim_errors, german_market_language_errors
 
 
 def utc_now() -> str:
@@ -127,6 +127,19 @@ class ContentBrief:
             errors.append("current_trend content requires stored trend provenance")
         if self.channel.lower() == "instagram" and len(self.hashtags) > 5:
             errors.append("instagram posts must use no more than 5 hashtags")
+        errors.extend(
+            evergreen_recency_claim_errors(
+                self.content_mode,
+                self.objective,
+                self.cta,
+                self.user_prompt,
+                self.format,
+                self.hashtags,
+                self.public_copy,
+                self.channel_copy,
+                self.reel_output,
+            )
+        )
         errors.extend(german_market_language_errors(self))
         return errors
 

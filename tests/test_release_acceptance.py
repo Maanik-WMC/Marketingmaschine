@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import base64
 from copy import deepcopy
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import importlib.util
 import json
@@ -38,6 +38,7 @@ class FakeClient:
                 / "golden_pass_k1_k5.json"
             ).read_text(encoding="utf-8")
         )
+        self.trusted_runs: dict[str, dict] = {}
         self.full_states: dict[str, dict] = {}
         for item in fixture["items"]:
             brief = deepcopy(item["brief"])
@@ -52,9 +53,71 @@ class FakeClient:
             )
             brief["generation"]["provider"] = "local_qwen"
             brief["generation"]["model"] = "qwen3.6:35b"
+            if campaign_id == "k1":
+                topic = "Testautomatisierung mit zwei unabhängigen Fachquellen einordnen."
+                trend_urls = [
+                    "https://www.qytera.de/blog/testautomatisierung-tipps-goldene-regeln",
+                    "https://glossary.istqb.org/de_DE/search/testautomatisierung",
+                ]
+                brief.update(
+                    {
+                        "content_mode": "current_trend",
+                        "trend_run_id": "trusted-release-trend-run-k1",
+                        "trend_id": "trusted-release-trend-k1",
+                        "trend_summary": topic,
+                        "trend_verification_status": "verified_recent",
+                        "trend_sources": trend_urls,
+                        "citations": [
+                            {
+                                "url": trend_urls[0],
+                                "label": "Qytera: Testautomatisierung",
+                                "supports": topic,
+                            },
+                            {
+                                "url": trend_urls[1],
+                                "label": "ISTQB Glossar",
+                                "supports": topic,
+                            },
+                        ],
+                    }
+                )
+            if brief.get("content_mode") == "current_trend":
+                topic = brief["trend_summary"]
+                citations = [
+                    {
+                        **dict(citation),
+                        "title": str(citation.get("label", "")),
+                        "snippet": topic,
+                        "published": (self.now - timedelta(days=1)).isoformat(),
+                        "retrieved": self.now.isoformat(),
+                    }
+                    for citation in brief["citations"]
+                ]
+                self.trusted_runs[brief["trend_run_id"]] = {
+                    "id": brief["trend_run_id"],
+                    "campaigns": [
+                        {
+                            "campaign": {"id": campaign_id},
+                            "trends": [
+                                {
+                                    "id": brief["trend_id"],
+                                    "topic": topic,
+                                    "source_urls": list(brief["trend_sources"]),
+                                    "citations": citations,
+                                    "verification": {
+                                        "status": "verified_recent",
+                                        "verified": True,
+                                        "last_checked_at": self.now.isoformat(),
+                                    },
+                                }
+                            ],
+                        }
+                    ],
+                }
             quality = release_acceptance.evaluate_content_quality(
                 {"brief": brief},
                 repo_root=release_acceptance.REPOSITORY_ROOT,
+                trend_run_resolver=self.trusted_runs.get,
             )
             quality["evaluated_at"] = self.now.isoformat()
             brief["quality_evaluation"] = quality
@@ -139,6 +202,9 @@ class FakeClient:
             if self.state_mutator is not None:
                 self.state_mutator(content_id, payload)
             return payload
+        run_id = url.rsplit("/", 1)[1]
+        if "/workflows/trend-research/runs/" in url and run_id in self.trusted_runs:
+            return deepcopy(self.trusted_runs[run_id])
         if "/workflows/trend-research/runs/trend-real-five" in url:
             source_ids = release_acceptance.CAMPAIGN_SOURCE_IDS
             return {
@@ -489,6 +555,32 @@ class ReleaseAcceptanceTests(unittest.TestCase):
                 comfyui_approval_evidence=valid_comfyui_approval(client.now),
                 client=client,
             )
+
+    def test_current_head_cannot_claim_a_nonexistent_verified_trend_run(self):
+        client = FakeClient()
+
+        def tamper(content_id, state):
+            if content_id == "k1-current-draft":
+                state["brief"]["trend_run_id"] = "nonexistent-run"
+                self.assertTrue(state["brief"]["quality_evaluation"]["release_ready"])
+
+        client.state_mutator = tamper
+        with self.assertRaisesRegex(
+            AssertionError,
+            "current full content fails the deterministic release rubric",
+        ):
+            release_acceptance.run_acceptance(
+                console_url="https://marketing.example:18117",
+                n8n_url="https://marketing.example:15678",
+                operators=[
+                    release_acceptance.OperatorCredential("alice.reviewer", "secret-a"),
+                    release_acceptance.OperatorCredential("bob.reviewer", "secret-b"),
+                ],
+                n8n_api_key="key",
+                comfyui_approval_evidence=valid_comfyui_approval(client.now),
+                client=client,
+            )
+
     def test_operator_credentials_are_file_only_named_and_private_on_posix(self):
         with tempfile.TemporaryDirectory() as temp_dir:
             credential = Path(temp_dir) / "operator"

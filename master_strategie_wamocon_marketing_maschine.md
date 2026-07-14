@@ -13,16 +13,16 @@
 
 | Datei | Typ | Kerninhalte |
 |---|---|---|
-| [kampagne_1_consulting_qa.json](file:///d:/Testprojekt/WAMOCON_Marketingmaschine/Kampagnen/kampagne_1_consulting_qa.json) | Kampagne | QA-Consulting, ISTQB, Testautomatisierung — Budget 15.000 € |
-| [kampagne_2_ki_sokrates.json](file:///d:/Testprojekt/WAMOCON_Marketingmaschine/Kampagnen/kampagne_2_ki_sokrates.json) | Kampagne | KI-Projekt "Sokrates", Datensouveränität — Budget 25.000 € |
-| [kampagne_3_lfa_azubis.json](file:///d:/Testprojekt/WAMOCON_Marketingmaschine/Kampagnen/kampagne_3_lfa_azubis.json) | Kampagne | LFA-Ausbildungsplattform, Azubi-Recruiting — Budget 10.000 € |
-| [kampagne_4_mitarbeiter.json](file:///d:/Testprojekt/WAMOCON_Marketingmaschine/Kampagnen/kampagne_4_mitarbeiter.json) | Kampagne | Employer Branding, Team-Vorstellung — Budget 8.000 € |
+| [kampagne_1_consulting_qa.json](Kampagnen/kampagne_1_consulting_qa.json) | Kampagne | QA-Consulting, ISTQB, Testautomatisierung — Budget 15.000 € |
+| [kampagne_2_ki_sokrates.json](Kampagnen/kampagne_2_ki_sokrates.json) | Kampagne | KI-Projekt "Sokrates", Datensouveränität — Budget 25.000 € |
+| [kampagne_3_lfa_azubis.json](Kampagnen/kampagne_3_lfa_azubis.json) | Kampagne | LFA-Ausbildungsplattform, Azubi-Recruiting — Budget 10.000 € |
+| [kampagne_4_mitarbeiter.json](Kampagnen/kampagne_4_mitarbeiter.json) | Kampagne | Employer Branding, Team-Vorstellung — Budget 8.000 € |
 | **Kampagne 5 (neu)** | Kampagne | App-Entwicklung (50+ Apps), maßgeschneidert — Budget TBD |
-| [zielgruppe_1_itleiter.json](file:///d:/Testprojekt/WAMOCON_Marketingmaschine/Zielgruppen/zielgruppe_1_itleiter.json) | Zielgruppe | "Thomas" — IT-Leiter/QA-Manager, 45-55, DACH |
-| [zielgruppe_2_recruiterin.json](file:///d:/Testprojekt/WAMOCON_Marketingmaschine/Zielgruppen/zielgruppe_2_recruiterin.json) | Zielgruppe | "Sarah" — HR-Managerin, 30-45, IT-Recruiting |
-| [zielgruppe_3_qaengineer.json](file:///d:/Testprojekt/WAMOCON_Marketingmaschine/Zielgruppen/zielgruppe_3_qaengineer.json) | Zielgruppe | "Lukas" — Test-Ingenieur, 25-35, Karrierepush |
-| [zielgruppe_4_azubi_fiae.json](file:///d:/Testprojekt/WAMOCON_Marketingmaschine/Zielgruppen/zielgruppe_4_azubi_fiae.json) | Zielgruppe | "Leon" — Schüler/Azubi, 16-22, FIAE-Ausbildung |
-| [zielgruppe_5_b2b_ki.json](file:///d:/Testprojekt/WAMOCON_Marketingmaschine/Zielgruppen/zielgruppe_5_b2b_ki.json) | Zielgruppe | "Markus" — GF/CEO Mittelstand, 45-60, KI-Investment |
+| [zielgruppe_1_itleiter.json](Zielgruppen/zielgruppe_1_itleiter.json) | Zielgruppe | "Thomas" — IT-Leiter/QA-Manager, 45-55, DACH |
+| [zielgruppe_2_recruiterin.json](Zielgruppen/zielgruppe_2_recruiterin.json) | Zielgruppe | "Sarah" — HR-Managerin, 30-45, IT-Recruiting |
+| [zielgruppe_3_qaengineer.json](Zielgruppen/zielgruppe_3_qaengineer.json) | Zielgruppe | "Lukas" — Test-Ingenieur, 25-35, Karrierepush |
+| [zielgruppe_4_azubi_fiae.json](Zielgruppen/zielgruppe_4_azubi_fiae.json) | Zielgruppe | "Leon" — Schüler/Azubi, 16-22, FIAE-Ausbildung |
+| [zielgruppe_5_b2b_ki.json](Zielgruppen/zielgruppe_5_b2b_ki.json) | Zielgruppe | "Markus" — GF/CEO Mittelstand, 45-60, KI-Investment |
 | [wamocon.com/apps](https://www.wamocon.com/apps/) | Website | 50 Apps in 7 Kategorien — Proof of Execution |
 
 ### 1.2 Gesamtbudget aller Kampagnen
@@ -563,7 +563,7 @@ sequenceDiagram
 
 3. **PDF-Strategie-Dokument:** Die PDF-Datei konnte ich nicht direkt einlesen (Binärformat). Falls dort Inhalte stehen, die meine Analyse ergänzen oder korrigieren, bitte als Text/JSON bereitstellen oder die Kernpunkte zusammenfassen.
 
-4. **Kampagne-5-JSON:** Soll ich die oben definierte Kampagne 5 als [kampagne_5_app_entwicklung.json](file:///d:/Testprojekt/WAMOCON_Marketingmaschine/Kampagnen/kampagne_5_app_entwicklung.json) in das Projekt schreiben?
+4. **Kampagne-5-JSON:** Soll ich die oben definierte Kampagne 5 als [kampagne_5_app_entwicklung.json](Kampagnen/kampagne_5_app_entwicklung.json) in das Projekt schreiben?
 
 5. **Zielgruppen-Erweiterung:** Fehlt eine 6. Zielgruppe (z.B. "CDO/COO mit Digitalisierungsauftrag" als Käufer für K5)?
 

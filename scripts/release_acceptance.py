@@ -329,6 +329,19 @@ def _verify_current_campaign_content(
         "scheduled",
         "published",
     }
+
+    def resolve_stored_trend_run(run_id: str) -> Mapping[str, Any] | None:
+        if not SAFE_IDENTIFIER_RE.fullmatch(run_id):
+            return None
+        payload = client.get_json(
+            _api_url(
+                console_url,
+                f"/workflows/trend-research/runs/{quote(run_id, safe='')}",
+            ),
+            headers=headers,
+        )
+        return payload if isinstance(payload, Mapping) else None
+
     for campaign_id in CAMPAIGN_SOURCE_IDS:
         campaign = by_campaign.get(campaign_id, {})
         content = campaign.get("content", {}) if isinstance(campaign, Mapping) else {}
@@ -379,7 +392,11 @@ def _verify_current_campaign_content(
             f"{campaign_id} stored deterministic quality decision is not release-ready",
         )
         try:
-            recomputed = evaluate_content_quality(state, repo_root=REPOSITORY_ROOT)
+            recomputed = evaluate_content_quality(
+                state,
+                repo_root=REPOSITORY_ROOT,
+                trend_run_resolver=resolve_stored_trend_run,
+            )
         except (ContentQualityInputError, OSError, ValueError, TypeError) as exc:
             raise AssertionError(f"{campaign_id} deterministic quality evaluation could not be recomputed") from exc
         _require(

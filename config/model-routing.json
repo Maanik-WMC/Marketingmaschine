@@ -43,7 +43,7 @@
     },
     "local_content_draft": {
       "provider": "local_qwen",
-      "temperature": 0.35,
+      "temperature": 0.1,
       "requires_network": false,
       "timeout_seconds": 60,
       "max_retries": 1,

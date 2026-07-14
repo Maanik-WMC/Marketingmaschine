@@ -1,9 +1,10 @@
 # n8n production hardening
 
-The 13 July live audit found n8n 2.29.10 running as one SQLite process with a
-different image digest from this candidate. These files deliberately pin the
-previously reviewed, multi-architecture n8n 2.29.9 digest. That difference is
-production drift, not proof that the candidate matches the live image. The
+The fresh 14 July live audit found n8n 2.29.11 running as one SQLite process on
+a mutable image whose identity begins `4277…` (registry identity `ad8269…`). It
+has a different image digest from this candidate. These files deliberately pin
+the previously reviewed, multi-architecture n8n 2.29.9 digest. That difference
+is production drift, not proof that either image is release-approved. The
 hardening remains split into two releases so image reconciliation, database
 migration, and queue behavior are never changed implicitly at the same time.
 
@@ -11,9 +12,10 @@ migration, and queue behavior are never changed implicitly at the same time.
 
 - Keep the container/DNS name `core-n8n` and loopback port `127.0.0.1:5678`.
 - Use one explicitly approved n8n image digest for both releases. Before the
-  maintenance window, either qualify and pin the exact exported live 2.29.10
-  image or approve the 2.29.9 candidate as a separate, tested version change.
-  Never describe the current `e0d959…` pin as the exact live image.
+  maintenance window, qualify and pin one exact image or approve a different
+  pinned version as a separate, tested version change. Neither mutable live
+  2.29.11 nor the older 2.29.9 candidate is implicitly accepted. Never describe
+  the current `e0d959…` pin as the exact live image.
 - Copy the existing encryption key from `/home/node/.n8n/config` into the private
   `secrets/n8n_encryption_key` file. Never generate a replacement.
 - Keep Postgres and Redis on `core-n8n-data-net`, which is internal and publishes
@@ -28,10 +30,13 @@ migration, and queue behavior are never changed implicitly at the same time.
 ## Release 1: SQLite to Postgres
 
 Schedule 45–90 minutes of downtime. Before stopping n8n, verify that no
-execution is `running`, `waiting`, or `new`, and record the expected baseline:
-13 workflows, 11 active workflows, nine active marketing workflows, two users,
-the original two credentials, and the two named WAMOCON Header Auth credentials
-created during the current-workflow rollout (four credentials total).
+execution is `running`, `waiting`, or `new`, and record a fresh baseline. On
+14 July the database contained 13 workflows, 11 active and two inactive. All
+eight required active IDs existed, but retired approval ID `5OzpL9oBMR8gpSJA`
+was wrongly active, `WMCLeadRetention01` was absent, `AIHIntakeV1x001` and
+`MWNvA0TBXDjuAUpU` were unexpectedly active, and `HHiDnT8q0xHgnjVU` and
+`X84QLnGVbbhWG6Oq` were unexpectedly inactive. Record the two users and every
+credential by name without exporting secret values.
 
 Those are the pre-change recovery-baseline counts, not the target publishing
 set. The versioned catalog now contains ten marketing workflow files: eight are
@@ -41,6 +46,13 @@ agent HTTP Request nodes and two inbound Webhook nodes. Recalculate the database
 total after import and reject unexpected duplicate IDs; never reactivate the
 retired approval ID merely to reproduce the old `11 active / 9 marketing`
 baseline.
+
+The 14 July security audit also found five unprotected webhook paths, including
+active manual intake, active trend research, and the retired human-approval
+path. Treat any unprotected webhook as a critical stop condition. Do not import,
+publish, or migrate merely to reproduce the unsafe live baseline; close the
+webhook exposure and retain an unauthenticated `401` check for every approved
+inbound path.
 
 The release default stores errors but not routine successful, progress, or
 manual execution payloads. This controls database growth and avoids retaining

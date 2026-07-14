@@ -4,11 +4,11 @@ Diese Anleitung richtet sich an Marketing-Mitarbeitende ohne technischen Hinterg
 
 ## Konsole öffnen
 
-Die unveränderte Altversion wurde am 13. Juli zuletzt über unverschlüsseltes
-HTTP beobachtet. Beim abschließenden Bürocheck war Nvidia-1 nicht mehr
-erreichbar. Öffnen Sie deshalb keine Konsole, bis die IT die Verbindung und den
-zulässigen Lesebetrieb ausdrücklich bestätigt. Die geschützte Referenz der
-Altversion lautet:
+Nvidia-1 ist seit dem 14. Juli technisch wieder erreichbar. Die unveränderte
+Altversion antwortet jedoch weiterhin über unverschlüsseltes HTTP und besitzt
+weder die freigegebene HTTPS-Strecke noch namentliche Sitzungen. Öffnen Sie
+deshalb keine Konsole für Marketingarbeit, bis die IT den sicheren Betrieb
+ausdrücklich freigibt. Die geschützte Referenz der Altversion lautet:
 
 ```text
 <LEGACY-CONSOLE-URL>
@@ -58,7 +58,11 @@ Die **Übersicht** ist Ihr täglicher Startpunkt. Sie zeigt:
 
 Unter **Kampagnen** sehen Sie Ziel, Zielgruppe, Angebot, Laufzeit, Kanäle, Content-Mix und Fortschritt. Diese Angaben kommen aus den fünf Kampagnendateien und werden im Content Studio automatisch übernommen.
 
-Der Status wird aus den Kampagnendaten und dem aktuellen Datum abgeleitet. Am 13. Juli 2026 sind K1, K2 und K4 aktiv; K3 und K5 starten planmäßig am 1. August 2026. Das wirksame Wochenziel beträgt deshalb heute 9 Inhalte. Die geplanten Kampagnen werden gezeigt, zählen aber bis zu ihrem Start nicht als Rückstand.
+Der Status wird aus den Kampagnendaten und dem aktuellen Datum abgeleitet. Bis
+zum 31. Juli 2026 sind K1, K2 und K4 aktiv; K3 und K5 starten planmäßig am
+1. August 2026. Das wirksame Wochenziel beträgt in diesem Zeitraum 9 Inhalte.
+Die geplanten Kampagnen werden gezeigt, zählen aber bis zu ihrem Start nicht als
+Rückstand.
 
 ### 3. Im Content Studio recherchieren
 

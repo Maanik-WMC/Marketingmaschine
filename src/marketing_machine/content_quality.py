@@ -4,20 +4,35 @@ import json
 import re
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Iterable, Mapping, Sequence
+from typing import Any, Callable, Iterable, Mapping, Sequence
 
 from .campaign_catalog import load_campaign_catalog, resolve_campaign_id
-from .content_generator import CONTENT_SCHEMA_VERSION, _campaign_claim_errors
+from .content_generator import (
+    CONTENT_SCHEMA_VERSION,
+    K4_GOVERNANCE_DIRECTION_DE,
+    _campaign_claim_errors,
+    _citation_contract_errors,
+    _source_citations,
+    candidate_public_output_contract_errors,
+)
 from .governance import GovernancePolicy, PolicyAction
+from .quality import (
+    evergreen_recency_claim_errors,
+    has_pathological_whitespace,
+    unsafe_display_codepoints,
+)
 from .schemas import ContentBrief
 from .trend_sources import source_domain
+from .trend_research import validate_trend_brief_against_run
 
 
 EVALUATION_SCHEMA_VERSION = "wamocon-content-quality-eval-v1"
-RUBRIC_VERSION = "wamocon-k1-k5-release-rubric-v1"
+RUBRIC_VERSION = "wamocon-k1-k5-release-rubric-v2"
 RELEASE_THRESHOLD = 90.0
 MINIMUM_DIMENSION_SCORE = 80.0
 MAX_REFINEMENT_ATTEMPTS = 2
+
+TrendRunResolver = Callable[[str], Mapping[str, Any] | None]
 
 DIMENSION_WEIGHTS: dict[str, float] = {
     "campaign_audience_offer_fit": 20.0,
@@ -75,7 +90,7 @@ FALSE_LIFECYCLE_PATTERN = re.compile(
 
 GERMAN_SIGNAL_PATTERN = re.compile(
     r"(?i)\b(?:der|die|das|und|für|mit|auf|als|ein|eine|wie|im|zu|von|sie|ihre|"
-    r"kann|wird|sind|ist)\b"
+    r"kann|wird|sind|ist|welche|möchten|prüfen)\b"
 )
 
 REEL_FIELDS = {
@@ -141,6 +156,7 @@ def evaluate_content_quality(
     value: Mapping[str, Any],
     *,
     repo_root: Path,
+    trend_run_resolver: TrendRunResolver | None = None,
 ) -> dict[str, Any]:
     """Evaluate one stored brief, runtime state, or captured generation result.
 
@@ -162,7 +178,12 @@ def evaluate_content_quality(
         "campaign_audience_offer_fit": _campaign_fit_checks(candidate, contract, repo_root),
         "german_business_clarity": _clarity_checks(candidate),
         "format_completeness": _format_checks(candidate, contract),
-        "source_grounding": _grounding_checks(candidate, contract, repo_root),
+        "source_grounding": _grounding_checks(
+            candidate,
+            contract,
+            repo_root,
+            trend_run_resolver=trend_run_resolver,
+        ),
         "k4_people_assets": _k4_checks(candidate, contract),
         "safety_policy": _safety_checks(candidate, repo_root),
         "ai_provenance": _provenance_checks(candidate),
@@ -227,11 +248,23 @@ def evaluate_content_quality(
     }
 
 
-def evaluate_content_payload(value: Any, *, repo_root: Path) -> dict[str, Any]:
+def evaluate_content_payload(
+    value: Any,
+    *,
+    repo_root: Path,
+    trend_run_resolver: TrendRunResolver | None = None,
+) -> dict[str, Any]:
     """Evaluate one candidate or a deterministic batch container."""
 
     items = extract_content_candidates(value)
-    results = [evaluate_content_quality(item, repo_root=repo_root) for item in items]
+    results = [
+        evaluate_content_quality(
+            item,
+            repo_root=repo_root,
+            trend_run_resolver=trend_run_resolver,
+        )
+        for item in items
+    ]
     passed = sum(1 for result in results if bool(result["release_ready"]))
     return {
         "schema_version": EVALUATION_SCHEMA_VERSION,
@@ -380,42 +413,42 @@ def _campaign_fit_checks(
     return [
         _check(
             "canonical_campaign_id",
-            _same_text(candidate.get("campaign_id"), contract.campaign_id),
+            _same_exact_text(candidate.get("campaign_id"), contract.campaign_id),
             10,
             "The content uses the canonical campaign ID.",
             f"Set campaign_id to {contract.campaign_id}.",
         ),
         _check(
             "canonical_campaign_name",
-            _same_text(candidate.get("campaign"), contract.name),
+            _same_exact_text(candidate.get("campaign"), contract.name),
             12,
             "The campaign name matches the canonical campaign.",
             "Restore the campaign name from the five-campaign catalog.",
         ),
         _check(
             "canonical_persona",
-            _same_text(candidate.get("persona"), contract.persona),
+            _same_exact_text(candidate.get("persona"), contract.persona),
             13,
             "The intended audience matches the canonical campaign.",
             f"Use the canonical audience: {contract.persona}.",
         ),
         _check(
             "canonical_channel",
-            _same_text(candidate.get("channel"), contract.channel),
+            _same_exact_text(candidate.get("channel"), contract.channel),
             10,
             "The channel matches the canonical campaign.",
             f"Use the canonical channel: {contract.channel}.",
         ),
         _check(
             "canonical_format",
-            _same_text(candidate.get("format"), contract.content_format),
+            _same_exact_text(candidate.get("format"), contract.content_format),
             10,
             "The content format matches the canonical campaign.",
             f"Use the canonical format: {contract.content_format}.",
         ),
         _check(
             "canonical_offer",
-            _same_text(candidate.get("cta"), contract.offer),
+            _same_exact_text(candidate.get("cta"), contract.offer),
             15,
             "The offer matches the canonical campaign.",
             f"Use the exact offer: {contract.offer}.",
@@ -504,10 +537,61 @@ def _format_checks(
     channel = _mapping(candidate.get("channel_copy"))
     reel = _mapping(candidate.get("reel_output"))
     if contract.content_format == "reel":
-        return _reel_format_checks(candidate, channel, reel, contract)
-    if "carousel" in contract.content_format:
-        return _carousel_format_checks(candidate, channel, reel, contract)
-    return _post_format_checks(candidate, channel, reel, contract)
+        format_checks = _reel_format_checks(candidate, channel, reel, contract)
+    elif "carousel" in contract.content_format:
+        format_checks = _carousel_format_checks(candidate, channel, reel, contract)
+    else:
+        format_checks = _post_format_checks(candidate, channel, reel, contract)
+    return [*format_checks, *_schema_bound_checks(candidate, channel, reel)]
+
+
+def _schema_bound_checks(
+    candidate: Mapping[str, Any],
+    channel: Mapping[str, Any],
+    reel: Mapping[str, Any],
+) -> list[RubricCheck]:
+    """Recheck generator maxima at every stored-content trust boundary."""
+
+    errors: list[str] = []
+    text_limits = {
+        "public_copy": (candidate.get("public_copy", ""), 12000),
+        "channel_copy.headline": (channel.get("headline", ""), 240),
+        "channel_copy.body": (channel.get("body", ""), 6000),
+        "channel_copy.caption": (channel.get("caption", ""), 4000),
+        "reel_output.idea": (reel.get("idea", ""), 1000),
+        "reel_output.format": (reel.get("format", ""), 160),
+        "reel_output.hook": (reel.get("hook", ""), 500),
+        "reel_output.caption": (reel.get("caption", ""), 4000),
+        "reel_output.editing_notes": (reel.get("editing_notes", ""), 1000),
+    }
+    for field_name, (value, maximum) in text_limits.items():
+        if not isinstance(value, str) or len(value) > maximum:
+            errors.append(f"{field_name} exceeds its {maximum}-character contract")
+
+    list_limits = {
+        "channel_copy.carousel_slides": (channel.get("carousel_slides", []), 10),
+        "channel_copy.hashtags": (channel.get("hashtags", []), 5),
+        "reel_output.script": (reel.get("script", []), 12),
+        "reel_output.shot_list": (reel.get("shot_list", []), 12),
+        "reel_output.on_screen_text": (reel.get("on_screen_text", []), 12),
+    }
+    for field_name, (value, maximum) in list_limits.items():
+        if not isinstance(value, list) or len(value) > maximum:
+            errors.append(f"{field_name} exceeds its {maximum}-item contract")
+            continue
+        if any(not isinstance(item, str) or len(item) > 1000 for item in value):
+            errors.append(f"{field_name} contains an invalid or overlong item")
+
+    return [
+        _check(
+            "schema_bounds",
+            not errors,
+            20,
+            "All stored content remains inside the governed generator schema bounds.",
+            "Regenerate within the field and list maxima; do not approve oversized or repeated payloads: "
+            + "; ".join(errors),
+        )
+    ]
 
 
 def _post_format_checks(
@@ -547,7 +631,7 @@ def _post_format_checks(
         ),
         _check(
             "channel_cta",
-            _same_text(channel.get("cta"), contract.offer),
+            _same_exact_text(channel.get("cta"), contract.offer),
             20,
             "The structured post contains the exact CTA.",
             f"Set channel_copy.cta to: {contract.offer}.",
@@ -607,7 +691,7 @@ def _carousel_format_checks(
         ),
         _check(
             "channel_cta",
-            _same_text(channel.get("cta"), contract.offer),
+            _same_exact_text(channel.get("cta"), contract.offer),
             15,
             "The carousel contains the exact CTA.",
             f"Set channel_copy.cta to: {contract.offer}.",
@@ -628,9 +712,9 @@ def _carousel_format_checks(
         ),
         _check(
             "cta_slide",
-            any(_contains_text(item, contract.offer) for item in slides),
+            bool(slides) and _same_exact_text(slides[-1], contract.offer),
             5,
-            "A carousel slide contains the exact CTA.",
+            "The final carousel slide is the exact CTA.",
             "Use the exact campaign CTA on the final slide.",
         ),
         _check(
@@ -652,7 +736,6 @@ def _reel_format_checks(
     script = _string_list(reel.get("script"))
     shots = _string_list(reel.get("shot_list"))
     on_screen = _string_list(reel.get("on_screen_text"))
-    plan_text = "\n".join([*script, *on_screen])
     caption = str(reel.get("caption", "")).strip()
     return [
         _check(
@@ -677,25 +760,28 @@ def _reel_format_checks(
         _check("on_screen_text", len(on_screen) >= 2, 10, "The reel has usable on-screen text.", "Provide at least two on-screen text beats."),
         _check(
             "caption_consistency",
-            bool(caption) and _same_text(channel.get("caption"), caption),
+            bool(caption) and _same_exact_text(channel.get("caption"), caption),
             5,
             "The channel and reel captions are complete and consistent.",
             "Use the same complete caption in reel.caption and channel_copy.caption.",
         ),
         _check(
             "reel_cta",
-            _same_text(reel.get("cta"), contract.offer)
-            and _same_text(channel.get("cta"), contract.offer),
+            _same_exact_text(reel.get("cta"), contract.offer)
+            and _same_exact_text(channel.get("cta"), contract.offer),
             5,
             "The reel and channel objects contain the exact CTA.",
             f"Set both CTA fields to: {contract.offer}.",
         ),
         _check(
             "cta_in_production_plan",
-            _contains_text(plan_text, contract.offer),
+            bool(script)
+            and bool(on_screen)
+            and _contains_text(script[-1], contract.offer)
+            and _contains_text(on_screen[-1], contract.offer),
             3,
-            "The production plan includes the exact CTA end card or beat.",
-            "Add the exact CTA to the script or on-screen end card.",
+            "The script and on-screen plan both close with the exact CTA.",
+            "Close both the script and on-screen plan with the exact CTA.",
         ),
         _check(
             "editing_notes",
@@ -707,20 +793,213 @@ def _reel_format_checks(
     ]
 
 
+def _matches_authoritative_trend_run(
+    candidate: Mapping[str, Any],
+    *,
+    trend_run_resolver: TrendRunResolver | None,
+) -> bool:
+    """Resolve and revalidate trend evidence across the server trust boundary.
+
+    A content candidate is untrusted input, including its run id, URLs, status,
+    and citations.  The resolver is intentionally injected by the application
+    layer so the quality evaluator cannot silently promote candidate-carried
+    metadata.  Standalone evaluation therefore fails closed for current-trend
+    content unless the caller supplies an authoritative storage resolver.
+    """
+
+    if str(candidate.get("content_mode", "")).strip().casefold() != "current_trend":
+        return False
+    run_id = str(candidate.get("trend_run_id", "")).strip()
+    if not run_id or trend_run_resolver is None:
+        return False
+    try:
+        resolved = trend_run_resolver(run_id)
+    except Exception:  # Resolver failures are evidence failures, never release grants.
+        return False
+    if not isinstance(resolved, Mapping):
+        return False
+
+    citations = candidate.get("citations", [])
+    trend_view = ContentBrief(
+        id=str(candidate.get("id", "quality-evaluation")) or "quality-evaluation",
+        campaign=str(candidate.get("campaign", "")),
+        campaign_id=(
+            str(candidate.get("campaign_id", "")).strip().casefold()
+            or resolve_campaign_id(str(candidate.get("campaign", "")))
+        ),
+        campaign_context=dict(_mapping(candidate.get("campaign_context"))),
+        persona="quality-evaluation",
+        channel="quality-evaluation",
+        format="quality-evaluation",
+        objective="quality-evaluation",
+        cta="quality-evaluation",
+        proof_sources=["quality-evaluation"],
+        utm={},
+        hypothesis="quality-evaluation",
+        test_variable="quality-evaluation",
+        content_mode="current_trend",
+        trend_run_id=run_id,
+        trend_id=str(candidate.get("trend_id", "")).strip(),
+        trend_summary=str(candidate.get("trend_summary", "")).strip(),
+        trend_sources=_string_list(candidate.get("trend_sources")),
+        trend_verification_status=str(
+            candidate.get("trend_verification_status", "")
+        ).strip(),
+        citations=[dict(item) for item in citations if isinstance(item, Mapping)]
+        if isinstance(citations, list)
+        else [],
+    )
+    try:
+        if validate_trend_brief_against_run(trend_view, dict(resolved)):
+            return False
+        stored_trend = next(
+            (
+                trend
+                for campaign in resolved.get("campaigns", [])
+                if isinstance(campaign, Mapping)
+                for trend in campaign.get("trends", [])
+                if isinstance(trend, Mapping)
+                and str(trend.get("id", "")).strip() == trend_view.trend_id
+            ),
+            None,
+        )
+        if stored_trend is None:
+            return False
+        candidate_citations = list(trend_view.citations)
+        stored_citations = stored_trend.get("citations", [])
+        trend_view.citations = [
+            dict(item)
+            for item in stored_citations
+            if isinstance(item, Mapping)
+        ] if isinstance(stored_citations, list) else []
+        canonical_by_url = {
+            item["url"]: item for item in _source_citations(trend_view)
+        }
+        return _citation_metadata_matches_canonical_source(
+            candidate_citations,
+            canonical_by_url,
+        )
+    except (AttributeError, KeyError, TypeError, ValueError):
+        return False
+
+
+def _citation_metadata_matches_canonical_source(
+    citations: Sequence[Mapping[str, Any]],
+    canonical_by_url: Mapping[str, Mapping[str, str]],
+) -> bool:
+    """Bind every candidate citation field to server-canonical source metadata."""
+
+    citation_urls = [str(item.get("url", "")).strip() for item in citations]
+    if len(citations) > 8 or len(citation_urls) != len(set(citation_urls)):
+        return False
+    for citation in citations:
+        url = str(citation.get("url", "")).strip()
+        canonical = canonical_by_url.get(url)
+        if canonical is None or set(citation) - set(canonical):
+            return False
+        for field in ("label", "supports"):
+            if _citation_text(citation.get(field)) != _citation_text(
+                canonical.get(field)
+            ):
+                return False
+        for field in ("title", "domain", "published", "retrieved", "snippet"):
+            if field in citation and _citation_text(
+                citation.get(field)
+            ) != _citation_text(canonical.get(field)):
+                return False
+    return True
+
+
+def _citation_text(value: Any) -> str:
+    return re.sub(r"\s+", " ", str(value or "")).strip()
+
+
 def _grounding_checks(
     candidate: Mapping[str, Any],
     contract: CampaignContract,
     repo_root: Path,
+    *,
+    trend_run_resolver: TrendRunResolver | None,
 ) -> list[RubricCheck]:
     proof_sources = _string_list(candidate.get("proof_sources"))
     public_text = _claim_text(candidate)
     all_visible = _user_visible_text(candidate)
-    citations = [item for item in candidate.get("citations", []) if isinstance(item, Mapping)] if isinstance(candidate.get("citations"), list) else []
-    trend_sources = _string_list(candidate.get("trend_sources"))
+    raw_citations = candidate.get("citations", [])
+    citations = [
+        item for item in raw_citations if isinstance(item, Mapping)
+    ] if isinstance(raw_citations, list) else []
+    raw_trend_sources = candidate.get("trend_sources", [])
+    trend_sources = _string_list(raw_trend_sources)
     allowed_urls = set(trend_sources)
     cited_urls = [str(item.get("url", "")).strip() for item in citations]
+    citation_contract_errors = _citation_contract_errors(raw_citations)
+    trend_summary = candidate.get("trend_summary", "")
+    trend_evidence_bounds_ok = bool(
+        isinstance(raw_trend_sources, list)
+        and len(raw_trend_sources) <= 8
+        and len(trend_sources) == len(raw_trend_sources)
+        and len(trend_sources) == len(set(trend_sources))
+        and all(len(url) <= 2048 for url in trend_sources)
+        and isinstance(trend_summary, str)
+        and len(trend_summary) <= 2000
+    )
+    citation_schema_bounds_ok = bool(
+        isinstance(raw_citations, list)
+        and len(raw_citations) <= 8
+        and len(citations) == len(raw_citations)
+        and len(cited_urls) == len(set(cited_urls))
+        and not citation_contract_errors
+        and trend_evidence_bounds_ok
+    )
     citation_domains = {source_domain(url) for url in cited_urls if source_domain(url)}
+    trend_source_domains = {
+        source_domain(url) for url in trend_sources if source_domain(url)
+    }
     trend_backed = bool(str(candidate.get("trend_id", "")).strip())
+    content_mode = str(candidate.get("content_mode", "")).strip().casefold() or (
+        "current_trend" if trend_backed else "evergreen"
+    )
+    trend_fields_present = bool(
+        trend_backed
+        or str(candidate.get("trend_run_id", "")).strip()
+        or str(candidate.get("trend_summary", "")).strip()
+        or trend_sources
+        or str(candidate.get("trend_verification_status", "")).strip()
+        or citations
+    )
+    claimed_verified_trend_provenance = bool(
+        content_mode == "current_trend"
+        and trend_backed
+        and str(candidate.get("trend_run_id", "")).strip()
+        and str(candidate.get("trend_summary", "")).strip()
+        and str(candidate.get("trend_verification_status", "")).strip().casefold()
+        == "verified_recent"
+        and len(set(trend_sources)) >= 2
+        and len(trend_source_domains) >= 2
+        and len(set(cited_urls)) >= 2
+        and len(citation_domains) >= 2
+        and citation_schema_bounds_ok
+    )
+    authoritative_trend_match = _matches_authoritative_trend_run(
+        candidate,
+        trend_run_resolver=trend_run_resolver,
+    )
+    verified_trend_provenance = bool(
+        claimed_verified_trend_provenance and authoritative_trend_match
+    )
+    trend_mode_valid = (
+        verified_trend_provenance
+        if content_mode == "current_trend"
+        else content_mode == "evergreen" and not trend_fields_present
+    )
+    recency_mode = "current_trend" if verified_trend_provenance else "evergreen"
+    recency_errors = evergreen_recency_claim_errors(
+        recency_mode,
+        candidate.get("public_copy"),
+        candidate.get("channel_copy"),
+        candidate.get("reel_output"),
+        candidate.get("hashtags"),
+    )
     citation_allowlist_ok = all(url in allowed_urls and bool(source_domain(url)) for url in cited_urls)
     if trend_backed:
         citation_sufficiency = len(set(cited_urls)) >= 2 and len(citation_domains) >= 2
@@ -732,17 +1011,25 @@ def _grounding_checks(
         and bool(str(item.get("supports", "")).strip())
         for item in citations
     )
-    wrong_internal_sources = [
+    unapproved_proof_sources = [
         source
         for source in proof_sources
-        if source != contract.source_ref and source.startswith("Kampagnen/")
+        if source != contract.source_ref
     ]
     claim_errors = _campaign_claim_boundary_errors(candidate, public_text)
+    contract_copy_errors = candidate_public_output_contract_errors(
+        candidate,
+        campaign_id=contract.campaign_id,
+        persona=contract.persona,
+        cta=contract.offer,
+        approved_claims=[contract.approved_claim],
+        allow_verified_trend_summary=verified_trend_provenance,
+    )
     unsupported_quantities = _unsupported_quantity_claims(public_text, contract.campaign_id)
     return [
         _check(
             "canonical_proof_source",
-            contract.source_ref in proof_sources,
+            proof_sources == [contract.source_ref],
             10,
             "The canonical approved proof source is attached.",
             f"Attach the canonical proof source: {contract.source_ref}.",
@@ -757,7 +1044,7 @@ def _grounding_checks(
         ),
         _check(
             "no_wrong_campaign_source",
-            not wrong_internal_sources,
+            not unapproved_proof_sources,
             5,
             "No proof source from another campaign is attached.",
             "Remove proof sources belonging to another campaign.",
@@ -784,11 +1071,33 @@ def _grounding_checks(
             "For a selected trend, cite at least two supplied URLs from independent domains.",
         ),
         _check(
+            "citation_schema_bounds",
+            citation_schema_bounds_ok,
+            5,
+            "Citations and trend evidence stay within governed field, list, and aggregate bounds.",
+            "Use at most eight unique source URLs and bounded citation metadata: "
+            + "; ".join(citation_contract_errors),
+        ),
+        _check(
             "citation_metadata",
             citation_metadata_ok,
             5,
             "Every citation explains what it supports.",
             "Add a readable label and a specific supports statement to each citation.",
+        ),
+        _check(
+            "verified_trend_provenance",
+            trend_mode_valid,
+            10,
+            "Current-trend output resolves to an authoritative stored verified-recent run with server-canonical citation metadata, two independent supplied sources, and two visible citations; evergreen output carries no trend provenance.",
+            "Resolve the referenced run from authoritative server storage and require exact fresh evidence and citation-metadata matches, or regenerate as evergreen without trend fields.",
+        ),
+        _check(
+            "evergreen_no_unsourced_recency_claim",
+            not recency_errors,
+            10,
+            "Evergreen output makes no unsourced current or trending claim.",
+            "Remove current/latest/trending assertions or regenerate as current_trend from a fresh verified source run.",
         ),
         _check(
             "no_unsupported_quantities",
@@ -804,6 +1113,15 @@ def _grounding_checks(
             "The wording stays inside the campaign's approved factual boundary.",
             "Remove unsupported capability, outcome, architecture, authenticity, or delivery claims: "
             + "; ".join(claim_errors),
+        ),
+        _check(
+            "exact_public_claim_contract",
+            not contract_copy_errors,
+            20,
+            "Every public claim is traceable to the exact approved campaign contract.",
+            "Use only the exact approved claim, exact CTA, canonical audience question, bounded neutral labels, "
+            "and governed production directions: "
+            + "; ".join(contract_copy_errors),
         ),
     ]
 
@@ -824,7 +1142,8 @@ def _k4_checks(
         ]
     risk_flags = set(_string_list(candidate.get("risk_flags")))
     reel = _mapping(candidate.get("reel_output"))
-    production_text = "\n".join(_flatten_text(reel))
+    production_units = _flatten_text(reel)
+    production_text = "\n".join(production_units)
     public_text = _claim_text(candidate)
     consent_present = bool(
         re.search(
@@ -849,6 +1168,10 @@ def _k4_checks(
             production_text,
         )
     )
+    coherent_governance_unit = any(
+        _contains_exact_text(unit, K4_GOVERNANCE_DIRECTION_DE)
+        for unit in production_units
+    )
     existing_asset_claim = bool(
         re.search(
             r"(?i)\b(?:wir\s+zeigen|bereits\s+gedreht|vorhandene\s+Team-Aufnahmen|"
@@ -857,41 +1180,59 @@ def _k4_checks(
         )
     )
     editing_notes = str(reel.get("editing_notes", ""))
+    canonical_editing_notes = _same_exact_text(
+        editing_notes,
+        K4_GOVERNANCE_DIRECTION_DE,
+    )
     return [
         _check(
             "people_consent_risk_flag",
             "people_consent_and_real_assets_required" in risk_flags,
-            15,
+            10,
             "The K4 people-consent risk flag is retained.",
             "Restore the people consent and real-assets review flag.",
         ),
         _check(
             "consent_wording",
             consent_present,
-            25,
+            15,
             "The production plan explicitly requires consent or a person release.",
             "State that documented consent or a person release is required before use.",
         ),
         _check(
             "real_asset_wording",
             real_asset_present,
-            20,
+            15,
             "The production plan explicitly requires real, newly captured, or original assets.",
             "Require real approved media or newly filmed original footage.",
         ),
         _check(
             "conditional_usage",
             conditional_present,
-            20,
+            15,
             "Use of people assets is clearly conditional on documented approval.",
             "Use future, conditional wording such as 'erst nach dokumentierter Einwilligung'.",
+        ),
+        _check(
+            "coherent_media_consent_gate",
+            coherent_governance_unit,
+            20,
+            "One coherent production instruction links real media use to documented consent.",
+            "Use one bounded sentence that requires documented consent before real media are used; scattered fragments do not count.",
+        ),
+        _check(
+            "canonical_editing_instruction",
+            canonical_editing_notes,
+            15,
+            "The operator sees one canonical, grammatical consent instruction.",
+            "Replace partial or free-form consent notes with the canonical governed instruction.",
         ),
         _check(
             "no_existing_asset_claim",
             not existing_asset_claim
             and bool(editing_notes.strip())
             and not FALSE_LIFECYCLE_PATTERN.search(editing_notes),
-            20,
+            10,
             "The draft is a production plan and does not claim released footage already exists.",
             "Remove claims of existing authentic footage and keep conditional production guidance.",
         ),
@@ -900,6 +1241,8 @@ def _k4_checks(
 
 def _safety_checks(candidate: Mapping[str, Any], repo_root: Path) -> list[RubricCheck]:
     all_visible = _user_visible_text(candidate)
+    unsafe_codepoints = unsafe_display_codepoints(candidate)
+    pathological_whitespace = has_pathological_whitespace(candidate)
     policy = GovernancePolicy.from_json_file(repo_root / "config" / "governance-policy.json")
     decision = policy.check_content(all_visible)
     internal_material = any(pattern.search(all_visible) for pattern in INTERNAL_MATERIAL_PATTERNS)
@@ -910,14 +1253,14 @@ def _safety_checks(candidate: Mapping[str, Any], repo_root: Path) -> list[Rubric
         _check(
             "governance_policy",
             decision.action != PolicyAction.DENY,
-            40,
+            25,
             "The output passes the repository's strict content-safety policy.",
             "Remove prohibited guarantees, privacy violations, deception, or unsafe claims.",
         ),
         _check(
             "no_internal_material",
             not internal_material,
-            30,
+            20,
             "The result exposes no secret, internal path, or test-hypothesis material.",
             "Remove secrets, internal paths, hypotheses, and implementation-only material.",
         ),
@@ -931,9 +1274,24 @@ def _safety_checks(candidate: Mapping[str, Any], repo_root: Path) -> list[Rubric
         _check(
             "instagram_hashtag_limit",
             not instagram or len(hashtags) <= 5,
-            15,
+            10,
             "Instagram content uses no more than five hashtags.",
             "Reduce the Instagram hashtag list to five or fewer relevant tags.",
+        ),
+        _check(
+            "safe_unicode_text",
+            not unsafe_codepoints,
+            20,
+            "The draft contains no invisible, bidirectional, or unsafe control characters.",
+            "Remove unsafe Unicode/control characters before showing or approving the draft: "
+            + ", ".join(unsafe_codepoints),
+        ),
+        _check(
+            "professional_whitespace",
+            not pathological_whitespace,
+            10,
+            "The draft uses professional, readable spacing.",
+            "Remove long runs of spaces, tabs, or blank lines before approval.",
         ),
     ]
 
@@ -1141,6 +1499,20 @@ def _same_text(left: Any, right: Any) -> bool:
 
 def _contains_text(haystack: str, needle: str) -> bool:
     return bool(_normalized_text(needle)) and _normalized_text(needle) in _normalized_text(haystack)
+
+
+def _contains_exact_text(haystack: str, needle: str) -> bool:
+    """Match canonical governed wording with exact casing and flexible line wrapping."""
+
+    normalized_haystack = re.sub(r"\s+", " ", str(haystack or "")).strip()
+    normalized_needle = re.sub(r"\s+", " ", str(needle or "")).strip()
+    return bool(normalized_needle) and normalized_needle in normalized_haystack
+
+
+def _same_exact_text(left: Any, right: Any) -> bool:
+    normalized_left = str(left or "").replace("\r\n", "\n").replace("\r", "\n")
+    normalized_right = str(right or "").replace("\r\n", "\n").replace("\r", "\n")
+    return bool(normalized_right) and normalized_left == normalized_right
 
 
 def _has_channel_contract(channel: Mapping[str, Any]) -> bool:

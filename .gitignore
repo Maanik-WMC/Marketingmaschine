@@ -4,6 +4,7 @@ candidate-runtime-data/
 .env*
 !.env.example
 !deploy/n8n/.env.migration.example
+!deploy/observability/.env.optional-cache.example
 deploy/n8n/secrets/
 deploy/secrets/
 deploy/n8n/migration/
@@ -11,6 +12,9 @@ deploy/*.generated.env
 config/integrations.local.env
 *.pyc
 __pycache__/
+build/
+dist/
+*.egg-info/
 node_modules/
 test-results/
 .runtime-lock-check/

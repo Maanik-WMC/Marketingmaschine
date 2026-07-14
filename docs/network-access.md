@@ -1,12 +1,12 @@
 # Network Access
 
-This page describes the **staged TLS target**. The unchanged live proxy was last
-observed answering over restricted-LAN HTTP without the authenticated `/session`
-contract. Nvidia-1 was not reachable at the final office-network check, so this
-is historical evidence rather than current health. Do not treat the
-configuration below as deployed proof; verify TLS, named login, clickjacking
-headers, `/session`, and HTTP shutdown during the maintenance-window acceptance
-test.
+This page describes the **staged TLS target**. A fresh 14 July check reached
+Nvidia-1 and reconfirmed that the live proxy answers over restricted-LAN HTTP
+without the authenticated `/session` contract. HTTPS still fails and the
+required transport-security and anti-clickjacking headers are absent. Do not
+treat the configuration below as deployed proof; verify TLS, named login,
+clickjacking headers, `/session`, and HTTP shutdown during the
+maintenance-window acceptance test.
 
 The default deployment binds business tools to `127.0.0.1` on the NVIDIA host. This is intentional: the agent API, CRM, scheduler, and automation tools should not be exposed directly with database and queue services.
 

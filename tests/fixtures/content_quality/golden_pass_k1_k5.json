@@ -20,15 +20,16 @@
         "test_variable": "hook_and_format",
         "language": "de-DE",
         "risk_flags": ["outcome_claims_require_evidence"],
-        "trend_id": "trend-k1-grounded",
-        "trend_sources": [
-          "https://www.qytera.de/blog/testautomatisierung-tipps-goldene-regeln",
-          "https://glossary.istqb.org/de_DE/search/testautomatisierung"
-        ],
-        "public_copy": "QA-Risiken strukturiert prüfen\n\nWAMOCON kann QA-Risiken, Testabdeckung und Freigabeprozesse strukturiert prüfen und priorisieren.\n\nWelche QA-Frage braucht zuerst Ihre Aufmerksamkeit und wie möchten Sie sie prüfen?\n\nQA-Risikoaudit anfragen",
+        "content_mode": "evergreen",
+        "trend_run_id": "",
+        "trend_id": "",
+        "trend_summary": "",
+        "trend_verification_status": "",
+        "trend_sources": [],
+        "public_copy": "QA-Risiken strukturiert prüfen\n\nWAMOCON kann QA-Risiken, Testabdeckung und Freigabeprozesse strukturiert prüfen und priorisieren.\n\nWelche Frage ist für IT-Leiter und QA-Verantwortliche zuerst zu prüfen?\n\nQA-Risikoaudit anfragen",
         "channel_copy": {
           "headline": "QA-Risiken strukturiert prüfen",
-          "body": "WAMOCON kann QA-Risiken, Testabdeckung und Freigabeprozesse strukturiert prüfen und priorisieren. Welche QA-Frage braucht zuerst Ihre Aufmerksamkeit und wie möchten Sie sie prüfen?",
+          "body": "WAMOCON kann QA-Risiken, Testabdeckung und Freigabeprozesse strukturiert prüfen und priorisieren.\n\nWelche Frage ist für IT-Leiter und QA-Verantwortliche zuerst zu prüfen?",
           "caption": "",
           "cta": "QA-Risikoaudit anfragen",
           "hashtags": ["QA", "Testmanagement"],
@@ -45,18 +46,7 @@
           "cta": "",
           "editing_notes": ""
         },
-        "citations": [
-          {
-            "url": "https://www.qytera.de/blog/testautomatisierung-tipps-goldene-regeln",
-            "label": "Qytera: Testautomatisierung",
-            "supports": "Fachlicher Kontext zur Einordnung von Testautomatisierung."
-          },
-          {
-            "url": "https://glossary.istqb.org/de_DE/search/testautomatisierung",
-            "label": "ISTQB Glossar",
-            "supports": "Unabhängige Begriffseinordnung für Testautomatisierung."
-          }
-        ],
+        "citations": [],
         "generation": {
           "status": "ai_generated",
           "schema_version": "wamocon-content-v1",
@@ -97,6 +87,7 @@
         "test_variable": "hook_and_format",
         "language": "de-DE",
         "risk_flags": ["architecture_and_compliance_claims_require_evidence"],
+        "content_mode": "evergreen",
         "trend_id": "",
         "trend_sources": [],
         "public_copy": "Sokrates für den Mittelstand\n\nSokrates Private AI positioniert KI-Nutzung für den Mittelstand mit Fokus auf Datenschutz und internes Wissen. Welche Anforderungen möchten Geschäftsführer und IT-Leiter zuerst einordnen?\n\nPrivate-KI-Erstgespräch anfragen",
@@ -165,6 +156,7 @@
         "test_variable": "hook_and_format",
         "language": "de-DE",
         "risk_flags": ["product_ui_and_outcome_claims_require_evidence"],
+        "content_mode": "evergreen",
         "trend_id": "",
         "trend_sources": [],
         "public_copy": "LFA ist ein digitales Lernsystem für Fachinformatiker-Azubis und Ausbilder.\n\nLFA-Demo oder Ausbildungsplatz-Info anfragen\n\n#LFA #Ausbildung #Azubis",
@@ -239,13 +231,14 @@
         "test_variable": "hook_and_format",
         "language": "de-DE",
         "risk_flags": ["people_consent_and_real_assets_required"],
+        "content_mode": "evergreen",
         "trend_id": "",
         "trend_sources": [],
-        "public_copy": "WAMOCON kann Team-, Kultur- und Arbeitsalltagseinblicke für Employer Branding und Vertrauensaufbau nutzen, sofern Personenfreigaben vorliegen.\n\nTeam kennenlernen\n\n#Team #Arbeitsalltag #WAMOCON",
+        "public_copy": "WAMOCON kann Team-, Kultur- und Arbeitsalltagseinblicke für Employer Branding und Vertrauensaufbau nutzen, sofern Personenfreigaben vorliegen. Welche Frage möchten Bewerber und B2B-Entscheider zuerst prüfen?\n\nTeam kennenlernen\n\n#Team #Arbeitsalltag #WAMOCON",
         "channel_copy": {
           "headline": "Bedingter Produktionsplan für einen Teameinblick",
           "body": "",
-          "caption": "WAMOCON kann Team-, Kultur- und Arbeitsalltagseinblicke für Employer Branding und Vertrauensaufbau nutzen, sofern Personenfreigaben vorliegen.",
+          "caption": "WAMOCON kann Team-, Kultur- und Arbeitsalltagseinblicke für Employer Branding und Vertrauensaufbau nutzen, sofern Personenfreigaben vorliegen. Welche Frage möchten Bewerber und B2B-Entscheider zuerst prüfen?",
           "cta": "Team kennenlernen",
           "hashtags": ["Team", "Arbeitsalltag", "WAMOCON"],
           "carousel_slides": []
@@ -261,7 +254,7 @@
           ],
           "shot_list": [
             "Platzhalter für die Einstiegsfrage",
-            "Reale Medien auswählen oder neu filmen und Personenfreigaben dokumentieren",
+            "Erst nach dem dokumentierten Nachweis: reale Medien einsetzen; Einwilligungen vor der Produktion dokumentieren.",
             "Erst nach Nachweis: freigegebene Team-Szene und Endkarte"
           ],
           "on_screen_text": [
@@ -269,9 +262,9 @@
             "Reale Medien und Einwilligungen erforderlich",
             "Team kennenlernen"
           ],
-          "caption": "WAMOCON kann Team-, Kultur- und Arbeitsalltagseinblicke für Employer Branding und Vertrauensaufbau nutzen, sofern Personenfreigaben vorliegen.",
+          "caption": "WAMOCON kann Team-, Kultur- und Arbeitsalltagseinblicke für Employer Branding und Vertrauensaufbau nutzen, sofern Personenfreigaben vorliegen. Welche Frage möchten Bewerber und B2B-Entscheider zuerst prüfen?",
           "cta": "Team kennenlernen",
-          "editing_notes": "Bis reale Medien und Einwilligungen dokumentiert sind, bleibt dieser Entwurf ein interner Produktionsplan."
+          "editing_notes": "Erst nach dem dokumentierten Nachweis: reale Medien einsetzen; Einwilligungen vor der Produktion dokumentieren."
         },
         "citations": [],
         "generation": {
@@ -314,6 +307,7 @@
         "test_variable": "hook_and_format",
         "language": "de-DE",
         "risk_flags": ["individual_app_examples_require_evidence"],
+        "content_mode": "evergreen",
         "trend_id": "",
         "trend_sources": [],
         "public_copy": "Ein dokumentiertes Anwendungsportfolio\n\nWAMOCON dokumentiert ein Portfolio von mehr als 50 ausgelieferten Anwendungen in sieben Kategorien. Welche Anwendung möchten IT-Leiter und Geschäftsführer zuerst prüfen?\n\nApp-Modernisierungscheck anfragen",

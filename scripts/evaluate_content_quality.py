@@ -20,6 +20,7 @@ from marketing_machine.content_quality import (  # noqa: E402
     evaluate_content_payload,
     extract_content_candidates,
 )
+from marketing_machine.storage import validate_identifier  # noqa: E402
 
 
 def _parser() -> argparse.ArgumentParser:
@@ -45,6 +46,14 @@ def _parser() -> argparse.ArgumentParser:
         "--output",
         type=Path,
         help="optional JSON report path; stdout is used when omitted",
+    )
+    parser.add_argument(
+        "--trend-run-dir",
+        type=Path,
+        help=(
+            "trusted server-export directory containing <trend_run_id>.json; "
+            "required for current-trend candidates"
+        ),
     )
     parser.add_argument(
         "--refinement-attempt",
@@ -90,11 +99,33 @@ def _error_payload(exc: Exception) -> dict[str, Any]:
     }
 
 
+def _trend_run_resolver(root: Path | None):
+    if root is None:
+        return None
+    trusted_root = root.resolve(strict=True)
+    if not trusted_root.is_dir():
+        raise ValueError("--trend-run-dir must identify a directory")
+
+    def resolve(run_id: str):
+        safe_id = validate_identifier(run_id, field="trend_run_id")
+        path = trusted_root / f"{safe_id}.json"
+        if not path.is_file():
+            return None
+        payload = json.loads(path.read_text(encoding="utf-8"))
+        return payload if isinstance(payload, dict) else None
+
+    return resolve
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     args = _parser().parse_args(argv)
     try:
         candidates = _load_candidates(args.inputs)
-        report = evaluate_content_payload(candidates, repo_root=args.repo_root.resolve())
+        report = evaluate_content_payload(
+            candidates,
+            repo_root=args.repo_root.resolve(),
+            trend_run_resolver=_trend_run_resolver(args.trend_run_dir),
+        )
         if args.refinement_attempt is not None:
             for result in report["results"]:
                 if not result["release_ready"]:

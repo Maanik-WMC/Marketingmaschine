@@ -1,4 +1,5 @@
 import re
+import subprocess
 import tomllib
 import unittest
 from pathlib import Path
@@ -18,6 +19,7 @@ class RuntimePackagingTests(unittest.TestCase):
                 "fastapi==0.139.0",
                 "uvicorn[standard]==0.51.0",
                 "langgraph==1.2.9",
+                "tzdata==2026.2; sys_platform == 'win32'",
             },
         )
 
@@ -110,6 +112,32 @@ class RuntimePackagingTests(unittest.TestCase):
             compose,
         )
         self.assertIn("no-new-privileges:true", compose)
+
+    def test_optional_cache_example_is_reproducible_from_git(self):
+        example = ROOT / "deploy" / "observability" / ".env.optional-cache.example"
+        gitignore = (ROOT / ".gitignore").read_text(encoding="utf-8")
+
+        self.assertTrue(example.is_file())
+        self.assertIn("!deploy/observability/.env.optional-cache.example", gitignore)
+        self.assertIn("build/", gitignore)
+        self.assertIn("dist/", gitignore)
+        self.assertIn("*.egg-info/", gitignore)
+        if not (ROOT / ".git").exists():
+            self.skipTest("Git metadata is unavailable in a source archive")
+
+        tracked = subprocess.run(
+            [
+                "git",
+                "ls-files",
+                "--error-unmatch",
+                "deploy/observability/.env.optional-cache.example",
+            ],
+            cwd=ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        self.assertEqual(0, tracked.returncode, tracked.stderr)
 
 
 if __name__ == "__main__":

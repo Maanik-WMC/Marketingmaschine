@@ -2,6 +2,12 @@
 
 This document is the operator reference and release checklist for Postiz, Twenty, Mautic, and ComfyUI. It records the read-only audit performed on 10 July 2026, the isolated ComfyUI technical qualification performed on 13 July 2026, and the controls required to qualify each integration without accidentally publishing content or writing real lead data.
 
+> The audited table below is historical evidence. For the fresh live versions
+> and current RED/no-go decision, see
+> [System Validation — 14 July 2026](system-validation-2026-07-14.md). In
+> particular, Postiz is now observed at 2.21.10 and Twenty at 2.21.0; neither
+> mutable change is release acceptance.
+
 ## Safety invariants
 
 - Keep `MARKETING_MACHINE_ENABLE_EXTERNAL_WRITES=false` until a named operator approves a staging result.
@@ -114,7 +120,7 @@ Postiz's official public API uses a raw API key in the `Authorization` header. I
 
 ### Required setup
 
-1. Stage the upgrade from `v1.47.0` to a reviewed current release on a copy of the Postiz database and upload volumes. Do not jump the production database directly. The current upstream release line has security releases and Postiz requires Temporal for newer versions.
+1. Start from a fresh inventory and immutable export of the exact deployed Postiz version. On 14 July the mutable deployment reported `v2.21.10`; freeze and test that exact state, or treat any intended version as a separate upgrade on a copy of the Postiz database and upload volumes. Do not change the production database directly or infer acceptance from the automatic version drift.
 2. Create the owner account through the allowlisted UI.
 3. Set `POSTIZ_DISABLE_REGISTRATION=true`, recreate only the Postiz application container, and verify that `GET /api/auth/can-register` returns `{"register":false}`.
 4. Configure only the approved providers. OAuth redirect URLs must use the final HTTPS hostname, not the temporary IP address.

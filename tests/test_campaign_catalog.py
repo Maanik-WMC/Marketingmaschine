@@ -48,6 +48,30 @@ class CampaignCatalogTests(unittest.TestCase):
             ],
         }
 
+    @staticmethod
+    def _relative_luminance(hex_color: str) -> float:
+        components = [
+            int(hex_color[index : index + 2], 16) / 255
+            for index in (1, 3, 5)
+        ]
+        linear = [
+            value / 12.92
+            if value <= 0.04045
+            else ((value + 0.055) / 1.055) ** 2.4
+            for value in components
+        ]
+        return 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2]
+
+    def test_campaign_code_accents_have_wcag_aa_contrast_with_white_text(self):
+        campaigns = load_campaign_catalog(self.root, today=date(2026, 7, 10))
+        white_luminance = self._relative_luminance("#ffffff")
+
+        for campaign in campaigns:
+            accent_luminance = self._relative_luminance(campaign["accent"])
+            contrast_ratio = (white_luminance + 0.05) / (accent_luminance + 0.05)
+            with self.subTest(campaign=campaign["code"]):
+                self.assertGreaterEqual(contrast_ratio, 4.5)
+
     def test_catalog_contains_exactly_the_five_real_campaigns(self):
         campaigns = load_campaign_catalog(self.root, today=date(2026, 7, 10))
 

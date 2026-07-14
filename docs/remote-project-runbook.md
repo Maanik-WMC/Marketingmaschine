@@ -336,11 +336,13 @@ Confirm that the directory contains workflow JSON files before continuing.
 
 ## 5. Import the versioned n8n workflows
 
-The last live audit found n8n `2.29.10` with a different digest from the
-reviewed multi-architecture `2.29.9` migration candidate (`e0d959…`). Before
-this section, the change record must either qualify and pin the exact exported
-live `2.29.10` image or approve `2.29.9` as a separate tested version change.
-Do not let the database migration silently change the application version.
+The fresh 14 July audit found n8n `2.29.11` on a mutable image whose identity
+begins `4277…` (registry identity `ad8269…`). It differs from the reviewed
+multi-architecture `2.29.9` migration candidate (`e0d959…`). Before this
+section, the change record must qualify and pin one exact image or approve a
+different pinned version as a separate tested version change. Neither the
+current live image nor the older candidate is implicitly accepted. Do not let
+the database migration silently change the application version.
 
 Create two encrypted Header Auth credentials in the current restricted n8n UI
 before importing. Do not put either value in workflow JSON, container
@@ -618,8 +620,8 @@ fabricated analytics.
 
 ## 10. Release acceptance checks
 
-The last-observed production installation does not yet satisfy these gates,
-and the final office-network check could not reach Nvidia-1.
+The fresh 14 July production check reached Nvidia-1 but reconfirmed that the
+installation does not satisfy these gates. Reachability is not acceptance.
 Run them only after the approved maintenance deployment, and attach the output
 to the change record rather than treating candidate evidence as live proof.
 
@@ -746,18 +748,29 @@ Never use `git reset --hard`, delete the n8n volume, or remove `runtime-data/` a
 
 ## Known operational gaps
 
-- Nvidia-1 could not be resolved or reached over SSH at the final office check;
-  all earlier host/dependency observations require fresh read-only attestation.
-- Firecrawl Cloud is not active until a real key is installed. A private self-hosted instance may instead use the explicit no-auth candidate mode, but it is not active until its service and one bounded search are verified.
+- Nvidia-1 is reachable again through the protected SSH identity, but the live
+  console remains plaintext, has no `/session` identity contract, and lacks the
+  TLS, security-header, and acceptance-credential material required for use.
+- Firecrawl Cloud is not active because no key is installed. A separate
+  self-hosted Firecrawl service is healthy, but the marketing application is
+  not wired to it and must report it as unavailable.
 - Automatic social-platform analytics ingestion is incomplete; scheduled review jobs only identify due items.
-- Postiz, Twenty, and Mautic external writes are disabled and not release-qualified.
+- Postiz 2.21.10 still has open registration and no accepted API/tenant/provider
+  contract. Twenty has drifted to 2.21.0 on a mutable deployment. Mautic 7.1.3
+  remains incomplete with zero tables and an installer HTTP 500. External
+  writes are disabled and none is release-qualified.
 - The isolated ComfyUI candidate is technically qualified, but production
   promotion and governed campaign-output queue submission remain blocked until
   the protected distinct visual/licence approval record and separate release
   acceptance exist.
 - The existing n8n deployment is not yet hardened into Postgres/Redis queue mode.
-- Live n8n was last observed at 2.29.10, while the reviewed migration candidate
-  pins 2.29.9; the exact release version and digest are not yet approved.
+- Live n8n has drifted to 2.29.11, while the reviewed migration candidate pins
+  2.29.9. The LAN edge returns 502; the retired approval workflow is active,
+  retention is absent, unexpected workflows exist, and five webhook paths are
+  unprotected. The exact release version, digest, manifest, and credentials are
+  not approved.
+- The verified 10 July backup is stale and has no completed restore rehearsal.
+- Prometheus and Grafana remain stopped.
 - The configured Kimi credential still requires provider-side rotation or
   reissue and post-rotation qualification; cloud fallback remains disabled.
 - The public GitHub repository still lacks enforced protection for `main`.

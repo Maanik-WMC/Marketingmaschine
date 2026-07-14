@@ -1,18 +1,20 @@
 # WAMOCON Marketing-Maschine
 
-The WAMOCON Marketing-Maschine is a human-governed campaign control room for five real campaigns. It combines a simple German browser interface with local AI drafting, public-source trend research, explicit editorial review, and n8n orchestration. The hardened implementation in this repository is a staged candidate under validation; the older live containers remain unchanged until the approved maintenance window.
+The WAMOCON Marketing-Maschine is a human-governed campaign control room for five real campaigns. It combines a simple German browser interface with local AI drafting, public-source trend research, explicit editorial review, and n8n orchestration. The hardened implementation in this repository is a staged candidate under validation; it has not been cut over to production. Some mutable live dependencies have drifted independently, so the live stack must not be described as unchanged or release-qualified.
 
-**Current status, 13 July 2026: RED / no-go for production work.** The final
-office-network check could no longer resolve or reach Nvidia-1 over SSH. The
-released console was last observed earlier on 13 July as the unchanged
-restricted-LAN HTTP version, but it is not currently re-attested. Do not use it
-for new work. Its protected service-catalog reference is:
+**Current status, 14 July 2026: RED / no-go for production work.** Nvidia-1 is
+reachable again through its protected SSH identity and Docker is healthy. This
+restores observability, not production readiness: the live console still serves
+plaintext HTTP, `/session` and named identities are absent, TLS/security headers
+and acceptance credentials are missing, the n8n LAN edge returns 502, and the
+workflow/security state is non-compliant. Do not use it for new work. Its
+protected service-catalog reference is:
 
 ```text
 <LEGACY-CONSOLE-URL>
 ```
 
-Do not enter credentials into that plaintext endpoint if connectivity returns.
+Do not enter credentials into that plaintext endpoint.
 After the staged TLS release is activated and accepted in an approved
 maintenance window, the normal operator URL comes from the internal service
 catalog:
@@ -39,23 +41,22 @@ same cutover.
 - Ambiguous Postiz delivery is never retried blindly. An operator can perform a read-only provider reconciliation, which records the confirmed Postiz ID and lifecycle state locally.
 - The **Arbeitsfähigkeit** view reduces dependency health to five business capabilities: research, ideas & copy, media, approval, and editorial planning. Each is shown as ready, review open, or blocked with one useful next step.
 
-## Last-observed live system and staged target
+## Fresh live system and staged target
 
-| Component | Last successfully observed on 13 July 2026 | After an approved staged cutover |
+| Component | Observed on 14 July 2026 | After an approved staged cutover |
 | --- | --- | --- |
 | Marketing console/API | restricted-LAN HTTP `:18117`; old release, no `/session` | named-account TLS `https://<host>:18117`; raw loopback stays `http://127.0.0.1:8117` |
-| n8n | existing single-container 2.29.10 service at restricted-LAN HTTP `:15678`; different digest from the reviewed candidate and non-compliant workflow state | explicitly approved immutable version/digest, TLS edge, and the exact manifest of eight active and two inactive workflow definitions |
-| SearxNG / Qwen | successful isolated use was demonstrated before the route loss; current reachability is unavailable | re-attested dependencies with truthful successful-use telemetry |
+| n8n | mutable single-container 2.29.11 service; restricted-LAN edge returns 502; manifest and webhook security fail | explicitly approved immutable version/digest, TLS edge, protected webhooks, and the exact manifest of eight active and two inactive workflow definitions |
+| SearxNG / Qwen | reachable and successfully exercised with a fresh real search and minimal local-Qwen inference; production trend evidence remains unqualified | retained successful-use telemetry plus release-eligible campaign evidence |
 | Runtime store | production `runtime-data/` on Nvidia-1 | same production store only after backup and cutover; candidate uses a fixed isolated Docker volume |
 
-The final office check could not reach Nvidia-1, so none of the last-observed
-rows is a current health statement. The restricted nginx proxy is the intended
-LAN entry point. Raw agent and n8n ports remain loopback-only so a workstation
-cannot bypass the allowlist.
+Host reachability is current, but it does not make the application healthy. The
+restricted nginx proxy remains the intended LAN entry point. Raw agent and n8n
+ports must remain loopback-only so a workstation cannot bypass the allowlist.
 
 ## Five campaign sources
 
-| Code | Campaign | Configured weekly target | Effective target on 13 July |
+| Code | Campaign | Configured weekly target | Effective target on 14 July |
 | --- | --- | ---: | ---: |
 | K1 | Consulting Test- und Qualitätsmanagement | 3 | 3 |
 | K2 | KI (Sokrates) | 3 | 3 |
@@ -63,19 +64,20 @@ cannot bypass the allowlist.
 | K4 | Mitarbeiter / Arbeitgebermarke | 3 | 3 |
 | K5 | Maßgeschneiderte App-Entwicklung (50+ Portfolio) | 2 | 0 (planned) |
 
-Campaign status is derived from the configured dates. On 13 July 2026, K1, K2,
+Campaign status is derived from the configured dates. On 14 July 2026, K1, K2,
 and K4 are active, so the effective weekly target is **9**. K3 and K5 remain
 visible as planned campaigns but contribute **0** until their 1 August 2026
 start; they must not appear as overdue work before then.
 
 ## Important limits
 
-- Firecrawl Cloud support is implemented, but no cloud API key is installed. A private self-hosted Firecrawl instance can be enabled explicitly without a key after separate review. SearxNG is the last successfully demonstrated source adapter; current Nvidia connectivity is unavailable.
+- The initial isolated three-round K1–K5 acceptance is not all green: K1 and K2 exhausted safe repair and returned blocked deterministic fallbacks; K3 and K4 produced actual local-Qwen drafts that passed deterministic quality; K5 used actual local Qwen but remained blocked on audience relevance. Later controlled reruns produced additional passing individual outputs, but also exposed a Qwen transport timeout and an unsafe rhetorical data-protection question. The local guard now rejects that wording, but the exact final source has not completed a fresh all-five, three-round hardware acceptance. None is approved or published.
+- Firecrawl Cloud support is implemented, but no cloud API key is installed. A separate self-hosted Firecrawl service responds, but the marketing application is not wired to it and must not report it as active. SearxNG and local Qwen are currently reachable; their successful use does not make the stale production trend store release-eligible.
 - Platform analytics ingestion is not complete. The result view and scheduled review windows must not be treated as automatic Instagram, LinkedIn, TikTok, or Postiz measurement.
 - External Postiz, Twenty, and Mautic writes remain disabled in production until their exact paths, scoped credentials, tenant integration IDs, and staging acceptance evidence are approved.
 - Manual analytics are accepted only for provider-confirmed published content and require source, measurement period, retrieval time, named operator, and attribution rule. For every reported metric group, the marketer selects the exact provider export; the browser computes its proof locally and does not upload the export.
-- ComfyUI is not production-qualified. On 13 July, an isolated loopback-only FLUX Schnell candidate on Nvidia-2 completed a real API generation and strict PNG decode with exact model, runtime, workflow, prompt, and output hashes. That is technical qualification evidence, not release approval. A named human must still record the visual decision and confirm the model/asset licence before this candidate can be promoted; the existing production ComfyUI service remains unchanged.
-- The deployed n8n service was last observed as single-container 2.29.10 with a different digest from the reviewed multi-architecture 2.29.9 candidate pin. Either qualify and pin the exact 2.29.10 image or approve 2.29.9 as a separate tested version change. Queue-mode/Postgres hardening remains an operations follow-up.
+- ComfyUI is not production-qualified. The production endpoint responds, but its model-metadata request returns HTTP 500. On 13 July, a separate loopback-only FLUX Schnell candidate on Nvidia-2 completed a real API generation and strict PNG decode with exact model, runtime, workflow, prompt, and output hashes. That is historical technical qualification evidence, not release approval. A named human must still record the visual decision and confirm the model/asset licence before this candidate can be promoted.
+- The deployed n8n service has drifted to single-container 2.29.11 on a mutable image, with a different digest from the older reviewed multi-architecture 2.29.9 candidate pin. Approve and pin one exact version/digest as a separate tested change; do not treat either version as implicitly accepted. Queue-mode/Postgres hardening remains an operations follow-up.
 - Cloud fallback is disabled by default. The configured Kimi credential must be rotated or reissued at the provider before any production use, then the scoped route must be requalified. Private campaign prompts remain local until that separate approval.
 - The public GitHub repository currently has no `main` branch protection or ruleset. Before release, require pull requests, successful CI, at least one named reviewer, and block direct pushes to `main`.
 
@@ -89,13 +91,13 @@ checks, and tested rollback from the [remote runbook](docs/remote-project-runboo
 Keep the n8n database migration, queue-mode activation, and Postiz live-write
 qualification as separate releases.
 
-### Latest isolated-candidate evidence
+### Dated isolated-candidate evidence
 
 - The authenticated desktop and mobile operator journeys, including the safe
-  degraded path, passed against the current isolated candidate. The retained
+  degraded path, passed against source commit `a7b823b…`. The retained
   desktop/mobile screenshots are final UI evidence for that isolated candidate,
   and the tested views reported zero WCAG A/AA violations.
-- The latest local amd64 and arm64 image builds each contained 97 packages and
+- The 13 July local amd64 and arm64 image builds each contained 97 packages and
   reported zero critical, high, medium, or low findings in Docker Scout. Their
   SPDX SBOMs were regenerated. Both images passed local isolation checks with a
   read-only filesystem, UID/GID `10001`, `no-new-privileges`, a `401` response
@@ -103,20 +105,20 @@ qualification as separate releases.
 - The arm64 image executed locally through QEMU and reported `aarch64`; this is
   architecture evidence, not execution on real Nvidia hardware. Actual Nvidia
   execution, trusted TLS and dependency acceptance, current-trend research, n8n
-  reconciliation, and backup/restore rehearsal remain blocked. The deterministic
-  local source archive and its external checksum/inventory sidecars pass content
-  and credential inspection, but that archive has not been transferred to or
-  exercised on Nvidia hardware.
+  reconciliation, and backup/restore rehearsal remain blocked. The dated
+  deterministic source archive passed its checks but has been invalidated by
+  later governed source changes and was never exercised on Nvidia hardware.
 
-These checks apply to the exact current local image identities:
+These checks apply only to the 13 July source tree and image identities:
 `sha256:0ae6c4c57d2564f83929aec844bb54be5e6bca297c1b6efc00b38074478929f8`
 for amd64 and
 `sha256:7527599ee25d47a9475f60df763e479ce62de205cd8dd7d89737f712c5068d70`
 for arm64. Any later application, workflow, campaign, dependency, or image
 change invalidates this evidence and requires both builds and their affected
-checks to be repeated. The exact local image evidence does not alter the RED
-production status or authorise a push or merge to the unprotected `main`
-branch.
+checks to be repeated. Such changes now exist, and local Docker was unavailable
+for a fresh final build and Scout scan on 14 July. The dated image evidence does
+not alter the RED production status or authorise a push or merge to the
+unprotected `main` branch.
 
 ## Governed deployment smoke
 
@@ -213,12 +215,13 @@ npm run smoke:dashboard
 
 - [End-user workflow](docs/end-user-workflow.md) — German how-to for marketers.
 - [Business and operations handbook (Markdown)](docs/WAMOCON-MARKETING-HANDBOOK.md) — controlled source for marketer and operator guidance.
-- [Business and operations handbook (Word)](docs/WAMOCON-Marketing-Handbuch.docx) — formatted distribution copy generated from the controlled source.
+- [Business and operations handbook (Word)](docs/WAMOCON-Marketing-Handbuch.docx) — generated distribution copy of the controlled 1.6 Markdown source.
 - [Remote project runbook](docs/remote-project-runbook.md) — deploy, import, publish, restart, and verify.
 - [Network access](docs/network-access.md) — loopback bindings and workstation allowlist.
 - [Trend research](docs/trend-studio.md) — source adapters and evidence policy.
-- [Current validation record](docs/system-validation-2026-07-13.md) — RED/no-go evidence, tested behavior, and remaining blockers.
-- [Historical validation record](docs/system-validation-2026-07-10.md) — earlier completed evidence retained for traceability.
+- [Current validation record](docs/system-validation-2026-07-14.md) — fresh RED/no-go evidence, restored reachability, and remaining blockers.
+- [13 July validation record](docs/system-validation-2026-07-13.md) — superseded operational snapshot retained for traceability.
+- [10 July validation record](docs/system-validation-2026-07-10.md) — earlier completed evidence retained for traceability.
 - [Compliance guardrails](docs/compliance-guardrails.md) — mandatory publishing and privacy controls.
 
 The Markdown handbook is the controlled source. After its final review, rebuild

@@ -4,9 +4,9 @@
 
 **Einfacher Arbeitsablauf für Marketing · kontrollierter Betrieb für Administration**
 
-> **Betriebsstatus am 13. Juli 2026: NICHT produktionsbereit.**
+> **Betriebsstatus am 14. Juli 2026: NICHT produktionsbereit.**
 
-> Die Live-Konsole wurde zuletzt unverschlüsselt über HTTP beobachtet; beim abschließenden Büro-Netzwerkcheck war Nvidia-1 jedoch nicht mehr auflösbar oder per SSH erreichbar. Die geschützte HTTPS-/Identitätsstrecke fehlt, der zuletzt beobachtete n8n-LAN-Endpunkt war fehlerhaft und der Live-Workflowbestand wich vom freigegebenen Manifest ab. Marketing-Mitarbeitende dürfen den Bestand erst nach bestätigter Wiederherstellung lesend ansehen und bis zur dokumentierten Freigabe keine neuen Inhalte erstellen, freigeben oder an externe Dienste übergeben. Externe Schreibvorgänge bleiben deaktiviert.
+> Nvidia-1 ist technisch wieder über die geschützte SSH-Identität erreichbar. Das ist keine Betriebsfreigabe: Die Live-Konsole antwortet weiterhin unverschlüsselt über HTTP, die geschützte HTTPS-/Identitätsstrecke fehlt, der n8n-LAN-Endpunkt liefert 502 und Workflow- sowie Webhookbestand sind nicht freigegeben. Marketing-Mitarbeitende dürfen den Bestand erst nach dokumentierter Sicherheits- und Release-Abnahme verwenden und bis dahin keine neuen Inhalte erstellen, freigeben oder an externe Dienste übergeben. Externe Schreibvorgänge bleiben deaktiviert.
 
 ---
 
@@ -15,8 +15,8 @@
 | Feld | Wert |
 | --- | --- |
 | Dokument | WAMOCON Marketing-Maschine – Betriebs- und Anwenderhandbuch |
-| Version | 1.5 |
-| Stand | 13. Juli 2026 |
+| Version | 1.6 |
+| Stand | 14. Juli 2026 |
 | Status | Kontrollierte Fassung; Live-System gesperrt bis Release-Abnahme |
 | Zielgruppe | Marketing-Anwender ohne technischen Hintergrund; Freigebende; Systemadministration |
 | Dokumentverantwortung | Marketing Operations |
@@ -36,8 +36,8 @@ Dieses Handbuch verbindet vier Dokumentarten: eine kurze Einführung, konkrete A
 - Governance: [`governance-policy.json`](../config/governance-policy.json), [`compliance-guardrails.md`](compliance-guardrails.md) und [`evidence-vault.md`](evidence-vault.md)
 - Freigabefähiger n8n-Sollzustand: [`release_acceptance.py`](../scripts/release_acceptance.py)
 - Technische Wartung: [`remote-project-runbook.md`](remote-project-runbook.md) und [`network-access.md`](network-access.md)
-- Letzter abgeschlossener historischer Nachweis: [`system-validation-2026-07-10.md`](system-validation-2026-07-10.md)
-- Aktueller Live- und Release-Nachweis: [`system-validation-2026-07-13.md`](system-validation-2026-07-13.md)
+- Historische Nachweise: [`system-validation-2026-07-13.md`](system-validation-2026-07-13.md) und [`system-validation-2026-07-10.md`](system-validation-2026-07-10.md)
+- Aktueller Live- und Release-Nachweis: [`system-validation-2026-07-14.md`](system-validation-2026-07-14.md)
 
 ## Wie dieses Handbuch zu lesen ist
 
@@ -78,9 +78,9 @@ Immer geltende Regeln:
 
 ### 2. Die fünf echten Kampagnen
 
-Am 13. Juli 2026 sind K1, K2 und K4 zeitlich aktiv. Ihr wirksames Wochenziel beträgt zusammen **9 Inhalte**. K3 und K5 sind geplant und starten am 1. August 2026; bis dahin tragen beide **0** zum wirksamen Wochenziel bei und dürfen nicht als Rückstand erscheinen. Der Status wird aus den hinterlegten Start- und Enddaten berechnet. Nur diese fünf Kampagnen gehören in die normale Anwenderansicht.
+Am 14. Juli 2026 sind K1, K2 und K4 zeitlich aktiv. Ihr wirksames Wochenziel beträgt zusammen **9 Inhalte**. K3 und K5 sind geplant und starten am 1. August 2026; bis dahin tragen beide **0** zum wirksamen Wochenziel bei und dürfen nicht als Rückstand erscheinen. Der Status wird aus den hinterlegten Start- und Enddaten berechnet. Nur diese fünf Kampagnen gehören in die normale Anwenderansicht.
 
-| Code | Kampagne | Zielgruppe und Ziel | Primärformat | Konfiguriert | Wirksam am 13.07. | Zentrale Inhaltsgrenze |
+| Code | Kampagne | Zielgruppe und Ziel | Primärformat | Konfiguriert | Wirksam am 14.07. | Zentrale Inhaltsgrenze |
 | --- | --- | --- | --- | ---: | ---: | --- |
 | K1 | Consulting Test- und Qualitätsmanagement | IT-Leiter und QA-Verantwortliche; Interesse an einem QA-Risikoaudit | LinkedIn Expertenbeitrag | 3 | 3 | Ergebnis-, Effizienz- und Entscheidungssicherheitsversprechen nur mit genehmigtem Beleg; ansonsten Prüfen und Priorisieren erklären |
 | K2 | KI (Sokrates) | Geschäftsführer und IT-Leiter; Private-KI-Erstgespräch | LinkedIn Carousel | 3 | 3 | Positionierung erklären, aber keine Architektur, Datenhaltung, Sicherheit, DSGVO-Konformität oder Ergebnisse behaupten |
@@ -115,7 +115,7 @@ Am 13. Juli 2026 sind K1, K2 und K4 zeitlich aktiv. Ihr wirksames Wochenziel bet
 
 **Eskalation:** Marketing Operations; bei Identitäts-, Zertifikats- oder Sicherheitsproblem sofort IT-/Plattformbetrieb.
 
-> **Aktueller Stopp am 13. Juli 2026:** Diese Voraussetzungen sind im Live-System nicht erfüllt. Der alte HTTP-Endpunkt antwortete beim früheren Audit, beim abschließenden Check war Nvidia-1 jedoch nicht erreichbar. HTTPS und namentliche Konten fehlen. Arbeitsanweisung A1 endet daher bei Schritt 2 beziehungsweise 3.
+> **Aktueller Stopp am 14. Juli 2026:** Diese Voraussetzungen sind im Live-System nicht erfüllt. Nvidia-1 ist technisch erreichbar, der alte HTTP-Endpunkt besitzt jedoch weiterhin weder HTTPS noch namentliche Konten. Arbeitsanweisung A1 endet daher bei Schritt 2 beziehungsweise 3.
 
 ### 4. Täglicher Marketing-Ablauf
 
@@ -128,7 +128,7 @@ Am 13. Juli 2026 sind K1, K2 und K4 zeitlich aktiv. Ihr wirksames Wochenziel bet
 **Schritte:**
 
 1. Öffnen Sie **Übersicht**.
-2. Lesen Sie für jede Kampagne Status, wirksames Wochenziel, erreichten Fortschritt, Quellenlage, wartende Freigaben und Blocker. Am 13. Juli sind dies insgesamt 9 Inhalte für K1, K2 und K4; K3 und K5 zählen bis 1. August jeweils 0.
+2. Lesen Sie für jede Kampagne Status, wirksames Wochenziel, erreichten Fortschritt, Quellenlage, wartende Freigaben und Blocker. Am 14. Juli sind dies insgesamt 9 Inhalte für K1, K2 und K4; K3 und K5 zählen bis 1. August jeweils 0.
 3. Bearbeiten Sie zuerst Sicherheits- oder Quellenblocker, danach wartende Freigaben, dann fehlende Inhalte zum Wochenziel.
 4. Öffnen Sie die oberste empfohlene Aufgabe; springen Sie nicht direkt zu einer zufälligen Kampagne.
 5. Prüfen Sie am Tagesende fehlgeschlagene Abläufe, neue Leads, fällige Messungen und ungeklärte Postiz-Übergaben.
@@ -188,7 +188,7 @@ Am 13. Juli 2026 sind K1, K2 und K4 zeitlich aktiv. Ihr wirksames Wochenziel bet
 | `requires_live_sources` / `needs_live_sources` | Kein erfolgreich verwendeter Live-Adapter | Recherche technisch reparieren; keine Trendbehauptung |
 | `needs_source_verification` | Treffer vorhanden, Qualitätsregel nicht erfüllt | Aussage enger formulieren oder besser recherchieren |
 
-**Aktueller Stand:** SearxNG wurde vor dem Verbindungsverlust erfolgreich verwendet; seine aktuelle Erreichbarkeit ist nicht bestätigt. Firecrawl ist weder als lokaler Dienst nachgewiesen noch mit einem Cloud-Schlüssel konfiguriert. Im Produktionsspeicher fehlt weiterhin eine aktuelle freigabefähige Recherche für K1 bis K5. Ein getrennter historischer Kandidatenlauf recherchierte K1 bis K5 über SearxNG und bewahrte neun zitierte Treffer auf; jeder Gegenstand blieb wegen nur einer unabhängigen Quelldomain korrekt `needs_source_verification`. Ein späterer K1-Lauf fand für eine Idee vier unabhängige Domains, aber keine vertrauenswürdige datierte Quelle im Zehn-Tage-Zeitraum und blieb deshalb korrekt `source_verified_date_unconfirmed`. Beide Nachweise belegen sicheres Blockierverhalten, aber keinen aktuellen Trend. Vor jeder aktuellen Trendbehauptung bleiben mindestens zwei unabhängige Domains **und** eine aktuelle datierte Quelle Pflicht.
+**Aktueller Stand:** Eine frische SearxNG-JSON-Suche und eine minimale lokale Qwen-Inferenz waren am 14. Juli erfolgreich. Im Produktionsspeicher fehlt dennoch eine aktuelle freigabefähige Recherche für K1 bis K5. Ein separater selbst gehosteter Firecrawl-Dienst ist gesund, aber nicht mit der Marketing-Anwendung verbunden; Firecrawl Cloud besitzt weiterhin keinen Schlüssel. Ein historischer K1-bis-K5-Kandidatenlauf über SearxNG bewahrte neun zitierte Treffer auf; jeder Gegenstand blieb wegen nur einer unabhängigen Quelldomain korrekt `needs_source_verification`. Ein späterer K1-Lauf fand für eine Idee vier unabhängige Domains, aber keine vertrauenswürdige datierte Quelle im Zehn-Tage-Zeitraum und blieb deshalb korrekt `source_verified_date_unconfirmed`. Diese Nachweise belegen Adapterfunktion und sicheres Blockierverhalten, aber keinen aktuellen Trend. Vor jeder aktuellen Trendbehauptung bleiben mindestens zwei unabhängige Domains **und** eine aktuelle datierte Quelle Pflicht.
 
 ### 6. KI-Entwurf, Reel-Idee und Content-Paket
 
@@ -225,7 +225,7 @@ Am 13. Juli 2026 sind K1, K2 und K4 zeitlich aktiv. Ihr wirksames Wochenziel bet
 | Sichere Arbeitsvorlage – Erstellung gesperrt | Die regelbasierte Ersatzlogik hat nur eine Orientierung geliefert, keinen freigabefähigen KI-Entwurf | Nicht prüfen, freigeben oder planen; Arbeitsfähigkeit wiederherstellen und neu erzeugen |
 | Entstehung nicht bestätigt | Das Ergebnis ist nicht zuverlässig nachvollziehbar | Nicht freigeben; IT informieren |
 
-Die technische Herkunft bleibt im geschützten Auditverlauf erhalten. Die Anwenderoberfläche zeigt bewusst keine Provider-/Modellnamen, Laufzeiten, Roh-Hashes oder internen IDs. Am 13. Juli sind fünf W29-Entwürfe – je einer pro Kampagne – mit bestätigter früherer lokaler KI-Erstellung im Produktionsbestand gespeichert. Zusätzlich erzeugte ein isolierter aktueller Quellkandidat echte lokale Qwen-Entwürfe für K1 bis K5; kontrollierte Revisionen bestanden die deterministische Qualitätsprüfung. Diese Nachweise belegen lokale KI-Erstellung, aber weder sichere Einsatzbereitschaft der Live-Konsole noch menschliche Freigabe, Veröffentlichung oder Produktionsqualifikation. Im Produktionsbestand sind insgesamt elf Nicht-Demo-Contentstände vorhanden; K4 wartet auf Belege.
+Die technische Herkunft bleibt im geschützten Auditverlauf erhalten. Die Anwenderoberfläche zeigt bewusst keine Provider-/Modellnamen, Laufzeiten, Roh-Hashes oder internen IDs. Am 13. Juli sind fünf W29-Entwürfe – je einer pro Kampagne – mit bestätigter früherer lokaler KI-Erstellung im Produktionsbestand gespeichert. Zusätzliche isolierte Prüfläufe erzeugten für einzelne Kampagnen echte lokale Qwen-Entwürfe; mehrere kontrollierte Ergebnisse bestanden die deterministische Qualitätsprüfung. Es gibt jedoch keinen vollständigen, auf dem exakten finalen Quellstand bestandenen Drei-Runden-Lauf für alle fünf Kampagnen. Diese Nachweise belegen lokale KI-Erstellung, aber weder sichere Einsatzbereitschaft der Live-Konsole noch menschliche Freigabe, Veröffentlichung oder Produktionsqualifikation. Im Produktionsbestand sind insgesamt elf Nicht-Demo-Contentstände vorhanden; K4 wartet auf Belege.
 
 ### 7. Menschliche Prüfung und Freigabe
 
@@ -443,35 +443,35 @@ Jede Karte zeigt nur **Bereit**, **Prüfung offen** oder **Gesperrt** sowie den 
 
 ### 13. Aktueller Umgebungs- und Risikostand
 
-Die folgende Tabelle trennt die schreibgeschützte Live-Inventur vom 13. Juli 2026 ausdrücklich von lokalen und isolierten Kandidatennachweisen. Es wurden dabei keine Remote-Schreibvorgänge ausgeführt.
+Die folgende Tabelle trennt die frische schreibgeschützte Live-Inventur vom 14. Juli 2026 ausdrücklich von historischen lokalen und isolierten Kandidatennachweisen. Es wurden dabei keine Remote-Schreibvorgänge ausgeführt.
 
 | Bereich | Festgestellter Istzustand | Freigabeauswirkung |
 | --- | --- | --- |
-| Nvidia-1 | Beim früheren Audit intern erreichbar mit etwa 2,3 TB freiem Datenträger und 98 GiB freiem RAM; beim abschließenden Bürocheck nicht mehr auflösbar oder per SSH erreichbar | **Blocker:** aktuellen Zustand und alle Produktionspfade nach stabiler Verbindungswiederherstellung erneut attestieren |
-| Produktionskonsole | Beim früheren Audit antwortete HTTP-LAN `:18117`; HTTPS scheiterte; `/session` lieferte 404; HSTS, CSP und X-Frame-Options fehlten. Aktuelle Erreichbarkeit nicht bestätigt | **Blocker:** keine sichere Operatornutzung, keine aktuelle Freigabe |
+| Nvidia-1 | Über die geschützte SSH-Identität erreichbar; Docker gesund; Kapazität ausreichend | Erreichbarkeit und Kapazität sind belegt, aber keine Produktionsfreigabe |
+| Produktionskonsole | Frisch bestätigt: HTTP-LAN `:18117` antwortet unverschlüsselt; HTTPS scheitert; `/session` liefert 404; HSTS, CSP und X-Frame-Options fehlen | **Blocker:** keine sichere Operatornutzung, keine aktuelle Freigabe |
 | Produktionsimage | Älteres Image mit Digest-Präfix `sha256:a5442c…` | Nicht der gehärtete Kandidat |
 | Alter Kandidat | Loopback `:18118`, Digest-Präfix `sha256:1c7a6d…`; Sicherheitsdrift zum Default-Root erkannt | Neu bauen und vollständig neu qualifizieren |
-| Lokaler gehärteter Prüfstand | Vollständige Regression mit 452 erfassten Tests: 450 bestanden und 2 übersprungen; Ruff, mypy, Abhängigkeits- und Konfigurationsprüfungen grün; authentifizierte Operator- und sichere Degradationsabläufe auf Desktop/Mobil bestanden; null WCAG-A/AA-Verstöße | Abschließende UI-Evidenz für den isolierten Kandidaten, aber keine Produktions-, TLS-, Nvidia- oder Abhängigkeitsfreigabe |
-| Lokale Plattformimages | Exakte aktuelle amd64-Identität `sha256:0ae6c4c57d2564f83929aec844bb54be5e6bca297c1b6efc00b38074478929f8` und arm64-Identität `sha256:7527599ee25d47a9475f60df763e479ce62de205cd8dd7d89737f712c5068d70`; jeweils 97 Pakete und Docker Scout 0 kritisch/0 hoch/0 mittel/0 niedrig; SPDX-SBOMs neu erzeugt; beide lokal mit schreibgeschütztem Dateisystem, UID/GID `10001`, `no-new-privileges`, Authentifizierungsablehnung 401 sowie genau K1 bis K5 ohne Demos bestanden | Arm64 lief über QEMU und meldete `aarch64`, nicht auf echter Nvidia-Hardware. Die Identitäten belegen den aktuellen lokalen Quellstand; nach jeder relevanten Änderung Images/SBOMs neu bauen und betroffene Prüfungen wiederholen. Keine Produktionsfreigabe ableiten |
+| Lokaler gehärteter Prüfstand | Für Commit `a7b823b…`: vollständige Regression mit 452 erfassten Tests, davon 450 bestanden und 2 übersprungen; Ruff, mypy, Abhängigkeits- und Konfigurationsprüfungen grün; frische authentifizierte Operator- und sichere Degradationsabläufe auf Desktop/Mobil bestanden; null WCAG-A/AA-Verstöße | Starke UI-Evidenz für genau diesen isolierten Kandidaten, aber keine Produktions-, TLS-, Nvidia- oder Abhängigkeitsfreigabe |
+| Lokale Plattformimages | Die amd64-/arm64-Identitäten `0ae6c4…` und `752759…` sowie ihre Scout-/SBOM-Nachweise gehören ausschließlich zum Quellstand vom 13. Juli | Spätere gesteuerte Änderungen haben diese Artefakte als finalen Nachweis ungültig gemacht. Lokales Docker war am 14. Juli nicht lauffähig; frischer Build und Scout-Scan fehlen |
 | Mutationen | Externe Writes sind `false` | Korrekte sichere Sperre; beibehalten |
-| Live-Contentdaten, zuletzt beobachtet | Genau K1 bis K5; elf Nicht-Demo-Zustände; fünf W29-Entwürfe mit lokaler-Qwen-Provenienz; K4 braucht Belege | Nicht mit isolierten Kandidaten-/Evaluatorläufen verwechseln; Daten erhalten, frisch sichern und keine Green-Aussage ableiten |
-| Trenddaten in Produktion | Nur QA-/Testläufe, keine aktuelle freigabefähige K1-bis-K5-Recherche | Keine aktuelle Trendaussage zulässig |
+| Live-Contentdaten | Genau K1 bis K5; elf Nicht-Demo-Zustände; fünf Entwürfe vom 13. Juli mit lokaler-Qwen-Provenienz im älteren Schema | Nicht mit dem finalen Kandidaten verwechseln; keine Freigabe-, Veröffentlichungs- oder Green-Aussage ableiten |
+| Trenddaten in Produktion | Nur ältere blockierte Nachweise; keine aktuelle freigabefähige K1-bis-K5-Recherche | Keine aktuelle Trendaussage zulässig |
 | Isolierte Recherche | Historischer K1-bis-K5-Lauf: neun zitierte Treffer, je Gegenstand eine Domain. Neuester K1-Lauf: vier Domains für eine Idee, aber null vertrauenswürdige datierte Quellen im Zeitraum | Beide Ergebnisse korrekt blockiert; für Grün sind je Gegenstand zwei unabhängige Domains und eine aktuelle datierte Quelle nötig |
 | n8n Edge | LAN `:15678` liefert 502; Proxy hält veraltete Container-IP | **Blocker:** Proxy-/Namensauflösung korrigieren und neu prüfen |
-| n8n Runtime | Zuletzt live Version 2.29.10 mit anderem Digest; 13 Workflows, davon 11 aktiv und 2 inaktiv. Der geprüfte Migrationskandidat pinnt dagegen 2.29.9 (`e0d959…`) | **Blocker:** eine exakte Version/Digest freigeben; Tombstone fälschlich aktiv, Retention-Workflow fehlt, Wahrheitsflags falsch |
+| n8n Runtime | Frisch live Version 2.29.11 aus mutable Deployment (`4277…`, Registry `ad8269…`); 13 Workflows, davon 11 aktiv und 2 inaktiv. Acht Pflicht-IDs sind aktiv, aber Tombstone aktiv, Retention fehlt, zwei unerwartete Workflows sind aktiv und zwei unerwartete inaktiv. Fünf Webhookpfade sind ungeschützt | **Kritischer Blocker:** exakte Version/Digest freigeben, Manifest korrigieren, alle Webhooks schützen, Credentials binden und persistierte Ausführung belegen |
 | TLS/Identität | CA, Zertifikat, Schlüssel, htpasswd, namentliche Konten und read-only n8n-API-Key fehlen | **Blocker:** Material sicher bereitstellen, Rechte und persönliche Konten prüfen |
-| Lokale KI | Vor dem Verbindungsverlust erzeugte ein isolierter Kandidat über Qwen auf Nvidia-2 echte strukturierte K1-bis-K5-Entwürfe und bestand kontrollierte Qualitätsrevisionen; aktuell nicht erreichbar | Historische Provenienz bewahren; Verbindung, echte Nvidia-ARM64-Ausführung und Abhängigkeitspfad am exakten finalen Artefakt erneut prüfen. Lokales QEMU ersetzt diese Abnahme nicht |
-| ComfyUI | Isolierter Nvidia-2-FLUX-Kandidat hat einen echten API-Lauf mit strikt dekodiertem 512×512-Ergebnis und gebundenen Modell-/Runtime-/Workflow-Hashes bestanden; Produktion blieb unverändert | **Technisch qualifiziert, aber nicht release-freigegeben:** namentliche Sichtentscheidung und Lizenzbestätigung fehlen |
-| SearxNG | Vor dem Verbindungsverlust erfolgreich verwendet; aktuelle Erreichbarkeit nicht bestätigt | Adapterfunktion historisch belegt; jüngster K1-Lauf bestand die Domain-, aber nicht die Datumsgrenze und ist nicht freigabefähig |
-| Firecrawl | Kein lokaler Dienst nachgewiesen; Cloud-Key fehlt | Optionaler Adapter nicht verfügbar; nicht als aktiv anzeigen |
-| Postiz | Vertrag/Credentials nicht release-qualifiziert; Registrierung offen | **Sicherheitsblocker für externe Übergabe** |
-| Twenty | Version 2.20.0 aus mutable `latest`; Drift zur Sollfassung | Keine Produktionswrites; unveränderlichen Digest qualifizieren |
+| Lokale KI | Frische minimale Qwen-Inferenz erfolgreich. Im ersten isolierten Drei-Runden-Lauf waren K3/K4 echte qualitätsgeprüfte KI-Entwürfe; K1/K2 fielen sicher in gesperrte Vorlagen zurück; K5 blieb trotz echter KI wegen Zielgruppenrelevanz gesperrt. Spätere kontrollierte Läufe lieferten weitere einzelne 100-Punkte-Ergebnisse, zeigten aber auch einen Transport-Timeout und eine unzulässige rhetorische Datenschutzfrage. Die lokale Sperrlogik wurde erweitert; ein vollständiger neuer Hardwarelauf fehlt | **Nicht alle fünf grün:** am exakten finalen Nvidia-Artefakt erneut drei Runden für K1 bis K5 prüfen |
+| ComfyUI | Produktionsdienst antwortet, Modellmetadaten liefern jedoch HTTP 500. Der isolierte Nvidia-2-FLUX-Kandidat besitzt einen historischen echten API-Nachweis | **Nicht release-freigegeben:** strikte aktuelle Readiness sowie namentliche Sichtentscheidung und Lizenzbestätigung fehlen |
+| SearxNG | Frische echte JSON-Suche erfolgreich; Produktionsspeicher enthält dennoch keine freigabefähige aktuelle K1-bis-K5-Recherche | Adapter aktuell benutzt; Quellen-/Datumsgrenze je Gegenstand bleibt Pflicht |
+| Firecrawl | Separater selbst gehosteter Dienst gesund, aber nicht mit der Marketing-Anwendung verbunden; Cloud-Key fehlt | Optionaler Adapter in der Anwendung nicht verfügbar; nicht als aktiv anzeigen |
+| Postiz | Version 2.21.10; Vertrag/Credentials nicht release-qualifiziert; Registrierung offen | **Sicherheitsblocker für externe Übergabe** |
+| Twenty | Version 2.21.0 aus mutable Deployment; Drift zur Sollfassung | Keine Produktionswrites; unveränderlichen Digest qualifizieren |
 | Mautic | Installer endet HTTP 500 | Nicht betriebsbereit; keine CRM-Integration aktivieren |
 | Observability | Prometheus/Grafana gestoppt | Betriebsüberwachung unvollständig |
 | Kimi-Cloudroute | Credential lokal konfiguriert; externe Rotation/Neuausgabe und erneute Qualifikation fehlen | **Blocker für Cloudnutzung:** beim Anbieter rotieren oder neu ausgeben; Fallback bis danach deaktiviert lassen |
 | GitHub-Repository | Öffentlich; für `main` ist keine Branch-Protection beziehungsweise kein Ruleset aktiv | **Release-Governance-Blocker:** nur Pull Request, Pflicht-CI, namentliches Review und kein direkter/Force-Push |
-| Browserbilder | Aktuelle Desktop-/Mobilbilder nach den UI-Korrekturen; authentifizierte Operatorabläufe und sicherer Degradationspfad bestanden | Finale UI-Evidenz für den geprüften isolierten Kandidaten; kein Beleg für Produktion, TLS oder einen erfolgreichen abhängigkeitsgestützten aktuellen Trendlauf |
-| Release-Archiv | Das finale lokale Quellarchiv für diesen dokumentierten Stand enthält 190 gesteuerte Quelldateien plus eingebettetes Inventar; externer Hash und Inventar stimmen, Pflichtdateien sind vorhanden, verbotene Laufzeit-/Secret-/Git-/Cache-/QA-Pfade fehlen und Gitleaks meldet keine Funde | Lokales Packaging-Gate bestanden. Die maßgebliche Identität steht nur in den externen Sidecars unter `qa_output/release/`, nicht selbstbezüglich in diesem Handbuch. Exakt dieses Archiv genehmigt übertragen, Zielhash prüfen und isoliert auf Nvidia bauen; jede spätere gesteuerte Änderung macht es ungültig |
+| Browserbilder | Frische Desktop-/Mobilprüfung für den isolierten Commit `a7b823b…`; authentifizierte Operatorabläufe und sicherer Degradationspfad bestanden | UI-Evidenz für genau diesen Kandidaten; kein Beleg für Produktion, TLS oder einen erfolgreichen abhängigkeitsgestützten aktuellen Trendlauf |
+| Release-Archiv | Das 190-Dateien-Archiv gehört zum Quellstand vom 13. Juli und ist durch spätere gesteuerte Änderungen nicht mehr das finale Artefakt | Neues indexgebundenes Archiv aus dem exakten Zielcommit bauen, prüfen, übertragen und auf Nvidia isoliert ausführen |
 | Backup | Backup vom 10. Juli: 980.954.960 Bytes; 29/29 Prüfsummen gültig; nach neuen Entwürfen veraltet | Frisches, verschlüsselbares Pre-Change-Backup erforderlich; Restoreprobe bleibt nötig |
 
 #### Sichere Adresskonvention
@@ -548,7 +548,7 @@ Der maschinenlesbare Sollzustand steht in [`scripts/release_acceptance.py`](../s
 | Ehemaliger Shared-Token-Freigabewebhook | `5OzpL9oBMR8gpSJA` | Freigabe gehört ausschließlich in die authentifizierte Konsole |
 | Gestaffelte lokale Lead-Anonymisierung | `WMCLeadRetention01` | Separater, noch nicht freigegebener Datenschutz-Release |
 
-**Zuletzt beobachtete Live-Abweichung am 13. Juli:** Der Freigabe-Tombstone war fälschlich aktiv; `WMCLeadRetention01` fehlte; Verifikations-Umgebungswerte behaupteten fälschlich Erfüllung. Der n8n-LAN-Proxy lieferte zudem 502 wegen einer veralteten gecachten Containeradresse. Live lief n8n 2.29.10 mit einem anderen Digest als der geprüfte 2.29.9-Migrationskandidat. Wegen des späteren Verbindungsverlusts ist auch dieser Zustand nicht aktuell re-attestiert und darf nicht als verifiziert angezeigt werden.
+**Frisch beobachtete Live-Abweichung am 14. Juli:** Der Freigabe-Tombstone ist fälschlich aktiv; `WMCLeadRetention01` fehlt. Zusätzlich sind `AIHIntakeV1x001` und `MWNvA0TBXDjuAUpU` unerwartet aktiv sowie `HHiDnT8q0xHgnjVU` und `X84QLnGVbbhWG6Oq` unerwartet inaktiv. Fünf Webhookpfade sind ungeschützt, darunter manuelle Aufnahme, Trendrecherche und der ehemalige Freigabepfad. Der n8n-LAN-Proxy liefert 502. Live läuft n8n 2.29.11 aus einem mutable Deployment mit anderem Digest als der geprüfte 2.29.9-Migrationskandidat. Dieser Bestand ist nicht freigegeben.
 
 ### 16. n8n korrigieren und abnehmen
 
@@ -582,12 +582,12 @@ Der maschinenlesbare Sollzustand steht in [`scripts/release_acceptance.py`](../s
 
 | Dienst | Zweck | Aktueller Status | Bedingung für Grün |
 | --- | --- | --- | --- |
-| Local Qwen | Strukturierte deutsche Content-Entwürfe | Vor dem Verbindungsverlust erfolgreich benutzt; isolierter Kandidat erzeugte echte K1-bis-K5-Entwürfe mit Provenienz und kontrollierter Qualitätsprüfung | Verbindung wiederherstellen; sichere Konsole, korrekte Modellroute und Nachweis am exakten finalen Artefakt auf echter Nvidia-ARM64-Hardware prüfen; lokales QEMU genügt nicht |
-| SearxNG | Öffentliche Webrecherche | Vor dem Verbindungsverlust erfolgreich benutzt. Historischer K1-bis-K5-Lauf: neun Single-Source-Treffer. Neuester K1-Lauf: vier Domains, aber null vertrauenswürdige datierte Quellen | Mindestens zwei unabhängige Domains und eine aktuelle datierte Quelle je freigegebenem Gegenstand; aktuelle Blocker nicht als Trends umdeuten |
-| Firecrawl | Optionales Extrahieren/Recherche | Nicht verfügbar | Privater geprüfter Dienst oder geschützter Cloud-Key; realer begrenzter Lauf |
-| ComfyUI | Governed Creative/Visuals | Isolierter Kandidat technisch qualifiziert; nicht produktiv freigegeben | Namentliche Sichtentscheidung und Lizenzbestätigung an exakt gebundener Ausgabe; danach separater kontrollierter Creative-Release |
-| Postiz | Draft-only Publishing-Handoff | Nicht release-qualifiziert; offene Registrierung | Registrierung schließen; Tenant, Credential, Integration-ID, Vertrag, Idempotenz, Cleanup und Stagingbeweis |
-| Twenty | CRM-Ziel | Mutable `latest`/Versionsdrift | Unveränderlicher Digest, minimales Rollenmodell, Workspace-Vertrag, reversible Stagingprüfung |
+| Local Qwen | Strukturierte deutsche Content-Entwürfe | Frische Inferenz erfolgreich; erster Drei-Runden-Lauf nur für K3/K4 grün, K1/K2 Fallback, K5 Qualitätsblocker. Spätere Einzelergebnisse bestanden teilweise, aber Transportstabilität und eine unzulässige Datenschutzformulierung verhinderten weiterhin einen vollständigen finalen Lauf | Sichere Konsole, korrekte Modellroute und fünf echte qualitätsgeprüfte Ergebnisse in drei Runden am exakten finalen Nvidia-ARM64-Artefakt |
+| SearxNG | Öffentliche Webrecherche | Frische Suche erfolgreich; Produktionsnachweise weiterhin nicht freigabefähig | Mindestens zwei unabhängige Domains und eine aktuelle datierte Quelle je freigegebenem Gegenstand; aktuelle Blocker nicht als Trends umdeuten |
+| Firecrawl | Optionales Extrahieren/Recherche | Separater Dienst gesund, Anwendung nicht verbunden; Cloud-Key fehlt | Explizit geprüfte Anwendungsroute und realer begrenzter Lauf oder weiterhin als nicht verfügbar melden |
+| ComfyUI | Governed Creative/Visuals | Produktionsmetadaten 500; isolierter Kandidat historisch technisch qualifiziert, nicht produktiv freigegeben | Aktuelle strikte Readiness, namentliche Sichtentscheidung und Lizenzbestätigung an exakt gebundener Ausgabe; danach separater kontrollierter Creative-Release |
+| Postiz | Draft-only Publishing-Handoff | 2.21.10; nicht release-qualifiziert; offene Registrierung | Registrierung schließen; unveränderlicher Digest, Tenant, Credential, Integration-ID, Vertrag, Idempotenz, Cleanup und Stagingbeweis |
+| Twenty | CRM-Ziel | 2.21.0 aus mutable Deployment; Versionsdrift | Unveränderlicher Digest, minimales Rollenmodell, Workspace-Vertrag, reversible Stagingprüfung |
 | Mautic | Marketing Automation | Installer 500 | Repariertes gepinntes Kandidatenimage, abgeschlossene Installation, OAuth-/Feldvertrag, reversible Stagingprüfung |
 | Prometheus/Grafana | Überwachung | Gestoppt | Authentifizierte Dienste, Metrik- und Dashboardnachweis, Alerts mit Owner |
 | Kimi | Optionaler Cloud-Fallback | Credential konfiguriert, aber externe Rotation/Neuausgabe und erneute Qualifikation fehlen | Beim Anbieter rotieren oder neu ausgeben, Route anschließend separat qualifizieren; bis dahin deaktiviert |
@@ -731,14 +731,14 @@ Der maschinenlesbare Sollzustand steht in [`scripts/release_acceptance.py`](../s
 
 ### 20. Bekannte Grenzen und bewusst deaktivierte Funktionen
 
-- Die Live-Installation ist am 13. Juli nicht gehärtet und nicht für Marketing-Freigaben bereit.
-- Nvidia-1 und seine Abhängigkeiten waren beim abschließenden Bürocheck nicht erreichbar. Frühere erfolgreiche Prüfungen bleiben historische Nachweise, sind aber keine aktuelle Health-Aussage.
-- Die Desktop-/Mobilabläufe und ihre bereinigten Screenshots sind für den isolierten Kandidaten abschließend geprüft; sie belegen weder die Produktionsstrecke noch einen erfolgreichen aktuellen Trendlauf mit Nvidia-Abhängigkeiten.
-- Die lokalen amd64-/arm64-Images bestanden die beschriebenen Härtungs- und Schwachstellenprüfungen. Arm64 lief jedoch nur über QEMU; echte Nvidia-Hardware, TLS und Abhängigkeiten bleiben offen. Nach jeder weiteren Quelländerung sind Image, SBOM und betroffene Nachweise neu zu erzeugen.
+- Die Live-Installation ist am 14. Juli nicht gehärtet und nicht für Marketing-Freigaben bereit.
+- Nvidia-1 ist wieder erreichbar; Live-Konsole, Identität, TLS, n8n und weitere Abhängigkeiten bleiben jedoch rot. Erreichbarkeit ist keine Health- oder Freigabeaussage.
+- Die Desktop-/Mobilabläufe und ihre bereinigten Screenshots sind für Commit `a7b823b…` abschließend geprüft; sie belegen weder die Produktionsstrecke noch einen erfolgreichen aktuellen Trendlauf mit Nvidia-Abhängigkeiten.
+- Die lokalen amd64-/arm64-Images vom 13. Juli bestanden die beschriebenen Härtungs- und Schwachstellenprüfungen. Spätere Quelländerungen haben diese Artefakte als finalen Nachweis ungültig gemacht; frischer Build, SBOM, Scout-Scan und echte Nvidia-Hardwareabnahme fehlen.
 - Externe Postiz-, Twenty-, Mautic- und Social-Provider-Schreibvorgänge sind deaktiviert.
 - Eine Postiz-Freigabe darf nur einen Entwurf erzeugen; öffentliche Veröffentlichung bleibt manuell.
 - Vollautomatische Plattform-Analytics fehlen; Messwerte benötigen Providerherkunft und menschliche Zuordnung.
-- Firecrawl ist derzeit nicht verfügbar; SearxNG ist der nachgewiesene Rechercheadapter.
+- Ein separater Firecrawl-Dienst ist gesund, aber nicht mit der Anwendung verbunden; SearxNG ist aktuell benutzt, ohne dass dadurch freigabefähige K1-bis-K5-Trends vorliegen.
 - Der isolierte ComfyUI-/FLUX-Kandidat ist technisch qualifiziert, aber kein kreativer Produktionspfad ist release-freigegeben; namentliche Sicht- und Lizenzbestätigung fehlen und automatische produktive Queue-Submission bleibt gesperrt.
 - n8n läuft noch nicht im freigegebenen Postgres-/Redis-Queue-Modus; diese Migration ist ein eigener Release.
 - Twenty und Mautic sind nicht für produktive CRM-Schreibvorgänge qualifiziert.
@@ -797,7 +797,7 @@ Der maschinenlesbare Sollzustand steht in [`scripts/release_acceptance.py`](../s
 - [ ] HSTS, CSP `frame-ancestors 'none'` und `X-Frame-Options: DENY` vorhanden.
 - [ ] Raw-Ports loopback-only; LAN nur über Allowlist-/Auth-Proxy.
 - [ ] n8n-Manifest: acht IDs genau einmal aktiv, zwei genau einmal inaktiv.
-- [ ] Eine exakte n8n-Version und ein unveränderlicher Digest sind genehmigt: entweder live 2.29.10 qualifiziert/gepinnt oder der geprüfte 2.29.9-Kandidat als eigener Versionswechsel akzeptiert.
+- [ ] Eine frisch inventarisierte exakte n8n-Version und ein unveränderlicher Digest sind als eigener getesteter Versionsentscheid genehmigt; weder das mutable Live-2.29.11 noch der ältere 2.29.9-Kandidat gilt automatisch als akzeptiert.
 - [ ] SearxNG echter Lauf; Qwen echter Lauf mit Provenienz; ComfyUI strikte Readiness und Qualifikationsjob grün.
 - [ ] Firecrawl-Status wahr; nicht konfigurierte Adapter werden nicht als aktiv gemeldet.
 - [ ] Postiz/Twenty/Mautic-Qualifikationen getrennt; externe Writes während Kernrelease false.
@@ -822,6 +822,7 @@ Der maschinenlesbare Sollzustand steht in [`scripts/release_acceptance.py`](../s
 
 | Version | Datum | Änderung | Autor/Freigabe |
 | --- | --- | --- | --- |
+| 1.6 | 14.07.2026 | Wiederhergestellte Nvidia-Erreichbarkeit ohne Green-Ableitung, weiterhin unsichere HTTP-/Identitätsstrecke, n8n-2.29.11-Drift mit Manifest- und Webhookfehlern, aktuelle Qwen-/SearxNG-Nutzung, nicht verbundener Firecrawl-Dienst, mehrere K1-bis-K5-Prüfläufe ohne vollständiges finales Grün sowie ungültig gewordene Image-/Archividentitäten dokumentiert; Gesamtentscheidung bleibt RED/No-Go | Marketing Operations / technische Freigabe ausstehend |
 | 1.5 | 13.07.2026 | Abschließende Regression mit 450 bestandenen und 2 übersprungenen Tests, isolierte Desktop-/Mobilabläufe und Screenshots, null WCAG-A/AA-Verstöße, exakte lokale amd64-/arm64-Identitäten mit erneuerten SBOMs sowie das lokal geprüfte 190-Dateien-Quellarchiv dokumentiert; QEMU ausdrücklich von echter Nvidia-Hardwareabnahme getrennt; Transfer-, TLS-, Abhängigkeits-, n8n-, Backup- und `main`-Gates weiterhin rot | Marketing Operations / technische Freigabe ausstehend |
 | 1.4 | 13.07.2026 | Abschließenden Nvidia-Verbindungsverlust, 447 bestandene plus 2 übersprungene Tests, neuesten K1-Vier-Domain-Lauf ohne vertrauenswürdiges Datum, n8n-2.29.10/2.29.9-Drift, pre-finale Browserbilder, Kimi-Schlüsselrotation und fehlenden GitHub-`main`-Schutz als offene Gates dokumentiert | Marketing Operations / technische Freigabe ausstehend |
 | 1.3 | 13.07.2026 | Vollständige lokale Regression, statische Prüfungen, isolierten Nicht-Root-Container und Accessibility-Ergebnis dokumentiert; Produktionsbestand, isolierte Qwen-/SearxNG-Nachweise und weiterhin offene Quellen-, Browser-, Artefakt-, ARM64- und Produktionsgates klar getrennt; finale Image-/Archividentität bewusst offen gelassen | Marketing Operations / technische Freigabe ausstehend |

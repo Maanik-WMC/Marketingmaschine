@@ -40,6 +40,7 @@ from .campaign_catalog import (
     load_campaign_catalog,
     resolve_campaign_id,
 )
+from .content_quality import TrendRunResolver
 from .evidence import EvidenceVault
 from .governance import GovernancePolicy
 from .integrations import (
@@ -59,6 +60,7 @@ from .leads import (
 )
 from .metrics import PROMETHEUS_CONTENT_TYPE, render_prometheus_metrics
 from .phases import build_phase_status
+from .quality import evergreen_recency_claim_errors
 from .routing import get_json
 from .routing import route_lead as route_lead_to_target
 from .routing import route_scheduler_draft as route_scheduler_draft_to_target
@@ -1299,8 +1301,21 @@ def _weekly_briefs_with_verified_sources(
     return verified_briefs, blockers
 
 
-def create_state_for_brief(brief: ContentBrief) -> dict[str, Any]:
-    workflow = MarketingWorkflow(load_policy(), evidence_vault=load_evidence_vault())
+def create_state_for_brief(
+    brief: ContentBrief,
+    *,
+    trend_run_resolver: TrendRunResolver | None = None,
+) -> dict[str, Any]:
+    resolver = (
+        trend_run_resolver
+        if trend_run_resolver is not None
+        else JsonStore().load_trend_run
+    )
+    workflow = MarketingWorkflow(
+        load_policy(),
+        evidence_vault=load_evidence_vault(),
+        trend_run_resolver=resolver,
+    )
     state = workflow.run_until_review(brief)
     return state.to_dict()
 
@@ -2234,14 +2249,6 @@ MANUAL_TREND_ASSERTION_FIELDS = (
     "trend_verification_status",
     "citations",
 )
-EVERGREEN_RECENCY_CLAIM = re.compile(
-    r"(?i)(?:\btrends?\b|\btrending\b|\blatest(?:[\s_-]*trends?)?\b|"
-    r"\brecent(?:[\s_-]*trends?)?\b|\bcurrent(?:[\s_-]*trends?)?\b|\btoday\b|"
-    r"\bthis\s+week\b|\baktuell\w*\b|\bneueste\w*\b|\bheute\b|\bderzeit\b|"
-    r"\bmomentan\b|\bdiese\w*\s+woche\b)"
-)
-
-
 def _manual_intake_content_mode(payload: dict[str, Any]) -> str:
     policy_enabled = explicit_content_mode_required()
     if "content_mode" not in payload:
@@ -2262,15 +2269,16 @@ def _manual_intake_content_mode(payload: dict[str, Any]) -> str:
 def _reject_evergreen_recency_claims(payload: dict[str, Any]) -> None:
     for field in ("objective", "hypothesis", "user_prompt", "cta", "format"):
         value = payload.get(field)
-        if isinstance(value, str) and EVERGREEN_RECENCY_CLAIM.search(value):
+        if isinstance(value, str) and evergreen_recency_claim_errors(
+            "evergreen", value
+        ):
             raise ValueError(
                 f"evergreen {field} must not request a current or trending claim; "
                 "choose current_trend with stored verified sources"
             )
     hashtags = payload.get("hashtags")
-    if isinstance(hashtags, list) and any(
-        isinstance(value, str) and EVERGREEN_RECENCY_CLAIM.search(value)
-        for value in hashtags
+    if isinstance(hashtags, list) and evergreen_recency_claim_errors(
+        "evergreen", hashtags
     ):
         raise ValueError(
             "evergreen hashtags must not request a current or trending claim; "
@@ -2832,7 +2840,9 @@ def _approve_content_locked(
         scheduler_payload=dict(current.get("scheduler_payload", {})),
     )
     result = MarketingWorkflow(
-        load_policy(), evidence_vault=load_evidence_vault()
+        load_policy(),
+        evidence_vault=load_evidence_vault(),
+        trend_run_resolver=store.load_trend_run,
     ).resume_after_review(state, approval)
     result_dict = dict(current)
     result_dict.update(result.to_dict())

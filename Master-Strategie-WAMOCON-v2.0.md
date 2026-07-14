@@ -39,7 +39,7 @@
 | Z4 Leon (Azubi) | ◌ | ◌ | ✅ | ✅ **NEU** | ◌ |
 | Z5 Markus (GF/CEO) | ✅ **NEU** | ✅ | ◌ | ◌ | ✅ |
 
-> Alle Änderungen wurden in die JSON-Dateien geschrieben: [K1](file:///d:/Testprojekt/WAMOCON_Marketingmaschine/Kampagnen/kampagne_1_consulting_qa.json), [K2](file:///d:/Testprojekt/WAMOCON_Marketingmaschine/Kampagnen/kampagne_2_ki_sokrates.json), [K4](file:///d:/Testprojekt/WAMOCON_Marketingmaschine/Kampagnen/kampagne_4_mitarbeiter.json), [K5](file:///d:/Testprojekt/WAMOCON_Marketingmaschine/Kampagnen/kampagne_5_app_entwicklung.json).
+> Alle Änderungen wurden in die JSON-Dateien geschrieben: [K1](Kampagnen/kampagne_1_consulting_qa.json), [K2](Kampagnen/kampagne_2_ki_sokrates.json), [K4](Kampagnen/kampagne_4_mitarbeiter.json), [K5](Kampagnen/kampagne_5_app_entwicklung.json).
 
 ---
 

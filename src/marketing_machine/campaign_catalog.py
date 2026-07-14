@@ -93,7 +93,7 @@ CAMPAIGN_META: dict[str, dict[str, Any]] = {
         "default_format": "reel",
         "weekly_target": 5,
         "content_mix": ["3 Reels/TikToks", "1 LinkedIn-Post", "1 Story-Strecke"],
-        "accent": "#c3652e",
+        "accent": "#a44920",
     },
     "kampagne_4_mitarbeiter": {
         "id": "k4",

@@ -2,6 +2,7 @@ import hashlib
 import importlib.util
 import json
 import os
+import subprocess
 import sys
 import tarfile
 import tempfile
@@ -91,6 +92,21 @@ def _seed_repository(root: Path) -> None:
 
 
 class ReleaseArchiveTests(unittest.TestCase):
+    def test_python_credential_scanner_accepts_current_repository_sources(self):
+        python_files = sorted(
+            file
+            for directory in ("src", "scripts", "tests")
+            for file in (ROOT / directory).rglob("*.py")
+        )
+
+        self.assertGreater(len(python_files), 0)
+        for file in python_files:
+            with self.subTest(path=file.relative_to(ROOT).as_posix()):
+                release_archive._scan_text_for_credentials(
+                    file.read_text(encoding="utf-8"),
+                    file.relative_to(ROOT).as_posix(),
+                )
+
     def test_ci_builds_and_verifies_the_real_release_archive(self):
         workflow = (ROOT / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
 
@@ -164,6 +180,185 @@ class ReleaseArchiveTests(unittest.TestCase):
             self.assertEqual(external["archive"]["sha256"], expected_hash)
             self.assertEqual(external["archive"]["size"], output_one.stat().st_size)
 
+    def test_git_index_is_authoritative_and_untracked_or_unstaged_input_fails(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory) / "repo"
+            _seed_repository(root)
+            subprocess.run(["git", "init", "-q"], cwd=root, check=True)
+            subprocess.run(
+                ["git", "config", "user.email", "release-test@example.invalid"],
+                cwd=root,
+                check=True,
+            )
+            subprocess.run(
+                ["git", "config", "user.name", "Release Test"], cwd=root, check=True
+            )
+            subprocess.run(
+                ["git", "config", "core.autocrlf", "true"], cwd=root, check=True
+            )
+            subprocess.run(["git", "add", "-A"], cwd=root, check=True)
+            subprocess.run(
+                ["git", "commit", "-q", "-m", "seed release"], cwd=root, check=True
+            )
+
+            # The worktree may expand a text file to CRLF, while the staged Git
+            # blob remains the cross-platform LF source of truth.
+            (root / "README.md").write_bytes(b"# Release fixture\r\n")
+            self.assertEqual(
+                subprocess.run(
+                    ["git", "diff", "--quiet"], cwd=root, check=False
+                ).returncode,
+                0,
+            )
+            output = root / "dist" / "from-index.tar.gz"
+            release_archive.build_release(root, output)
+            with tarfile.open(output, "r:gz") as archive:
+                readme = archive.extractfile(
+                    "wamocon-marketing-machine/README.md"
+                ).read()
+            self.assertEqual(readme, b"# Release fixture\n")
+
+            untracked = _write(
+                root / "src" / "marketing_machine" / "untracked_release.py",
+                "VALUE = 2\n",
+            )
+            with self.assertRaisesRegex(
+                release_archive.ReleaseBuildError, "not tracked in the staged Git index"
+            ):
+                release_archive.build_release(
+                    root, root / "dist" / "untracked.tar.gz"
+                )
+
+            subprocess.run(
+                ["git", "add", untracked.relative_to(root).as_posix()],
+                cwd=root,
+                check=True,
+            )
+            staged_output = root / "dist" / "staged.tar.gz"
+            release_archive.build_release(root, staged_output)
+            with tarfile.open(staged_output, "r:gz") as archive:
+                self.assertEqual(
+                    archive.extractfile(
+                        "wamocon-marketing-machine/src/marketing_machine/untracked_release.py"
+                    ).read(),
+                    b"VALUE = 2\n",
+                )
+
+            untracked.write_text("VALUE = 3\n", encoding="utf-8")
+            with self.assertRaisesRegex(
+                release_archive.ReleaseBuildError, "unstaged changes"
+            ):
+                release_archive.build_release(
+                    root, root / "dist" / "unstaged.tar.gz"
+                )
+
+    def test_git_index_change_during_materialization_fails_closed(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory) / "repo"
+            _seed_repository(root)
+            subprocess.run(["git", "init", "-q"], cwd=root, check=True)
+            subprocess.run(
+                ["git", "config", "user.email", "release-test@example.invalid"],
+                cwd=root,
+                check=True,
+            )
+            subprocess.run(
+                ["git", "config", "user.name", "Release Test"], cwd=root, check=True
+            )
+            subprocess.run(["git", "add", "-A"], cwd=root, check=True)
+            subprocess.run(
+                ["git", "commit", "-q", "-m", "seed release"], cwd=root, check=True
+            )
+            readme = root / "README.md"
+            real_blob_contents = release_archive._git_blob_contents
+
+            def change_index_after_blob_snapshot(repository, entries):
+                blobs = real_blob_contents(repository, entries)
+                readme.write_text("# Changed during release\n", encoding="utf-8")
+                subprocess.run(["git", "add", "README.md"], cwd=root, check=True)
+                return blobs
+
+            with mock.patch.object(
+                release_archive,
+                "_git_blob_contents",
+                side_effect=change_index_after_blob_snapshot,
+            ):
+                with self.assertRaisesRegex(
+                    release_archive.ReleaseBuildError,
+                    "Git index changed while release source was being materialized",
+                ):
+                    release_archive.build_release(
+                        root,
+                        root / "dist" / "index-race.tar.gz",
+                    )
+
+    def test_tracked_build_and_egg_info_directories_are_excluded(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory) / "repo"
+            _seed_repository(root)
+            _write(root / "build" / "lib" / "generated.py", "VALUE = 'generated'\n")
+            _write(root / "dist" / "old-wheel.whl", b"generated")
+            _write(
+                root / "src" / "wamocon_marketing_machine.egg-info" / "PKG-INFO",
+                "Metadata-Version: 2.4\n",
+            )
+            subprocess.run(["git", "init", "-q"], cwd=root, check=True)
+            subprocess.run(["git", "add", "-A"], cwd=root, check=True)
+
+            output = root / "dist" / "release.tar.gz"
+            result = release_archive.build_release(root, output)
+            with tarfile.open(result.archive, "r:gz") as archive:
+                names = {member.name for member in archive.getmembers()}
+
+            self.assertFalse(any("/build/" in name for name in names))
+            self.assertFalse(any("/dist/" in name for name in names))
+            self.assertFalse(any(".egg-info/" in name for name in names))
+
+    def test_git_index_change_then_restore_cannot_hide_unstaged_release_source(self):
+        with tempfile.TemporaryDirectory() as temporary_directory:
+            root = Path(temporary_directory) / "repo"
+            _seed_repository(root)
+            subprocess.run(["git", "init", "-q"], cwd=root, check=True)
+            subprocess.run(
+                ["git", "config", "user.email", "release-test@example.invalid"],
+                cwd=root,
+                check=True,
+            )
+            subprocess.run(
+                ["git", "config", "user.name", "Release Test"], cwd=root, check=True
+            )
+            subprocess.run(["git", "add", "-A"], cwd=root, check=True)
+            subprocess.run(
+                ["git", "commit", "-q", "-m", "seed release"], cwd=root, check=True
+            )
+            readme = root / "README.md"
+            real_blob_contents = release_archive._git_blob_contents
+
+            def change_worktree_and_restore_index(repository, entries):
+                blobs = real_blob_contents(repository, entries)
+                readme.write_text("# Changed during release\n", encoding="utf-8")
+                subprocess.run(["git", "add", "README.md"], cwd=root, check=True)
+                subprocess.run(
+                    ["git", "reset", "-q", "HEAD", "--", "README.md"],
+                    cwd=root,
+                    check=True,
+                )
+                return blobs
+
+            with mock.patch.object(
+                release_archive,
+                "_git_blob_contents",
+                side_effect=change_worktree_and_restore_index,
+            ):
+                with self.assertRaisesRegex(
+                    release_archive.ReleaseBuildError,
+                    "release source changed while being materialized",
+                ):
+                    release_archive.build_release(
+                        root,
+                        root / "dist" / "restored-index-race.tar.gz",
+                    )
+
     def test_runtime_private_and_generated_artifacts_are_excluded_without_being_read(self):
         with tempfile.TemporaryDirectory() as temporary_directory:
             root = Path(temporary_directory) / "repo"
@@ -182,6 +377,7 @@ class ReleaseArchiveTests(unittest.TestCase):
             _write(root / "src" / "marketing_machine" / "state.sqlite3", b"runtime")
             _write(root / "node_modules" / "dependency.js", "module.exports = {}\n")
             _write(root / "src" / "marketing_machine" / "__pycache__" / "app.pyc", b"\x00")
+            _write(root / "src" / "fixture.egg-info" / "PKG-INFO", "generated\n")
             _write(root / "config" / "integrations.example.env", "OPENAI_API_KEY=\n")
             _write(root / "deploy" / "n8n" / ".env.migration.example", "N8N_KEY=\n")
 
@@ -200,6 +396,7 @@ class ReleaseArchiveTests(unittest.TestCase):
                 ".sqlite3",
                 "node_modules",
                 "__pycache__",
+                ".egg-info",
             ):
                 self.assertFalse(
                     any(forbidden_fragment in name for name in names),
@@ -315,7 +512,28 @@ class ReleaseArchiveTests(unittest.TestCase):
             _seed_repository(root)
             _write(
                 root / "scripts" / "provider.py",
-                'import os\napi_key = os.environ.get("PROVIDER_API_KEY", "")\n',
+                "\n".join(
+                    (
+                        "import os",
+                        'api_key = os.environ.get("PROVIDER_API_KEY", "")',
+                        'token = os.getenv("PROVIDER_TOKEN")',
+                        'password = config.get("PROVIDER_PASSWORD","replace-me")',
+                        'local_api_key = os.getenv("LOCAL_OPENAI_API_KEY", "ollama")',
+                    )
+                )
+                + "\n",
+            )
+            _write(
+                root / "config" / "provider.env.example",
+                "\n".join(
+                    (
+                        "UPSTREAM_API_KEY=${UPSTREAM_API_KEY}",
+                        "OPTIONAL_API_KEY=${OPTIONAL_API_KEY:-}",
+                        "SERVICE_PASSWORD=${SERVICE_PASSWORD:-replace-me}",
+                        "REQUIRED_PASSWORD=${REQUIRED_PASSWORD:?set REQUIRED_PASSWORD}",
+                    )
+                )
+                + "\n",
             )
 
             result = release_archive.build_release(
@@ -324,6 +542,293 @@ class ReleaseArchiveTests(unittest.TestCase):
             )
 
             self.assertGreater(result.file_count, 0)
+
+    def test_rejects_high_entropy_literal_defaults_in_runtime_secret_lookups(self):
+        high_entropy_value = bytes.fromhex(
+            "4131623243336434453566364737683849396a304b316c324d336e344f357036"
+        ).decode("ascii")
+        cases = {
+            "python_getenv": (
+                "scripts/provider.py",
+                f'import os\napi_key = os.getenv("PROVIDER_API_KEY", "{high_entropy_value}")\n',
+            ),
+            "python_environ_get": (
+                "scripts/provider.py",
+                f'import os\napi_key = os.environ.get("PROVIDER_API_KEY", "{high_entropy_value}")\n',
+            ),
+            "python_config_get": (
+                "scripts/provider.py",
+                f'password = config.get("PROVIDER_PASSWORD", "{high_entropy_value}")\n',
+            ),
+            "python_adjacent_literals": (
+                "scripts/provider.py",
+                "import os\napi_key = os.getenv(\"PROVIDER_API_KEY\", "
+                f'"{high_entropy_value[:16]}" "{high_entropy_value[16:]}")\n',
+            ),
+            "python_concatenated_literals": (
+                "scripts/provider.py",
+                "import os\napi_key = os.getenv(\"PROVIDER_API_KEY\", "
+                f'"{high_entropy_value[:16]}" + "{high_entropy_value[16:]}")\n',
+            ),
+            "python_f_string_default": (
+                "scripts/provider.py",
+                f'import os\napi_key = os.getenv("PROVIDER_API_KEY", f"{high_entropy_value}")\n',
+            ),
+            "python_keyword_key_and_default": (
+                "scripts/provider.py",
+                "import os\napi_key = os.getenv("
+                f'key="PROVIDER_API_KEY", default="{high_entropy_value}")\n',
+            ),
+            "python_literal_kwargs": (
+                "scripts/provider.py",
+                "import os\napi_key = os.getenv(\"PROVIDER_API_KEY\", "
+                f'**{{"default": "{high_entropy_value}"}})\n',
+            ),
+            "python_computed_secret_key": (
+                "scripts/provider.py",
+                "import os\napi_key = os.getenv("
+                f'"PROVIDER_" + "API_KEY", "{high_entropy_value}")\n',
+            ),
+            "python_import_alias": (
+                "scripts/provider.py",
+                "from os import getenv as env\n"
+                f'api_key = env("PROVIDER_API_KEY", "{high_entropy_value}")\n',
+            ),
+            "python_literal_tuple_star_args": (
+                "scripts/provider.py",
+                "import os\nvalue = os.getenv("
+                f'*("PROVIDER_API_KEY", "{high_entropy_value}"))\n',
+            ),
+            "python_literal_list_star_args": (
+                "scripts/provider.py",
+                "import os\nvalue = os.getenv("
+                f'*["PROVIDER_API_KEY", "{high_entropy_value}"])\n',
+            ),
+            "python_assigned_callable_alias": (
+                "scripts/provider.py",
+                "import os\nenv = os.getenv\n"
+                f'value = env("PROVIDER_API_KEY", "{high_entropy_value}")\n',
+            ),
+            "python_getattr_callable": (
+                "scripts/provider.py",
+                "import os\nvalue = getattr(os, \"getenv\")("
+                f'"PROVIDER_API_KEY", "{high_entropy_value}")\n',
+            ),
+            "python_static_f_strings": (
+                "scripts/provider.py",
+                "import os\nvalue = os.getenv("
+                f'f"PROVIDER_API_{{\'KEY\'}}", f"{high_entropy_value}")\n',
+            ),
+            "python_local_name_indirection": (
+                "scripts/provider.py",
+                'import os\nenv_name = "PROVIDER_API_KEY"\n'
+                f'fallback = "{high_entropy_value}"\n'
+                "value = os.getenv(env_name, fallback)\n",
+            ),
+            "python_reassigned_local_names": (
+                "scripts/provider.py",
+                'import os\nenv_name = "LOG_LEVEL"\nfallback = "information"\n'
+                'env_name = "PROVIDER_API_KEY"\n'
+                f'fallback = "{high_entropy_value}"\n'
+                "value = os.getenv(env_name, fallback)\n",
+            ),
+            "python_assigned_star_args": (
+                "scripts/provider.py",
+                "import os\narguments = ("
+                f'"PROVIDER_API_KEY", "{high_entropy_value}")\n'
+                "value = os.getenv(*arguments)\n",
+            ),
+            "python_class_constants": (
+                "scripts/provider.py",
+                "import os\nclass Provider:\n"
+                '    KEY = "PROVIDER_API_KEY"\n'
+                f'    DEFAULT = "{high_entropy_value}"\n'
+                "value = os.getenv(Provider.KEY, Provider.DEFAULT)\n",
+            ),
+            "python_static_return_functions": (
+                "scripts/provider.py",
+                "import os\ndef key():\n"
+                '    return "PROVIDER_API_KEY"\n'
+                "def fallback():\n"
+                f'    return "{high_entropy_value}"\n'
+                "value = os.getenv(key(), fallback())\n",
+            ),
+            "python_assigned_kwargs": (
+                "scripts/provider.py",
+                "import os\nenv = os.getenv\nkwargs = {"
+                f'"key": "PROVIDER_API_KEY", "default": "{high_entropy_value}"}}\n'
+                "value = env(**kwargs)\n",
+            ),
+            "python_sensitive_subscript_assignment": (
+                "scripts/provider.py",
+                f'config["API_KEY"] = "{high_entropy_value}"\n',
+            ),
+            "python_computed_sensitive_subscript_assignment": (
+                "scripts/provider.py",
+                'key = "API_KEY"\n'
+                f'config[key] = "{high_entropy_value}"\n',
+            ),
+            "python_constant_conditional": (
+                "scripts/provider.py",
+                "import os\nkey = "
+                '"PROVIDER_API_KEY" if True else "LOG_LEVEL"\n'
+                f'fallback = "{high_entropy_value}"\n'
+                "value = os.getenv(key, fallback)\n",
+            ),
+            "python_augmented_key": (
+                "scripts/provider.py",
+                'import os\nkey = "PROVIDER_API_"\nkey += "KEY"\n'
+                f'fallback = "{high_entropy_value}"\n'
+                "value = os.getenv(key, fallback)\n",
+            ),
+            "python_normalized_key": (
+                "scripts/provider.py",
+                'import os\nkey = "provider_api_key".upper()\n'
+                f'fallback = "{high_entropy_value}"\n'
+                "value = os.getenv(key, fallback)\n",
+            ),
+            "python_unpacked_mapping": (
+                "scripts/provider.py",
+                "import os\nbase = {"
+                f'"key": "PROVIDER_API_KEY", "default": "{high_entropy_value}"}}\n'
+                "kwargs = {**base}\nvalue = os.getenv(**kwargs)\n",
+            ),
+            "python_aliased_literal_helpers": (
+                "scripts/provider.py",
+                "import os\ndef key():\n"
+                '    return "PROVIDER_API_KEY"\n'
+                "def fallback():\n"
+                f'    return "{high_entropy_value}"\n'
+                "key_alias = key\nfallback_alias = fallback\n"
+                "value = os.getenv(key_alias(), fallback_alias())\n",
+            ),
+            "python_literal_lambdas": (
+                "scripts/provider.py",
+                'import os\nkey = lambda: "PROVIDER_API_KEY"\n'
+                f'fallback = lambda: "{high_entropy_value}"\n'
+                "value = os.getenv(key(), fallback())\n",
+            ),
+            "python_class_static_methods": (
+                "scripts/provider.py",
+                "import os\nclass Provider:\n"
+                "    @staticmethod\n    def key():\n"
+                '        return "PROVIDER_API_KEY"\n'
+                "    @staticmethod\n    def fallback():\n"
+                f'        return "{high_entropy_value}"\n'
+                "value = os.getenv(Provider.key(), Provider.fallback())\n",
+            ),
+            "python_joined_sensitive_assignment": (
+                "scripts/provider.py",
+                "API_KEY = \"\".join(["
+                f'"{high_entropy_value[:16]}", "{high_entropy_value[16:]}"])\n',
+            ),
+            "python_formatted_sensitive_assignment": (
+                "scripts/provider.py",
+                "API_KEY = \"{}{}\".format("
+                f'"{high_entropy_value[:16]}", "{high_entropy_value[16:]}")\n',
+            ),
+            "python_one_argument_identity_function": (
+                "scripts/provider.py",
+                "import os\ndef identity(value):\n    return value\n"
+                'runtime_name = identity("PROVIDER_" + "API_KEY")\n'
+                f'fallback = identity("{high_entropy_value}")\n'
+                "value = os.getenv(runtime_name, fallback)\n",
+            ),
+            "python_one_argument_identity_lambda": (
+                "scripts/provider.py",
+                "import os\nidentity = lambda value: value\n"
+                'runtime_name = identity("PROVIDER_" + "API_KEY")\n'
+                f'fallback = identity("{high_entropy_value}")\n'
+                "value = os.getenv(runtime_name, fallback)\n",
+            ),
+            "python_helper_local_assignment_then_return": (
+                "scripts/provider.py",
+                "import os\ndef runtime_key():\n"
+                '    prefix = "PROVIDER_"\n    suffix = "API_KEY"\n'
+                "    result = prefix + suffix\n    return result\n"
+                "def runtime_default():\n"
+                f'    first = "{high_entropy_value[:16]}"\n'
+                f'    second = "{high_entropy_value[16:]}"\n'
+                "    result = first + second\n    return result\n"
+                "value = os.getenv(runtime_key(), runtime_default())\n",
+            ),
+            "python_helper_default_argument": (
+                "scripts/provider.py",
+                "import os\ndef use_default(value):\n    return value\n"
+                'def runtime_key(value="PROVIDER_API_KEY"):\n    return value\n'
+                f'def runtime_default(value="{high_entropy_value}"):\n'
+                "    return use_default(value)\n"
+                "value = os.getenv(runtime_key(), runtime_default())\n",
+            ),
+            "python_loop_destructuring": (
+                "scripts/provider.py",
+                "import os\nsettings = (("
+                f'"PROVIDER_API_KEY", "{high_entropy_value}"),)\n'
+                "for runtime_name, fallback in settings:\n"
+                "    value = os.getenv(runtime_name, fallback)\n",
+            ),
+            "python_dataclass_instance_fields": (
+                "scripts/provider.py",
+                "import os\nfrom dataclasses import dataclass\n@dataclass\n"
+                "class Settings:\n"
+                '    runtime_name: str = "PROVIDER_API_KEY"\n'
+                f'    fallback: str = "{high_entropy_value}"\n'
+                "settings = Settings()\n"
+                "value = os.getenv(settings.runtime_name, settings.fallback)\n",
+            ),
+            "python_percent_formatting": (
+                "scripts/provider.py",
+                "import os\nruntime_name = \"%s_%s\" % ("
+                '"PROVIDER_API", "KEY")\n'
+                "fallback = \"%s%s\" % ("
+                f'"{high_entropy_value[:16]}", "{high_entropy_value[16:]}")\n'
+                "value = os.getenv(runtime_name, fallback)\n",
+            ),
+            "python_replace_key_normalization": (
+                "scripts/provider.py",
+                'import os\nruntime_name = "PROVIDER-API-KEY".replace("-", "_")\n'
+                f'fallback = "{high_entropy_value[:16]}--{high_entropy_value[16:]}"'
+                '.replace("--", "")\n'
+                "value = os.getenv(runtime_name, fallback)\n",
+            ),
+            "shell_default": (
+                "config/provider.env.example",
+                "SERVICE_"
+                + "TOKEN"
+                + "=${"
+                + "SERVICE_"
+                + "TOKEN"
+                + ":-"
+                + high_entropy_value
+                + "}\n",
+            ),
+            "shell_assignment_default": (
+                "config/provider.env.example",
+                "SERVICE_"
+                + "TOKEN"
+                + "=${"
+                + "SERVICE_"
+                + "TOKEN"
+                + ":="
+                + high_entropy_value
+                + "}\n",
+            ),
+        }
+        for name, (relative_path, content) in cases.items():
+            with self.subTest(name=name):
+                with tempfile.TemporaryDirectory() as temporary_directory:
+                    root = Path(temporary_directory) / "repo"
+                    _seed_repository(root)
+                    _write(root / relative_path, content)
+
+                    with self.assertRaisesRegex(
+                        release_archive.ReleaseBuildError,
+                        "high-entropy credential assignment",
+                    ):
+                        release_archive.build_release(
+                            root,
+                            root / "dist" / "release.tar.gz",
+                        )
 
     def test_rejects_symlinks_in_release_roots(self):
         with tempfile.TemporaryDirectory() as temporary_directory:

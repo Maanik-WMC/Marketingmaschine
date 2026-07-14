@@ -316,7 +316,13 @@ class WorkflowTests(unittest.TestCase):
         self.assertFalse(state.requires_human_review)
         self.assertFalse(state.brief.quality_evaluation["release_ready"])
         self.assertTrue(state.brief.quality_evaluation["hard_blockers"])
-        self.assertIn("content quality gate failed", "; ".join(state.errors))
+        self.assertIn("successful AI-generated draft", "; ".join(state.errors))
+        self.assertTrue(
+            any(
+                "unsupported public copy" in str(failure.get("detail", ""))
+                for failure in state.brief.generation["failures"]
+            )
+        )
 
     def test_quality_is_recomputed_when_a_stored_draft_is_tampered_before_approval(self):
         state = self.workflow.run_until_review(self.make_brief())

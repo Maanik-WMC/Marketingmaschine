@@ -6,7 +6,11 @@ from typing import Any
 from urllib.parse import urlsplit
 
 from .content_generator import ContentGenerator, StructuredContentClient
-from .content_quality import ContentQualityInputError, evaluate_content_quality
+from .content_quality import (
+    ContentQualityInputError,
+    TrendRunResolver,
+    evaluate_content_quality,
+)
 from .evidence import EvidenceVault
 from .governance import AuditTrail, GovernancePolicy, PolicyAction
 from .schemas import ApprovalRecord, ContentBrief, ContentStatus, ReviewDecision, utc_now
@@ -47,12 +51,14 @@ class MarketingWorkflow:
         evidence_vault: EvidenceVault | None = None,
         content_generator: ContentGenerator | None = None,
         ai_client: StructuredContentClient | None = None,
+        trend_run_resolver: TrendRunResolver | None = None,
     ) -> None:
         if content_generator is not None and ai_client is not None:
             raise ValueError("pass content_generator or ai_client, not both")
         self.policy = policy
         self.audit = audit or AuditTrail()
         self.evidence_vault = evidence_vault
+        self.trend_run_resolver = trend_run_resolver
         if content_generator is not None:
             self.content_generator = content_generator
         elif ai_client is not None:
@@ -181,12 +187,12 @@ class MarketingWorkflow:
             ]
         return []
 
-    @staticmethod
-    def _quality_gate_errors(brief: ContentBrief) -> list[str]:
+    def _quality_gate_errors(self, brief: ContentBrief) -> list[str]:
         try:
             report = evaluate_content_quality(
                 brief.to_dict(),
                 repo_root=Path(__file__).resolve().parents[2],
+                trend_run_resolver=self.trend_run_resolver,
             )
         except (ContentQualityInputError, OSError, TypeError, ValueError):
             brief.quality_evaluation = {
@@ -486,7 +492,11 @@ def people_media_evidence_errors(
     return []
 
 
-def build_langgraph_app(policy: GovernancePolicy) -> Any:
+def build_langgraph_app(
+    policy: GovernancePolicy,
+    *,
+    trend_run_resolver: TrendRunResolver | None = None,
+) -> Any:
     """Build the production LangGraph app when langgraph is installed.
 
     The stdlib workflow above keeps local tests dependency-free. Production deploys
@@ -499,7 +509,10 @@ def build_langgraph_app(policy: GovernancePolicy) -> Any:
         raise RuntimeError("Install production dependencies with `pip install -e .[prod]` to use LangGraph") from exc
 
     graph = StateGraph(dict)
-    workflow = MarketingWorkflow(policy)
+    workflow = MarketingWorkflow(
+        policy,
+        trend_run_resolver=trend_run_resolver,
+    )
 
     def run_until_review_node(state: dict[str, Any]) -> dict[str, Any]:
         brief = state["brief"]

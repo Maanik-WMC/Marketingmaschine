@@ -1,7 +1,9 @@
 # Resource Allocation
 
-Last successful inventory: 2026-06-30. Nvidia-1 was unavailable at the final
-13 July office-network check, so the split below is historical until re-attested.
+Fresh reachability and capacity check: 2026-07-14. Nvidia-1 is reachable again,
+Docker is healthy, and capacity is ample. The detailed workload split below was
+last inventoried on 2026-06-30 and remains an intended design until every route
+and workload is re-attested; capacity alone is not production readiness.
 
 ## Last-observed intended split
 
